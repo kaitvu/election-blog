@@ -2,33 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://example.org/</loc>
+    <loc>https://kaitvu.github.io/election-blog/</loc>
     <lastmod>2024-09-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/post/</loc>
+    <loc>https://kaitvu.github.io/election-blog/post/</loc>
     <lastmod>2024-09-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/note/2017/06/14/another-note/</loc>
+    <loc>https://kaitvu.github.io/election-blog/note/2017/06/14/another-note/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/categories/</loc>
+    <loc>https://kaitvu.github.io/election-blog/categories/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/categories/example/</loc>
+    <loc>https://kaitvu.github.io/election-blog/categories/example/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/note/</loc>
+    <loc>https://kaitvu.github.io/election-blog/note/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/tags/</loc>
+    <loc>https://kaitvu.github.io/election-blog/tags/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/tags/tutorial/</loc>
+    <loc>https://kaitvu.github.io/election-blog/tags/tutorial/</loc>
     <lastmod>2017-06-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/note/2017/06/13/a-quick-note/</loc>
+    <loc>https://kaitvu.github.io/election-blog/note/2017/06/13/a-quick-note/</loc>
     <lastmod>2017-06-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/about/</loc>
+    <loc>https://kaitvu.github.io/election-blog/about/</loc>
   </url>
 </urlset>
