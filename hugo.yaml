@@ -12,10 +12,6 @@ permalinks:
   post: "/post/:year/:month/:day/:slug/"
 
 menu:
-  main:
-    - name: Home
-      url: ""
-      weight: 1
 
 params:
   description: "A website built through Hugo and blogdown."
