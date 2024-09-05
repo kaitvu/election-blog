@@ -1,5 +1,6 @@
 baseurl: "https://kaitvu.github.io/election-blog/"
 languageCode: "en-us"
+title: "GOV 1347"
 theme: "hugo-xmin"
 googleAnalytics: ""
 disqusShortname: ""

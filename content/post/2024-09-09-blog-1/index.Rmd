@@ -6,3 +6,5 @@ slug: blog-1
 categories: []
 tags: []
 ---
+
+Here is where I will write my first blog post.
