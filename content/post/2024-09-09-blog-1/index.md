@@ -8,7 +8,7 @@ tags: []
 ---
 
 ## Introduction
-In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in "battleground" states over time.
+In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in battleground states over time.
 
 
 

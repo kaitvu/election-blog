@@ -8,7 +8,7 @@ tags: []
 ---
 
 ## Introduction
-In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in "battleground" states over time.
+In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in battleground states over time.
 
 ```{r setup, include=FALSE}
 # hide code
@@ -107,7 +107,8 @@ d_pv_states |>
   theme_void() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold")
-  )
+  ) +
+  coord_fixed(1.8)
 ```
 
 This visualization reinforces the idea that presidential elections have become increasing competitive. Since the Reagan presidency, it appears that Democratic candidates have gained ground on their Republican counterparts in the two-party vote share, especially in the Rust Belt states. As a result, elections have been more contested. From the 1990s onward, states in the Great Plains and Deep South tend to vote for Republicans, while states in the Northeast, Mid-Atlantic region, and West Coast lean Democratic. This data visualization also offers insight on consistently battleground states, which are colored lighter and/or in white from year to year.
@@ -137,7 +138,8 @@ d_pv_states|>
   theme_void() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold")
-  )
+  ) +
+  coord_fixed(1.8)
 ```
 
 Although colored similarly to the previous visualization, it is important to note the difference in magnitude of the swing margin, which ranges from 20 to -20. Based on this visualization, states with consistent swings between red and blue include Pennsylvania, Wisconsin, Michigan, and North Carolina. In contrast, several states can be no longer considered battlegrounds. For example, California and New York have swung Democratic since the late 1980s. Texas has similarly emerged as a Republican stronghold, but appears to have become slightly more competitive in recent elections.
