@@ -7,4 +7,170 @@ categories: []
 tags: []
 ---
 
-Here is where I will write my first blog post.
+##Introduction
+In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in "battleground" states over time.
+
+```{r, include = FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE)
+
+# import libraries
+library(tidyverse)
+library(ggplot2)
+library(maps)
+library(blogdown)
+
+# import data
+d_pv <- read_csv("popvote_1948-2020.csv")
+states <- map_data("state")
+d_pv_states <- read_csv("clean_wide_state_2pv_1948_2020.csv")
+```
+
+##Overall Two-Party Vote Share
+To begin, I will examine how two-party vote share in the U.S. presidential election has changed over time. The following plot displays the party distribution in the two-party national popular vote for each presidential election from 1948-2020. 
+
+```{r}
+# plot 1: two-party vote share by party
+d_pv |>
+  ggplot(aes(x = year, y = pv2p, colour = party)) +
+  geom_line(stat = "identity") +
+  geom_point() +
+  scale_x_continuous(breaks = seq(1948, 2020, 4), 
+                     minor_breaks = NULL) +
+  scale_color_manual(values = c("dodgerblue2", "firebrick2")) +
+  labs(
+    x = "Year", 
+    y = "Two-Party National Popular Vote (%)", 
+    title = "Presidential Vote Share by Party (1948-2020)", 
+    color = "Party"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
+More concisely, this second plot presents the difference in two-party national popular vote between the parties – referred to as the win margin – over time. 
+
+```{r}
+# plot 2: win margin in two-party vote share
+d_pv_margin <- d_pv |>
+  select(party, pv2p, year) |>
+  group_by(year) |>
+  pivot_wider(
+    names_from = party, 
+    values_from = pv2p
+  ) |>
+  mutate(margin = abs(Democrat - Republican))
+
+ggplot(data = d_pv_margin, mapping = aes(x = year, y = margin)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(
+    x = "Year", 
+    y = "Win Margin (%)", 
+    title = "Win Margin for Two-Party National Popular Vote (1948-2020)", 
+    color = "Party"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
+Notably, the win margin appears to decrease over time: the negative slope of the best fit line suggests that presidential elections have become increasingly competitive in general terms of two-party vote share. The 5 presidential elections with the smallest win margins are 1960, 1968, 1976, 2000 and 2016. Looking more closely at the four previous presidential elections, the win margin for two-party vote share appears to steadily decrease from 7.5% in 2008 to 3.8% in 2012 and 2.3% in 2016. In 2020, the win margin was 4.5%, a slightly higher win margin than 2016. However, the $R_2$ of approximately 0.1 for this line of best fit suggests that the relationship between the win margin and year is weak; we cannot predict the win margin in two-party vote share based on numbers from past presidential elections alone.
+
+##State-Level Two-Party Vote Share
+Next, I analyze into historical trends in two-party vote share on the state level. This visualization displays the win margin for the two-party vote share by state. In this visualization, positive win margins indicate a two-party vote share that favors the Democratic candidate, while negative win margins represent a two-party vote share that favors the Republican candidate. The intensity of the color – blue for the Democrat and red for the Republican – represents the magnitude of the margin of victory. 
+
+```{r}
+# plot 3: win margin for two-party vote share by state
+d_pv_states$region <- tolower(d_pv_states$state) 
+
+d_pv_states |>
+  left_join(states, by = "region") |>
+  mutate(margin = D_pv2p - R_pv2p) |>
+  ggplot(aes(long, lat, group = group)) + 
+  facet_wrap(facets = year ~.) +
+  geom_polygon(aes(fill = margin), color = "white")  +
+  scale_fill_gradient2(high = "dodgerblue2", 
+                       low = "firebrick2", 
+                       mid = "white",
+                       name = "Win Margin (%)", 
+                       breaks = c(-100, -50, 0, 50, 100),
+                       limits = c(-100, 100)) +
+  labs(
+    title = "Win Margin for Two-Party National Popular Vote by State (1948-2020)"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
+This visualization reinforces the idea that presidential elections have become increasing competitive. Since the Reagan presidency, it appears that Democratic candidates have gained ground on their Republican counterparts in the two-party vote share, especially in the Rust Belt states. As a result, elections have been more contested. From the 1990s onward, states in the Great Plains and Deep South tend to vote for Republicans, while states in the Northeast, Mid-Atlantic region, and West Coast lean Democratic. This data visualization also offers insight on consistently battleground states, which are colored lighter and/or in white from year to year.
+
+##State-Level Swing Variation in Two-Party Vote Share
+Diving deeper into battleground states, the following visualization exhibits "swing" in two-party vote share from by state from 1980-2020. The swing margin is determined by subtracting the two-party vote share for the Democratic candidate in a certain election from the Democratic two-party vote share from four years prior. Positive margins indicate a swing towards the Democratic candidate relative to the previous election, while negative margins indicate a swing towards the Republican candidate. Once again, the intensity of the color – blue for the Democrat and red for the Republican – represents the magnitude of the swing in two-party vote share. States that are lighter in color or white exhibit little swing between elections.
+
+```{r}
+# plot 4: swing in two-party vote share by state
+d_pv_states|> 
+  filter(year >= 1980) |>
+  left_join(states, by = "region") |>
+  mutate(swing = D_pv2p - D_pv2p_lag1) |>
+  ggplot(aes(long, lat, group = group)) + 
+  facet_wrap(facets = year ~.) +
+  geom_polygon(aes(fill = swing), color = "white") +
+  scale_fill_gradient2(high = "dodgerblue2", 
+                       low = "firebrick2", 
+                       mid = "white", 
+                       name = "Swing Margin", 
+                       breaks = c(-20, -10, 0, 10, 20), 
+                       limits = c(-20, 20)) +
+  labs(
+    title = "Swing in Two-Party National Party Vote Share by State (1980-2020)"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
+Although colored similarly to the previous visualization, it is important to note the difference in magnitude of the swing margin, which ranges from 20 to -20. Based on this visualization, states with consistent swings between red and blue include Pennsylvania, Wisconsin, Michigan, and North Carolina. In contrast, several states can be no longer considered battlegrounds. For example, California and New York have swung Democratic since the late 1980s. Texas has similarly emerged as a Republican stronghold, but appears to have become slightly more competitive in recent elections.
+
+Since Electoral College votes are allocated to candidates by state, state-level analysis is especially important for predictive models. For the last visualization, I calculated the predicted swing margins for the 2024 presidential election. First, I utilized the simplified Electoral Cycle Model of **Y_2024 = 0.75(Y_2020) + 0.25(Y_2016)** to calculate the estimated Democratic and Republican two-party vote shares for 2024. I then subtracted the 2024 Democratic two-party vote share from its 2020 counterpart to determine the swing margin for 2024. Similar to the last graph, positive margins indicate a swing towards the Democratic candidate relative to 2020, while negative margins indicate a swing towards the Republican candidate.
+
+```{r}
+# plot 5: predicted swing for 2024
+pv_2024_states <- d_pv_states |>
+  filter(year == 2020) |>
+  group_by(state) |>
+  mutate(R_pv2p_2024 = 0.75*R_pv2p + 0.25*R_pv2p_lag1, 
+        D_pv2p_2024 = 0.75*D_pv2p + 0.25*D_pv2p_lag1, 
+        swing = D_pv2p_2024 - D_pv2p,
+        region = tolower(state)) |>
+  select(swing, region)
+
+
+pv_2024_states |>
+  left_join(states, by = "region") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = swing), color = "black") +
+  scale_fill_gradient2(high = "dodgerblue2", 
+                       low = "firebrick2", 
+                       mid = "white", 
+                       name = "Swing Margin", 
+                       breaks = c(-1.5, -0.75, 0, 0.75, 1.5), 
+                       limits = c(-1.5, 1.5)) +
+  labs(
+    title = "Predicted Swing in Two-Party National Popular Vote Share by State (2024)"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+
+Based on this data visualization, the model predicts that a plurality of states will swing towards the Republican candidate this November (relative to 2020), including important battleground states such as Arizona, Georgia, and Pennsylvania. However, it is important to note that the swing margins presented by this model are quite small in magnitude – less than 2% in favor of either party. As mentioned earlier, it is therefore unlikely that we can predict future trends in two-party vote share based on historical trends in vote share data alone. I look forward to exploring other factors that influence election outcomes – such as the economy and campaign activities – in the coming weeks. 
