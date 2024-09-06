@@ -7,12 +7,12 @@ categories: []
 tags: []
 ---
 
-##Introduction
+##Introduction##
 In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past elections, looking at changes in "battleground" states over time.
 
 
 
-##Overall Two-Party Vote Share
+##Overall Two-Party Vote Share##
 To begin, I will examine how two-party vote share in the U.S. presidential election has changed over time. The following plot displays the party distribution in the two-party national popular vote for each presidential election from 1948-2020. 
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
@@ -28,7 +28,7 @@ More concisely, this second plot presents the difference in two-party national p
 
 Notably, the win margin appears to decrease over time: the negative slope of the best fit line suggests that presidential elections have become increasingly competitive in general terms of two-party vote share. The 5 presidential elections with the smallest win margins are 1960, 1968, 1976, 2000 and 2016. Looking more closely at the four previous presidential elections, the win margin for two-party vote share appears to steadily decrease from 7.5% in 2008 to 3.8% in 2012 and 2.3% in 2016. In 2020, the win margin was 4.5%, a slightly higher win margin than 2016. However, the `\(R_2\)` of approximately 0.1 for this line of best fit suggests that the relationship between the win margin and year is weak; we cannot predict the win margin in two-party vote share based on numbers from past presidential elections alone.
 
-##State-Level Two-Party Vote Share
+##State-Level Two-Party Vote Share##
 Next, I analyze into historical trends in two-party vote share on the state level. This visualization displays the win margin for the two-party vote share by state. In this visualization, positive win margins indicate a two-party vote share that favors the Democratic candidate, while negative win margins represent a two-party vote share that favors the Republican candidate. The intensity of the color – blue for the Democrat and red for the Republican – represents the magnitude of the margin of victory. 
 
 
@@ -44,7 +44,7 @@ Next, I analyze into historical trends in two-party vote share on the state leve
 
 This visualization reinforces the idea that presidential elections have become increasing competitive. Since the Reagan presidency, it appears that Democratic candidates have gained ground on their Republican counterparts in the two-party vote share, especially in the Rust Belt states. As a result, elections have been more contested. From the 1990s onward, states in the Great Plains and Deep South tend to vote for Republicans, while states in the Northeast, Mid-Atlantic region, and West Coast lean Democratic. This data visualization also offers insight on consistently battleground states, which are colored lighter and/or in white from year to year.
 
-##State-Level Swing Variation in Two-Party Vote Share
+##State-Level Swing Variation in Two-Party Vote Share##
 Diving deeper into battleground states, the following visualization exhibits "swing" in two-party vote share from by state from 1980-2020. The swing margin is determined by subtracting the two-party vote share for the Democratic candidate in a certain election from the Democratic two-party vote share from four years prior. Positive margins indicate a swing towards the Democratic candidate relative to the previous election, while negative margins indicate a swing towards the Republican candidate. Once again, the intensity of the color – blue for the Democrat and red for the Republican – represents the magnitude of the swing in two-party vote share. States that are lighter in color or white exhibit little swing between elections.
 
 
