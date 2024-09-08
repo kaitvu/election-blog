@@ -6,14 +6,14 @@
     <description>Recent content in Election Blog 2024 on Kaitlyn Vu</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Sep 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://kaitvu.github.io/election-blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Blog 1</title>
-      <link>https://kaitvu.github.io/election-blog/post/2024/09/05/blog-1/</link>
-      <pubDate>Thu, 05 Sep 2024 00:00:00 +0000</pubDate>
-      <guid>https://kaitvu.github.io/election-blog/post/2024/09/05/blog-1/</guid>
-      <description>Introduction In this first blog post, I visualize and analyze historical data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of the two-party popular vote share from past election and looks at changes in battleground states over time.&#xA;Overall Two-Party Vote Share To begin, I will examine how two-party vote share in U.S. presidential elections have changed over time.</description>
+      <link>https://kaitvu.github.io/election-blog/post/2024/09/08/blog-1/</link>
+      <pubDate>Sun, 08 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>https://kaitvu.github.io/election-blog/post/2024/09/08/blog-1/</guid>
+      <description>Introduction In this first blog post, I visualize and analyze historical popular vote data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of past two-party popular vote share and looks at changes in battleground states over time.&#xA;Overall Two-Party Vote Share To begin, I will examine how two-party vote share in U.S. presidential elections have changed over time.</description>
     </item>
   </channel>
 </rss>
