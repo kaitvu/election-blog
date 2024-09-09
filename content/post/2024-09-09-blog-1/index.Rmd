@@ -66,6 +66,8 @@ d_pv_margin <- d_pv |>
 
 ggplot(data = d_pv_margin, mapping = aes(x = year, y = margin)) +
   geom_point() +
+  scale_x_continuous(breaks = seq(1948, 2020, 4), 
+                     minor_breaks = NULL) +
   geom_smooth(method = "lm") +
   labs(
     x = "Year", 
@@ -75,8 +77,15 @@ ggplot(data = d_pv_margin, mapping = aes(x = year, y = margin)) +
   ) +
   theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     plot.title = element_text(hjust = 0.5, face = "bold")
   )
+```
+
+```{r, include=FALSE}
+# simple regression info (didn't print out)
+regression <- lm(margin ~ year, data = d_pv_margin)
+summary(regression)$r.squared
 ```
 
 Notably, the win margin appears to decrease over time: the negative slope of the best fit line suggests that presidential elections have generally become more competitive in term of the two-party vote share. The 5 presidential elections with the smallest win margins are 1960, 1968, 1976, 2000 and 2016. Looking more closely at the four previous presidential elections, the win margin for two-party vote share appears to steadily decrease from 7.5% in 2008 to 3.8% in 2012 and 2.3% in 2016. In 2020, the win margin was 4.5%, slightly higher than 2016.

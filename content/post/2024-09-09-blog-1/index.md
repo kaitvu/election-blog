@@ -21,6 +21,8 @@ More concisely, this second plot presents the difference in two-party national p
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/win margin-1.png" width="672" />
 
+
+
 Notably, the win margin appears to decrease over time: the negative slope of the best fit line suggests that presidential elections have generally become more competitive in term of the two-party vote share. The 5 presidential elections with the smallest win margins are 1960, 1968, 1976, 2000 and 2016. Looking more closely at the four previous presidential elections, the win margin for two-party vote share appears to steadily decrease from 7.5% in 2008 to 3.8% in 2012 and 2.3% in 2016. In 2020, the win margin was 4.5%, slightly higher than 2016.
 
 However, the R-squared value of approximately 0.1 for this line of best fit suggests that the linear relationship between the win margin and year is weak and this model is not a strong fit for the data. As such, while there is a negative trend, we should not predict future win margins for two-party vote share based solely on numbers from past presidential elections. 
