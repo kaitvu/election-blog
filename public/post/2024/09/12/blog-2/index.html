@@ -1,26 +1,36 @@
----
-title: "Blog 2"
-author: "Kaitlyn Vu"
-date: "2024-09-12"
-slug: "blog-2"
-categories: []
-tags: []
----
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog 2 | Kaitlyn Vu</title>
+    <link rel="stylesheet" href="/election-blog/css/style.css" />
+    <link rel="stylesheet" href="/election-blog/css/fonts.css" />
+    
+  </head>
 
-## Introduction
-"It's the economy, stupid." Coined by political strategist Jim Carville, the phrase became a hallmark of Bill Clinton's successful election bid against incumbent George H.W. Bush in 1992. Larry Bartels and Christopher Achen note in their 2016 book _Democracy for Realists_ that voters engage in "economic voting," through which economic distress — especially during an election year — harms election outcomes for the incumbent. However, to what extent do Americans truly vote based on the state of the economy? In this blog, I utilize economic factors such as GDP and RDI growth to predict presidential election outcomes and assess the utility of a predictive model based solely on the economy.  
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
 
+<div class="article-meta">
+<h1><span class="title">Blog 2</span></h1>
+<h2 class="author">Kaitlyn Vu</h2>
+<h2 class="date">2024/09/12</h2>
+</div>
 
-
-## Historical Trends with Gross Domestic Product (GDP)
-To start, I analyze the relationship between GDP growth and the incumbent party's national popular vote share from past presidential elections. I utilize GDP growth from Quarter 2 (Q2) of an election year: Q2 is the period of April through June, which provides a stable but recent snapshot of the pre-election economy.  
-
-Notably, the plot on the left includes all the presidential elections from 1948-2020, while the plot on the right excludes 2020. The 2020 contest between President Joe Biden and former President Donald Trump is a significant outlier: unprecedented economic turmoil stemming largely from the COVID-19 pandemic tanked the national economy during that election year.  
-
-<img src="{{< blogdown/postref >}}index_files/figure-html/historical gdp-1.png" width="1152" />
-
-This is a regression table for the relationship between the incumbent party's national popular vote share and Q2 GDP growth for the presidential elections from 1948-2016. 
-
+<main>
+<h2 id="introduction">Introduction</h2>
+<p>&ldquo;It&rsquo;s the economy, stupid.&rdquo; Coined by political strategist Jim Carville, the phrase became a hallmark of Bill Clinton&rsquo;s successful election bid against incumbent George H.W. Bush in 1992. Larry Bartels and Christopher Achen note in their 2016 book <em>Democracy for Realists</em> that voters engage in &ldquo;economic voting,&rdquo; through which economic distress — especially during an election year — harms election outcomes for the incumbent. However, to what extent do Americans truly vote based on the state of the economy? In this blog, I utilize economic factors such as GDP and RDI growth to predict presidential election outcomes and assess the utility of a predictive model based solely on the economy.</p>
+<h2 id="historical-trends-with-gross-domestic-product-gdp">Historical Trends with Gross Domestic Product (GDP)</h2>
+<p>To start, I analyze the relationship between GDP growth and the incumbent party&rsquo;s national popular vote share from past presidential elections. I utilize GDP growth from Quarter 2 (Q2) of an election year: Q2 is the period of April through June, which provides a stable but recent snapshot of the pre-election economy.</p>
+<p>Notably, the plot on the left includes all the presidential elections from 1948-2020, while the plot on the right excludes 2020. The 2020 contest between President Joe Biden and former President Donald Trump is a significant outlier: unprecedented economic turmoil stemming largely from the COVID-19 pandemic tanked the national economy during that election year.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/09/12/blog-2/index_files/figure-html/historical gdp-1.png" width="1152" />
+<p>This is a regression table for the relationship between the incumbent party&rsquo;s national popular vote share and Q2 GDP growth for the presidential elections from 1948-2016.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for Q2 GDP Growth (1948-2016)</caption>
 <tr>
@@ -56,18 +66,12 @@ This is a regression table for the relationship between the incumbent party's na
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.325 / 0.283</td>
 </tr>
-
 </table>
-
-As expected, there is a positive relationship between Q2 GDP growth and the incumbent party's national popular vote in past presidential elections. This correlation strengthens when we exclude the 2020 election: the slope of the line of best fit increases from 0.27 to 0.74. However, the relatively low R-squared values suggest that this relationship isn't particularly strong. R-squared values measure how much variation in the dependent variable (incumbent party's national vote share in this case) is captured by the fitted model's predicted value — offering an ease of interpretability for in-sample fit. However, it is important to note that utilizing in-sample model fit alone can contribute to overconfidence or over-fitting. 
-
-## Historical Trends with Real Disposable Personal Income (RDI)
-Similarly, I follow the same steps to examine the relationship between Q2 RDI growth and the incumbent party's national popular vote share. I include RDI in this blog to engage with more individualistic perceptions of voter behavior: voters may be more attuned to their own economic well-being rather than broader national factors. The left plot includes presidential elections from 1948-2020, while the right plot excludes 2020.
-
-<img src="{{< blogdown/postref >}}index_files/figure-html/historical rdi-1.png" width="1152" />
-
-This is a regression table for the relationship between the incumbent party's national popular vote share and Q2 RDI growth for the presidential elections from 1948-2016. 
-
+<p>As expected, there is a positive relationship between Q2 GDP growth and the incumbent party&rsquo;s national popular vote in past presidential elections. This correlation strengthens when we exclude the 2020 election: the slope of the line of best fit increases from 0.27 to 0.74. However, the relatively low R-squared values suggest that this relationship isn&rsquo;t particularly strong. R-squared values measure how much variation in the dependent variable (incumbent party&rsquo;s national vote share in this case) is captured by the fitted model&rsquo;s predicted value — offering an ease of interpretability for in-sample fit. However, it is important to note that utilizing in-sample model fit alone can contribute to overconfidence or over-fitting.</p>
+<h2 id="historical-trends-with-real-disposable-personal-income-rdi">Historical Trends with Real Disposable Personal Income (RDI)</h2>
+<p>Similarly, I follow the same steps to examine the relationship between Q2 RDI growth and the incumbent party&rsquo;s national popular vote share. I include RDI in this blog to engage with more individualistic perceptions of voter behavior: voters may be more attuned to their own economic well-being rather than broader national factors. The left plot includes presidential elections from 1948-2020, while the right plot excludes 2020.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/09/12/blog-2/index_files/figure-html/historical rdi-1.png" width="1152" />
+<p>This is a regression table for the relationship between the incumbent party&rsquo;s national popular vote share and Q2 RDI growth for the presidential elections from 1948-2016.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for Q2 RDI Growth (1948-2016)</caption>
 <tr>
@@ -103,18 +107,12 @@ This is a regression table for the relationship between the incumbent party's na
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.111 / 0.056</td>
 </tr>
-
 </table>
-
-With RDI, excluding 2020 makes quite a significant difference: the slope of the best fit line jumps from -0.03 to 0.46. Again, there appears to be a positive correlation between Q2 RDI growth and the incumbent party's national popular vote share in past presidential elections. The R-squared values here are lower than those for GDP growth, however, which suggests that the Q2 RDI growth is not a strong predictor of the incumbent party's vote share. 
-
-## Sitting Presidents vs Same-Party Heirs
-Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (12 elections) and elections where a candidate of the incumbent's party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.
-
-<img src="{{< blogdown/postref >}}index_files/figure-html/comparison gdp-1.png" width="1152" />
-
-The associated regression table is below.
-
+<p>With RDI, excluding 2020 makes quite a significant difference: the slope of the best fit line jumps from -0.03 to 0.46. Again, there appears to be a positive correlation between Q2 RDI growth and the incumbent party&rsquo;s national popular vote share in past presidential elections. The R-squared values here are lower than those for GDP growth, however, which suggests that the Q2 RDI growth is not a strong predictor of the incumbent party&rsquo;s vote share.</p>
+<h2 id="sitting-presidents-vs-same-party-heirs">Sitting Presidents vs Same-Party Heirs</h2>
+<p>Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (12 elections) and elections where a candidate of the incumbent&rsquo;s party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/09/12/blog-2/index_files/figure-html/comparison gdp-1.png" width="1152" />
+<p>The associated regression table is below.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Comparison Regression Table for Q2 GDP Growth (1948-2020)</caption>
 <tr>
@@ -165,16 +163,10 @@ The associated regression table is below.
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.343 / 0.277</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.114 / -0.063</td>
 </tr>
-
 </table>
-
-With a slope of 0.87, it seems that there is a stronger correlation between Q2 GDP growth and national popular vote share for sitting presidents running for re-election than same-party heirs (0.29). The R-squared value for the sitting presidents model is also larger (0.34 vs 0.11).
-
-I created the same visualizations for Q2 RDI growth. 
-
-<img src="{{< blogdown/postref >}}index_files/figure-html/comparison rdi-1.png" width="1152" />
-
-
+<p>With a slope of 0.87, it seems that there is a stronger correlation between Q2 GDP growth and national popular vote share for sitting presidents running for re-election than same-party heirs (0.29). The R-squared value for the sitting presidents model is also larger (0.34 vs 0.11).</p>
+<p>I created the same visualizations for Q2 RDI growth.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/09/12/blog-2/index_files/figure-html/comparison rdi-1.png" width="1152" />
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Comparison Regression Table for Q2 RDI Growth (1948-2020)</caption>
 <tr>
@@ -225,23 +217,63 @@ I created the same visualizations for Q2 RDI growth.
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.235 / 0.159</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.206 / 0.047</td>
 </tr>
-
 </table>
+<p>For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.74 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of 0.41. Both models have similar R-squared values of approximately 0.2, which again suggests that Q2 RDI growth isn&rsquo;t a strong predictor of national popular vote share for either sitting presidents running for re-election or same-party heirs.</p>
+<h2 id="predictions-for-2024">Predictions for 2024</h2>
+<p>While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party&rsquo;s candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive around 50% of the national popular vote this November.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Model</th>
+<th style="text-align:right">Fit</th>
+<th style="text-align:right">Lower CI</th>
+<th style="text-align:right">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">GDP</td>
+<td style="text-align:right">51.58</td>
+<td style="text-align:right">41.86</td>
+<td style="text-align:right">61.31</td>
+</tr>
+<tr>
+<td style="text-align:left">Heir GDP</td>
+<td style="text-align:right">49.34</td>
+<td style="text-align:right">40.69</td>
+<td style="text-align:right">57.98</td>
+</tr>
+<tr>
+<td style="text-align:left">RDI</td>
+<td style="text-align:right">50.33</td>
+<td style="text-align:right">38.90</td>
+<td style="text-align:right">61.76</td>
+</tr>
+<tr>
+<td style="text-align:left">Heir RDI</td>
+<td style="text-align:right">51.03</td>
+<td style="text-align:right">42.04</td>
+<td style="text-align:right">60.01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>In very general terms, it seems that the incumbent&rsquo;s party enjoys an advantage when the economy is doing well. Furthermore, the effect of the economy appears to be stronger for sitting presidents running for re-election than same-party heirs.</p>
+<p>However, the low R-squared values of all these simple models suggest that GDP and RDI growth only loosely fit national popular vote data and serve as a poor predictor of future election outcomes. As such, such economic factors alone cannot accurately predict election results and should be considered alongside different variables. The predictive power of the economy varies over time due to factors such as unexpected economic shocks (e.g. COVID-19), other policy concerns, and/or increasing political polarization.</p>
 
-For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.74 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of 0.41. Both models have similar R-squared values of approximately 0.2, which again suggests that Q2 RDI growth isn't a strong predictor of national popular vote share for either sitting presidents running for re-election or same-party heirs. 
+</main>
 
-## Predictions for 2024
-While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive around 50% of the national popular vote this November.
+  <footer>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<script src="//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js" defer></script>
 
+<script src="//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js" defer></script>
 
-|Model    |   Fit| Lower CI| Upper CI|
-|:--------|-----:|--------:|--------:|
-|GDP      | 51.58|    41.86|    61.31|
-|Heir GDP | 49.34|    40.69|    57.98|
-|RDI      | 50.33|    38.90|    61.76|
-|Heir RDI | 51.03|    42.04|    60.01|
+  
+  <hr/>
+  Theme from Yihui Xie 2017 &ndash; 2024.
+  
+  </footer>
+  </body>
+</html>
 
-## Conclusion
-In very general terms, it seems that the incumbent's party enjoys an advantage when the economy is doing well. Furthermore, the effect of the economy appears to be stronger for sitting presidents running for re-election than same-party heirs. 
-
-However, the low R-squared values of all these simple models suggest that GDP and RDI growth only loosely fit national popular vote data and serve as a poor predictor of future election outcomes. As such, such economic factors alone cannot accurately predict election results and should be considered alongside different variables. The predictive power of the economy varies over time due to factors such as unexpected economic shocks (e.g. COVID-19), other policy concerns, and/or increasing political polarization.

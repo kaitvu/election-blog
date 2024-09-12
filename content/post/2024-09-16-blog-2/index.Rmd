@@ -1,8 +1,8 @@
 ---
-title: Blog 2
-author: Kaitlyn Vu
-date: '2024-09-11'
-slug: blog-2
+title: "Blog 2"
+author: "Kaitlyn Vu"
+date: "2024-09-12"
+slug: "blog-2"
 categories: []
 tags: []
 ---
@@ -321,8 +321,7 @@ predictions <- data.frame(
 
 # table 5: 2024 predictions
 knitr::kable(predictions, 
-               col.names = c("Model", "Fit", "Lower CI", "Upper CI"), 
-               caption = "Predictions for National Popular Vote Share with Economic Variables (2024)")
+             col.names = c("Model", "Fit", "Lower CI", "Upper CI"))
 ```
 
 ## Conclusion
