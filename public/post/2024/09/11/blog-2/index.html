@@ -112,7 +112,7 @@
 <h2 id="sitting-presidents-vs-same-party-heirs">Sitting Presidents vs Same-Party Heirs</h2>
 <p>Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (12 elections) and elections where a candidate of the incumbent&rsquo;s party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.</p>
 <img src="https://kaitvu.github.io/election-blog/post/2024/09/11/blog-2/index_files/figure-html/comparison gdp-1.png" width="1152" />
-The associated regression table is below.
+<p>The associated regression table is below.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Comparison Regression Table for Q2 GDP Growth (1948-2020)</caption>
 <tr>
@@ -221,14 +221,43 @@ The associated regression table is below.
 <p>For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.74 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of 0.41. Both models have similar R-squared values of approximately 0.2, which again suggests that Q2 RDI growth isn&rsquo;t a strong predictor of national popular vote share for either sitting presidents running for re-election or same-party heirs.</p>
 <h2 id="predictions-for-2024">Predictions for 2024</h2>
 <p>While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party&rsquo;s candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive around 50% of the national popular vote this November.</p>
-<hr>
-<p>Model      Fit    Lower CI   Upper CI</p>
-<hr>
-<p>GDP      51.58    41.86      61.31</p>
-<p>Heir GDP   49.34    40.69      57.98</p>
-<p>RDI      50.33     38.9      61.76</p>
-<h2 id="heir-rdi---5103----4204------6001">Heir RDI   51.03    42.04      60.01</h2>
-<p>Table: Predictions for National Popular Vote Share with Economic Variables (2024)</p>
+<p>Table: <span id="tab:predictions"></span>Table 1: Predictions for National Popular Vote Share with Economic Variables (2024)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Model</th>
+<th style="text-align:right">Fit</th>
+<th style="text-align:right">Lower CI</th>
+<th style="text-align:right">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">GDP</td>
+<td style="text-align:right">51.58</td>
+<td style="text-align:right">41.86</td>
+<td style="text-align:right">61.31</td>
+</tr>
+<tr>
+<td style="text-align:left">Heir GDP</td>
+<td style="text-align:right">49.34</td>
+<td style="text-align:right">40.69</td>
+<td style="text-align:right">57.98</td>
+</tr>
+<tr>
+<td style="text-align:left">RDI</td>
+<td style="text-align:right">50.33</td>
+<td style="text-align:right">38.90</td>
+<td style="text-align:right">61.76</td>
+</tr>
+<tr>
+<td style="text-align:left">Heir RDI</td>
+<td style="text-align:right">51.03</td>
+<td style="text-align:right">42.04</td>
+<td style="text-align:right">60.01</td>
+</tr>
+</tbody>
+</table>
 <h2 id="conclusion">Conclusion</h2>
 <p>In very general terms, it seems that the incumbent&rsquo;s party enjoys an advantage when the economy is doing well. Furthermore, the effect of the economy appears to be stronger for sitting presidents running for re-election than same-party heirs.</p>
 <p>However, the low R-squared values of all these simple models suggest that GDP and RDI growth only loosely fit national popular vote data and serve as a poor predictor of future election outcomes. As such, such economic factors alone cannot accurately predict election results and should be considered alongside different variables. The predictive power of the economy varies over time due to factors such as unexpected economic shocks (e.g. COVID-19), other policy concerns, and/or increasing political polarization.</p>

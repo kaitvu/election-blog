@@ -112,6 +112,7 @@ With RDI, excluding 2020 makes quite a significant difference: the slope of the 
 Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (12 elections) and elections where a candidate of the incumbent's party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/comparison gdp-1.png" width="1152" />
+
 The associated regression table is below.
 
 <table style="border-collapse:collapse; border:none;">
@@ -173,6 +174,7 @@ I created the same visualizations for Q2 RDI growth.
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/comparison rdi-1.png" width="1152" />
 
+
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Comparison Regression Table for Q2 RDI Growth (1948-2020)</caption>
 <tr>
@@ -232,19 +234,14 @@ For RDI, sitting presidents have historically enjoyed a positive correlation bet
 While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive around 50% of the national popular vote this November.
 
 
-----------------------------------------
-  Model      Fit    Lower CI   Upper CI 
----------- ------- ---------- ----------
-   GDP      51.58    41.86      61.31   
+Table: <span id="tab:predictions"></span>Table 1: Predictions for National Popular Vote Share with Economic Variables (2024)
 
- Heir GDP   49.34    40.69      57.98   
-
-   RDI      50.33     38.9      61.76   
-
- Heir RDI   51.03    42.04      60.01   
-----------------------------------------
-
-Table: Predictions for National Popular Vote Share with Economic Variables (2024)
+|Model    |   Fit| Lower CI| Upper CI|
+|:--------|-----:|--------:|--------:|
+|GDP      | 51.58|    41.86|    61.31|
+|Heir GDP | 49.34|    40.69|    57.98|
+|RDI      | 50.33|    38.90|    61.76|
+|Heir RDI | 51.03|    42.04|    60.01|
 
 ## Conclusion
 In very general terms, it seems that the incumbent's party enjoys an advantage when the economy is doing well. Furthermore, the effect of the economy appears to be stronger for sitting presidents running for re-election than same-party heirs. 
