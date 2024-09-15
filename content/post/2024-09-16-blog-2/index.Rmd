@@ -1,7 +1,7 @@
 ---
 title: "Blog 2"
 author: "Kaitlyn Vu"
-date: "2024-09-12"
+date: "2024-09-15"
 slug: "blog-2"
 categories: []
 tags: []
@@ -43,7 +43,7 @@ d_bea <- read_csv("bea_econ.csv") |>
 ## Historical Trends with Gross Domestic Product (GDP)
 To start, I analyze the relationship between GDP growth and the incumbent party's national popular vote share from past presidential elections. I utilize GDP growth from Quarter 2 (Q2) of an election year: Q2 is the period of April through June, which provides a stable but recent snapshot of the pre-election economy.  
 
-Notably, the plot on the left includes all the presidential elections from 1948-2020, while the plot on the right excludes 2020. The 2020 contest between President Joe Biden and former President Donald Trump is a significant outlier: unprecedented economic turmoil stemming largely from the COVID-19 pandemic tanked the national economy during that election year.  
+Notably, the plot on the left includes all the presidential elections from 1948-2020, while the plot on the right excludes 2020. The 2020 contest between President Joe Biden and former President Donald Trump is a significant outlier: unprecedented economic turmoil stemming largely from the COVID-19 pandemic [tanked](https://www.reuters.com/markets/us/us-election-uncertainty-slowdown-heady-mix-markets-mcgeever-2024-07-03/) the national economy during that election year.  
 
 ```{r historical gdp, fig.width=12, fig.height=6}
 # Q2 GDP (all)
@@ -64,7 +64,7 @@ gdp_plot_1 <- d_inc_econ |>
   geom_vline(xintercept = 0.01, lty = 2) + 
   labs(x = "Second Quarter GDP Growth (%)", 
        y = "Incumbent Party's National Popular Vote Share", 
-       title = "1948-2020 (Y = 51.25 + 0.27 * X)") + 
+       title = "1948-2020 (Y = 51.26 + 0.27 * X)") + 
   theme_bw() + 
   theme(plot.title = element_text(size = 14),
         plot.margin = margin(10, 30, 0, 0))
@@ -96,7 +96,7 @@ gdp_plot_1 + gdp_plot_2 +
                     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")))
 ```
 
-This is a regression table for the relationship between the incumbent party's national popular vote share and Q2 GDP growth for the presidential elections from 1948-2016. 
+This is a regression table for the incumbent party's national popular vote share and Q2 GDP growth for the presidential elections from 1948-2016. 
 
 ```{r historical gdp reg table}
 # table 1: Q2 GDP and national popular vote share
@@ -105,10 +105,10 @@ tab_model(reg_gdp_2, show.se = TRUE,
           dv.labels = "Incumbent Party's National Popular Vote Share")
 ```
 
-As expected, there is a positive relationship between Q2 GDP growth and the incumbent party's national popular vote in past presidential elections. This correlation strengthens when we exclude the 2020 election: the slope of the line of best fit increases from 0.27 to 0.74. However, the relatively low R-squared values suggest that this relationship isn't particularly strong. R-squared values measure how much variation in the dependent variable (incumbent party's national vote share in this case) is captured by the fitted model's predicted value — offering an ease of interpretability for in-sample fit. However, it is important to note that utilizing in-sample model fit alone can contribute to overconfidence or over-fitting. 
+As expected, there is a positive relationship between Q2 GDP growth and the incumbent party's national popular vote in past presidential elections. This correlation strengthens when we exclude the 2020 election: the slope of the line of best fit increases from 0.27 to 0.74. However, the R-squared value of approximately 0.2 for the 1948-2016 plot suggest that this relationship isn't particularly strong. R-squared values measure how much variation in the dependent variable (incumbent party's national vote share in this case) is captured by the fitted model's predicted value — offering an ease of interpretability for in-sample fit. However, it is important to note that utilizing in-sample model fit alone can contribute to overconfidence or over-fitting. 
 
 ## Historical Trends with Real Disposable Personal Income (RDI)
-Similarly, I follow the same steps to examine the relationship between Q2 RDI growth and the incumbent party's national popular vote share. I include RDI in this blog to engage with more individualistic perceptions of voter behavior: voters may be more attuned to their own economic well-being rather than broader national factors. The left plot includes presidential elections from 1948-2020, while the right plot excludes 2020.
+Similarly, I examine the relationship between Q2 RDI growth and the incumbent party's national popular vote share. I include RDI in this blog to engage with more individualistic perceptions of voter behavior like "pocketbook voting": voters may prioritize their own economic well-being over broader national  indicators like GDP. The left plot includes presidential elections from 1948-2020, while the right plot excludes 2020.
 
 ```{r historical rdi, fig.width=12, fig.height=6}
 # Q2 RDI (all)
@@ -161,10 +161,10 @@ tab_model(reg_rdi_2, show.se = TRUE,
           dv.labels = "Incumbent Party's National Popular Vote Share")
 ```
 
-With RDI, excluding 2020 makes quite a significant difference: the slope of the best fit line jumps from -0.03 to 0.46. Again, there appears to be a positive correlation between Q2 RDI growth and the incumbent party's national popular vote share in past presidential elections. The R-squared values here are lower than those for GDP growth, however, which suggests that the Q2 RDI growth is not a strong predictor of the incumbent party's vote share. 
+With RDI, excluding 2020 makes quite a significant difference: the slope of the best fit line jumps from -0.03 to 0.46. Again, there appears to be a positive correlation between Q2 RDI growth and the incumbent party's national popular vote share in past presidential elections. The R-squared values here are lower than those for GDP growth, however, which suggests that the Q2 RDI growth is also not a strong predictor of the incumbent party's national popular vote share. 
 
 ## Sitting Presidents vs Same-Party Heirs
-Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (12 elections) and elections where a candidate of the incumbent's party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.
+Next, I examine whether the effect of the economy is stronger for sitting presidents running for re-election compared to same-party heirs seeking the office. First, I sorted the data into elections where the incumbent was running for re-election (11 elections) and elections where a candidate of the incumbent's party was running (7 elections). The left plot is for sitting presidents, while the right plot is for same-party heirs. Once again, I exclude 2020 from the analysis.
 
 ```{r comparison gdp, fig.width=12, fig.height=6}
 # sitting Q2 GDP (all)
@@ -186,7 +186,7 @@ sitting_plot_gdp <- d_sitting_econ |>
   geom_vline(xintercept = 0.01, lty = 2) + 
   labs(x = "Second Quarter GDP Growth (%)", 
        y = "National Popular Vote Share", 
-       title = "Sitting Presidents (Y = 49.42 + 0.87 * X)") + 
+       title = "Sitting Presidents (Y = 50.43 + 0.85 * X)") + 
   theme_bw() + 
   theme(plot.title = element_text(size = 14), 
         plot.margin = margin(10, 25, 0, 0))
@@ -231,7 +231,7 @@ tab_model(reg_sitting_gdp, reg_heir_gdp, show.se = TRUE,
           dv.labels = c("Sitting Presidents", "Same-Party Heirs"))
 ```
 
-With a slope of 0.87, it seems that there is a stronger correlation between Q2 GDP growth and national popular vote share for sitting presidents running for re-election than same-party heirs (0.29). The R-squared value for the sitting presidents model is also larger (0.34 vs 0.11).
+With a slope of 0.85, it seems that there is a stronger correlation between Q2 GDP growth and national popular vote share for sitting presidents running for re-election than same-party heirs (0.29). The R-squared value for the sitting presidents model is also larger (0.44 vs 0.11), which means that Q2 GDP growth is a much stronger predictor of the national popular vote share for sitting presidents than same-party heirs.
 
 I created the same visualizations for Q2 RDI growth. 
 
@@ -248,7 +248,7 @@ sitting_plot_rdi <- d_sitting_econ |>
   geom_vline(xintercept = 0.01, lty = 2) + 
   labs(x = "Second Quarter RDI Growth (%)", 
        y = "National Popular Vote Share", 
-       title = "Sitting Presidents (Y = 49.27 + 0.74 * X)") + 
+       title = "Sitting Presidents (Y = 50.39 + 0.69 * X)") + 
   theme_bw() + 
   theme(plot.title = element_text(size = 14), 
         plot.margin = margin(10, 25, 0, 0))
@@ -285,10 +285,10 @@ tab_model(reg_sitting_rdi, reg_heir_rdi, show.se = TRUE,
           dv.labels = c("Sitting Presidents", "Same-Party Heirs"))
 ```
 
-For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.74 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of 0.41. Both models have similar R-squared values of approximately 0.2, which again suggests that Q2 RDI growth isn't a strong predictor of national popular vote share for either sitting presidents running for re-election or same-party heirs. 
+For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.69 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of -0.46. Again, the R-squared value for the sitting presidents model is a bit greater (0.28 vs 0.21), which means that Q2 RDI growth is a stronger predictor of the national popular vote share for sitting presidents than same-party heirs. 
 
 ## Predictions for 2024
-While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive around 50% of the national popular vote this November.
+While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive a bit over 50% of the national popular vote this November.
 
 ```{r predictions}
 # Q2 GDP and RDI for 2024
@@ -327,4 +327,4 @@ knitr::kable(predictions,
 ## Conclusion
 In very general terms, it seems that the incumbent's party enjoys an advantage when the economy is doing well. Furthermore, the effect of the economy appears to be stronger for sitting presidents running for re-election than same-party heirs. 
 
-However, the low R-squared values of all these simple models suggest that GDP and RDI growth only loosely fit national popular vote data and serve as a poor predictor of future election outcomes. As such, such economic factors alone cannot accurately predict election results and should be considered alongside different variables. The predictive power of the economy varies over time due to factors such as unexpected economic shocks (e.g. COVID-19), other policy concerns, and/or increasing political polarization.
+However, the relatively low R-squared values of all these simple models suggest that GDP and RDI growth only loosely fit national popular vote data. As such, continuing to add different variables — beyond the economy — to my model can help to increase its predictive performance. The predictive power of the economy can vary over time due to factors such as unexpected economic shocks (e.g. COVID-19), other policy concerns, and/or increasing political polarization.
