@@ -288,7 +288,7 @@ tab_model(reg_sitting_rdi, reg_heir_rdi, show.se = TRUE,
 For RDI, sitting presidents have historically enjoyed a positive correlation between Q2 RDI growth and national popular vote share with a slope of 0.69 for the line of best fit. On the other hand, there appears to be a negative relationship between Q2 RDI growth and national popular vote share for same-party heirs with a slope of -0.46. Again, the R-squared value for the sitting presidents model is a bit greater (0.28 vs 0.21), which means that Q2 RDI growth is a stronger predictor of the national popular vote share for sitting presidents than same-party heirs. 
 
 ## Predictions for 2024
-While such bivariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive a bit over 50% of the national popular vote this November.
+While such univariate models are imperfect, we can still use them to develop predictions for the 2024 election. The following table utilizes the regression models included in this blog to estimate the national popular vote share for the incumbent party's candidate; in this case, Vice President Kamala Harris is a same-party heir so those equations also apply. Based on the table, Harris is predicted to receive a bit over 50% of the national popular vote this November.
 
 ```{r predictions}
 # Q2 GDP and RDI for 2024
