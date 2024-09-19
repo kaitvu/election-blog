@@ -6,8 +6,15 @@
     <description>Recent content in Election Blog 2024 on Kaitlyn Vu</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 18 Sep 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://kaitvu.github.io/election-blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blog 3</title>
+      <link>https://kaitvu.github.io/election-blog/post/2024/09/18/blog-3/</link>
+      <pubDate>Wed, 18 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>https://kaitvu.github.io/election-blog/post/2024/09/18/blog-3/</guid>
+      <description>Introduction Public opinion polling is essential to understanding democratic discourse: polls measure the will of voters and help to promote election integrity. In this blog, I use both national and state-level polling data to predict presidential election outcomes for this November.&#xA;Historical Polling Averages (2016-2024) First, I examine overall trends in election-year polling averages. The following visualization contains three plots: the percentage of average poll approval for both the Republican and Democratic candidates are plotted by date for 2016 (March-November), 2020 (March-November), and 2024 (March-September).</description>
+    </item>
     <item>
       <title>Blog 2</title>
       <link>https://kaitvu.github.io/election-blog/post/2024/09/15/blog-2/</link>
