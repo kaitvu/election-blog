@@ -153,102 +153,102 @@ I then use this regression model to predict Harris' share of the two-party popul
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> Arizona </td>
-   <td style="text-align:right;"> 49.24 </td>
-   <td style="text-align:right;"> 41.87 </td>
-   <td style="text-align:right;"> 56.60 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Arizona </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.24 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 41.87 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 56.60 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> California </td>
-   <td style="text-align:right;"> 63.25 </td>
-   <td style="text-align:right;"> 55.88 </td>
-   <td style="text-align:right;"> 70.62 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> California </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 63.25 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.88 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 70.62 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Florida </td>
-   <td style="text-align:right;"> 47.30 </td>
-   <td style="text-align:right;"> 39.94 </td>
-   <td style="text-align:right;"> 54.67 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Florida </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 47.30 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 39.94 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 54.67 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Georgia </td>
-   <td style="text-align:right;"> 49.89 </td>
-   <td style="text-align:right;"> 42.53 </td>
-   <td style="text-align:right;"> 57.26 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Georgia </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.89 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.53 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.26 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Michigan </td>
-   <td style="text-align:right;"> 50.13 </td>
-   <td style="text-align:right;"> 42.76 </td>
-   <td style="text-align:right;"> 57.50 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Michigan </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.13 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 42.76 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 57.50 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Minnesota </td>
-   <td style="text-align:right;"> 52.63 </td>
-   <td style="text-align:right;"> 45.27 </td>
-   <td style="text-align:right;"> 60.00 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Minnesota </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.63 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 45.27 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 60.00 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Nevada </td>
-   <td style="text-align:right;"> 49.48 </td>
-   <td style="text-align:right;"> 42.12 </td>
-   <td style="text-align:right;"> 56.85 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Nevada </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.48 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.12 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 56.85 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> New Hampshire </td>
-   <td style="text-align:right;"> 53.84 </td>
-   <td style="text-align:right;"> 46.47 </td>
-   <td style="text-align:right;"> 61.21 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> New Hampshire </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 53.84 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.47 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 61.21 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> North Carolina </td>
-   <td style="text-align:right;"> 49.64 </td>
-   <td style="text-align:right;"> 42.27 </td>
-   <td style="text-align:right;"> 57.00 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> North Carolina </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.64 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.27 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.00 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Ohio </td>
-   <td style="text-align:right;"> 44.86 </td>
-   <td style="text-align:right;"> 37.50 </td>
-   <td style="text-align:right;"> 52.23 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Ohio </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 44.86 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 37.50 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 52.23 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Pennsylvania </td>
-   <td style="text-align:right;"> 49.92 </td>
-   <td style="text-align:right;"> 42.55 </td>
-   <td style="text-align:right;"> 57.29 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Pennsylvania </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.92 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.55 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.29 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Texas </td>
-   <td style="text-align:right;"> 46.48 </td>
-   <td style="text-align:right;"> 39.12 </td>
-   <td style="text-align:right;"> 53.85 </td>
-   <td style="text-align:left;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Texas </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 46.48 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 39.12 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 53.85 </td>
+   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Virginia </td>
-   <td style="text-align:right;"> 52.55 </td>
-   <td style="text-align:right;"> 45.18 </td>
-   <td style="text-align:right;"> 59.91 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Virginia </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.55 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 45.18 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 59.91 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Wisconsin </td>
-   <td style="text-align:right;"> 51.30 </td>
-   <td style="text-align:right;"> 43.93 </td>
-   <td style="text-align:right;"> 58.66 </td>
-   <td style="text-align:left;"> Harris </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Wisconsin </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 51.30 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 43.93 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 58.66 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
 </tbody>
 </table>

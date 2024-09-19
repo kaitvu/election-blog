@@ -275,10 +275,12 @@ state_table <- state_2024 |>
 state_table <- state_table |>
   mutate(winner = if_else(mean_prediction>50, "Harris", "Trump"))
 
-# table 4: state sept polling model prediction 
+# table 4: state sept polling model prediction (I used ChatGPT to format this table)
 knitr::kable(state_table, 
              col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
-  kableExtra::kable_styling(full_width = FALSE)
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(state_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(state_table$winner == "Trump"), background = "#FFD1D1")
 ```
 
 The "Winner" column notes the winner of the state based on the predicted two-party popular vote share for Harris. This model therefore predicts that Harris will win 6 of the 15 included states, including the battleground states of Michigan, Minnesota, and Wisconsin. On the other hand, Trump is predicted to win the battleground states of Arizona, Georgia, Nevada, North Carolina, and Pennsylvania. It is important to note that the predicted two-party popular vote share for Harris for the majority of these states is quite close to 50% (e.g. Pennsylvania is 49.92), which suggests a very closely contested race. Perhaps polling closer to the election will offer more precise estimates of this year's presidential election outcomes. 
