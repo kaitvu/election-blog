@@ -12,7 +12,7 @@ tags: []
 <link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 ## Introduction
-Public opinion polling is essential to understanding democratic discourse: polls measure the will of voters and help to promote election integrity. In this blog, I use both national and state-level polling data to predict presidential election outcomes for this November.
+Public opinion polling is essential to understanding democratic discourse: polls measure the will of voters and help to promote election integrity. In this blog, I use both national and state-level polling data to predict election outcomes for the 2024 presidential election.
 
 
 
@@ -23,17 +23,19 @@ First, I examine overall trends in election-year polling averages. The following
 
 In both 2016 and 2020, the Democratic candidate began the year polling higher than the Republican candidate. While the polling gap in 2016 tightened by mid-year, President Biden consistently maintained a polling advantage over former President Trump in 2020.
 
-So far, trends in the polling data for 2024 are fascinating: heading into the summer, Trump narrowly led Biden in a very contested race. The script has clearly flipped since Vice President Harris entered the race — Democrats have surged back in the polls.
+So far, trends in the polling data for 2024 are fascinating: heading into the summer, Trump narrowly led Biden in a contested race with about two percentage points separating the candidates. The script has clearly flipped since Vice President Harris entered the race: average poll approval for the Democratic candidate has largely surged past that of the Republican candidate. For both parties, average poll approval appears to have overall increased over time. 
 
 ## Polling Averages for 2024
 To dive deeper into 2024, I create a plot of the polling averages by date with some potential "game-changers," which are events (e.g. party conventions) that *could* have an effect on voter behavior. The following plot only includes polling data from May to mid-September, since I want to focus on the presidential contest between Harris and Trump. 
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/poll averages 2024-1.png" width="672" />
 
-Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election campaign](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between such events and trends in public opinion. 
+Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election campaign](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between the occurrence of such events and trends in public opinion. 
 
 ## Predicting 2024 National Two-Party Vote Share with Sept. Polling Averages
-To incorporate polling data in a predictive model, I use an ordinary least squares (OLS) regression model to analyze the relationship between national polling data from September of an election year and national two-party popular vote share, specifically for the Democratic candidate. This is a regression table for the Democratic candidate's national popular vote share and national polling in September for the presidential elections from 1948-2020.
+To incorporate polling data in a predictive model for the 2024 election, I use an ordinary least squares (OLS) regression model to analyze the relationship between national polling data from September of an election year and national two-party popular vote share, specifically for the Democratic candidate. In the model, I weighted the September polling data by the number of weeks remaining before the election. This adjustment accounts for the idea that polls taken closer to Election Day tend to be more predictive of voter behavior. 
+
+This is a regression table for the Democratic candidate's national popular vote share and national polling in September for the presidential elections from 1948-2020. 
 
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for National Sept. Polling (1948-2020)</caption>
@@ -50,9 +52,9 @@ To incorporate polling data in a predictive model, I use an ordinary least squar
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">(Intercept)</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">23.39</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">23.14</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">0.88</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">21.66&nbsp;&ndash;&nbsp;25.12</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">21.40&nbsp;&ndash;&nbsp;24.87</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  "><strong>&lt;0.001</strong></td>
 </tr>
 <tr>
@@ -68,7 +70,7 @@ To incorporate polling data in a predictive model, I use an ordinary least squar
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.676 / 0.675</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.678 / 0.677</td>
 </tr>
 
 </table>
@@ -88,19 +90,21 @@ Then, I utilize this model to predict the national two-party vote share for Harr
 <tbody>
   <tr>
    <td style="text-align:right;"> 51.99 </td>
-   <td style="text-align:right;"> 46.66 </td>
-   <td style="text-align:right;"> 57.33 </td>
+   <td style="text-align:right;"> 37.62 </td>
+   <td style="text-align:right;"> 66.36 </td>
   </tr>
 </tbody>
 </table>
 
-This model predicts that Harris will receive about 52% of the national two-party popular vote in November. However, a caveat of this prediction is that it does not include polling data for the entire month of September: there is only polling data available up to the date of this blog's writing.
+This model predicts that Harris will receive about 52% of the national two-party popular vote in November. However, the wide range between the lower and upper bounds (37.62% to 66.36%) suggests that there's a significant amount of uncertainty in this prediction, which may be due to the variance in the underlying polling data. Another caveat of this prediction is that it does not include polling data for the entire month of September: there is only polling data available up to the date of this blog's writing (September 16, 2024).
 
 ## Predicting 2024 State Two-Party Vote Share with Sept. Polling Averages
-I follow a similar series of steps to put together state-level predictions for the Democratic candidate's two-party vote share. First, I create an ordinary least squares (OLS) regression model for the relationship between state polling data from September of an election year and two-party popular vote share on the state level. I sourced state-level two-party popular vote data from the [Federal Election Commission](https://www.fec.gov/resources/cms-content/documents/federalelections2020.pdf) (see Appendix A). This is a regression table for the Democratic candidate's state-level popular vote share and state-level polling in September for the presidential elections from 1972-2020.
+I follow a similar series of steps to put together state-level predictions for the Democratic candidate's two-party vote share. First, I create an ordinary least squares (OLS) regression model for the relationship between state polling data from September of an election year and two-party popular vote share on the state level, and weight the model by weeks left before the election. I also narrow the year range to 2000-2020 to better reflect modern voter demographics, polling methodologies, and partisan alignments. 
+
+This is a regression table for the Democratic candidate's state-level popular vote share and state-level polling in September for the presidential elections from 2000-2020.
 
 <table style="border-collapse:collapse; border:none;">
-<caption style="font-weight: bold; text-align:left;">Regression Table for State Sept. Polling (1972-2020)</caption>
+<caption style="font-weight: bold; text-align:left;">Regression Table for State Sept. Polling (2020-2020)</caption>
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">Democrat's State-Level Popular Vote Share</th>
@@ -114,30 +118,30 @@ I follow a similar series of steps to put together state-level predictions for t
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">(Intercept)</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">&#45;2.41</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">0.37</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">&#45;3.12&nbsp;&ndash;&nbsp;-1.69</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.52</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">0.26</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.02&nbsp;&ndash;&nbsp;2.02</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  "><strong>&lt;0.001</strong></td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">sept poll</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.11</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.09</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">0.01</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.09&nbsp;&ndash;&nbsp;1.12</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">1.08&nbsp;&ndash;&nbsp;1.10</td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  "><strong>&lt;0.001</strong></td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">Observations</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">2816</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">8380</td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.865 / 0.865</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">0.807 / 0.807</td>
 </tr>
 
 </table>
 
-As evident by the high R-squared value, this table suggests that state-level September polling is a strong predictor for the Democrat candidate's two-party popular vote share for that state.
+With an R-squared value of 0.81, this table suggests that state-level September polling is a strong predictor for the Democratic candidate's two-party popular vote share for that state.
 
 I then use this regression model to predict Harris' share of the two-party popular vote on the state-level. Again, this prediction only includes polling data up to mid-September. Furthermore, the data set from FiveThirtyEight only includes polls from 15 states for the 2024 election cycle; it is of note, though, that the [seven key battleground states](https://www.bbc.com/news/articles/c511pyn3xw3o) for this year's election are included. The following table presents the predicted two-party vote share for Harris in 15 states.
 
@@ -153,107 +157,107 @@ I then use this regression model to predict Harris' share of the two-party popul
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Arizona </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.24 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 41.87 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 56.60 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> California </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 63.25 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.88 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 70.62 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Arizona </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.52 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 30.33 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 74.72 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Florida </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 47.30 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 39.94 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 54.67 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> California </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 66.37 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 44.17 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 88.56 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Georgia </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.89 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.53 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.26 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Florida </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.61 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 28.42 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 72.81 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Georgia </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 53.17 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 30.97 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 75.37 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Michigan </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.13 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 42.76 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 57.50 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 53.41 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 31.21 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 75.60 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Minnesota </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.63 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 45.27 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 60.00 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.88 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 33.68 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 78.07 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Nevada </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.48 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.12 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 56.85 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Nevada </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.77 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 30.57 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 74.96 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> New Hampshire </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 53.84 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.47 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 61.21 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 57.07 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 34.87 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 79.27 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> North Carolina </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.64 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.27 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.00 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> North Carolina </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.92 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 30.72 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 75.11 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Ohio </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 44.86 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 37.50 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 52.23 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 48.20 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 26.01 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 70.40 </td>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Pennsylvania </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.92 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 42.55 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 57.29 </td>
-   <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Pennsylvania </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 53.20 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 31.00 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 75.39 </td>
+   <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Texas </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 46.48 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 39.12 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 53.85 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.80 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 27.61 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 72.00 </td>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Virginia </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.55 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 45.18 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 59.91 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.79 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 33.60 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 77.99 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Wisconsin </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 51.30 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 43.93 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 58.66 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 54.56 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 32.36 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 76.75 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
 </tbody>
 </table>
 
-The "Winner" column notes the winner of the state based on the predicted two-party popular vote share for Harris. This model therefore predicts that Harris will win 6 of the 15 included states, including the battleground states of Michigan, Minnesota, and Wisconsin. On the other hand, Trump is predicted to win the battleground states of Arizona, Georgia, Nevada, North Carolina, and Pennsylvania. It is important to note that the predicted two-party popular vote share for Harris for the majority of these states is quite close to 50% (e.g. Pennsylvania is 49.92), which suggests a very closely contested race. Perhaps polling closer to the election will offer more precise estimates of this year's presidential election outcomes. 
+The "Winner" column notes the winner of the state based on the predicted two-party popular vote share for Harris. This model therefore predicts that Harris will win 13 of the 15 states, including all seven key battleground states. That being said, it is important to note the prediction intervals, which indicate relatively high levels of uncertainty. Furthermore, the predicted two-party popular vote share for Harris for the majority of these states is quite close to 50% (e.g. Florida at 50.61%, Arizona at 52.52%), which suggest very closely contested races. Perhaps polling closer to the election will offer more precise estimates of this year's presidential election outcomes. 
 
 ## Conclusion
 As I continue to build my predictive model for the 2024 presidential election, I think that it is important to incorporate the average of the most recent polls as a predictor. In the following weeks, I hope to begin utilizing ensembling to create a predictive model that includes both economic fundamentals (explored in last week's blog) and public opinion polling.
