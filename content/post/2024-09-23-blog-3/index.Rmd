@@ -1,7 +1,7 @@
 ---
-title: Blog 3
+title: Blog 3: Polling
 author: Kaitlyn Vu
-date: '2024-09-18'
+date: '2024-09-22'
 slug: blog-3
 categories: []
 tags: []
@@ -116,32 +116,32 @@ So far, trends in the polling data for 2024 are fascinating: heading into the su
 ## Polling Averages for 2024
 To dive deeper into 2024, I create a plot of the polling averages by date with some potential "game-changers," which are events (e.g. party conventions) that *could* have an effect on voter behavior. The following plot only includes polling data from May to mid-September, since I want to focus on the presidential contest between Harris and Trump. 
 
-```{r poll averages 2024}
+```{r poll averages 2024, fig.width=10}
 # plot 2: polling averages by date with "game changers" 2024
 d_pollav_nat |> 
   filter(year == 2024, 
         as.Date(poll_date) > as.Date("2024-05-01")) |> 
   ggplot(aes(x = poll_date, y = poll_support, color = party)) +
   geom_rect(xmin = as.Date("2024-08-19"), xmax = as.Date("2024-08-22"), ymin = 0, ymax = 48, alpha = 0.1, color = NA, fill = "grey") +
-  annotate("text", x = as.Date("2024-08-20"), y = 48.25, label = "DNC", size = 3) + 
+  annotate("text", x = as.Date("2024-08-20"), y = 48.25, label = "DNC", size = 4) + 
   geom_rect(xmin = as.Date("2024-07-15"), xmax = as.Date("2024-07-18"), ymin = 0, ymax = 44, alpha = 0.1, color = NA, fill = "grey") +
-  annotate("text", x = as.Date("2024-07-16"), y = 44.25, label = "RNC", size = 3) + 
+  annotate("text", x = as.Date("2024-07-16"), y = 44.25, label = "RNC", size = 4) + 
   geom_point(size = 1) + 
   geom_line() + 
   geom_segment(x = as.Date("2024-05-30"), xend = as.Date("2024-05-30"), y = 0, yend = 43, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-05-30"), y = 43.5, label = "Trump \n Indictment", size = 3) +
+  annotate("text", x = as.Date("2024-05-30"), y = 43.5, label = "Trump \n Indictment", size = 4) +
   geom_segment(x = as.Date("2024-06-27"), xend = as.Date("2024-06-27"), y = 0, yend = 43, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-06-27"), y = 43.5, label = "First \n Pres. Debate", size = 3) +
+  annotate("text", x = as.Date("2024-06-27"), y = 43.5, label = "First \n Pres. Debate", size = 4) +
   geom_segment(x = as.Date("2024-07-01"), xend = as.Date("2024-07-01"), y = 0, yend = 45, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-07-01"), y = 45.5, label = "Trump v. US \n Decision", size = 3) +
+  annotate("text", x = as.Date("2024-07-01"), y = 45.5, label = "Trump v. US \n Decision", size = 4) +
   geom_segment(x = as.Date("2024-07-13"), xend = as.Date("2024-07-13"), y = 0, yend = 46, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-07-12"), y = 46.5, label = "Trump Assassination \n Attempt", size = 3) +
+  annotate("text", x = as.Date("2024-07-12"), y = 46.5, label = "Trump Assassination \n Attempt", size = 4) +
   geom_segment(x = as.Date("2024-07-21"), xend = as.Date("2024-07-21"), y = 0, yend = 45, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-07-22"), y = 45.5, label = "Biden \n Drops", size = 3) +
+  annotate("text", x = as.Date("2024-07-22"), y = 45.5, label = "Biden Leaves \n Race", size = 4) +
   geom_segment(x = as.Date("2024-08-05"), xend = as.Date("2024-08-05"), y = 0, yend = 47, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-08-05"), y = 47.5, label = "Harris Offical \n Dem Nominee", size = 3) +
+  annotate("text", x = as.Date("2024-08-05"), y = 47.5, label = "Harris Offically \n Nominated", size = 4) +
   geom_segment(x = as.Date("2024-09-10"), xend = as.Date("2024-09-10"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
-  annotate("text", x = as.Date("2024-09-10"), y = 49, label = "Second \n Pres. Debate", size = 3) +
+  annotate("text", x = as.Date("2024-09-10"), y = 49, label = "Second \n Pres. Debate", size = 4) +
   scale_x_date(date_labels = "%b",
                breaks = seq(as.Date("2024-01-01"), as.Date("2024-12-01"), by = "1 month")) + 
   scale_y_continuous(breaks = seq(39, 49, by = 2)) +
@@ -156,7 +156,7 @@ d_pollav_nat |>
   )
 ```
 
-Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election campaign](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between the occurrence of such events and trends in public opinion. 
+Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election bid](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between the occurrence of such events and trends in public opinion. 
 
 ## Predicting 2024 National Two-Party Vote Share with Sept. Polling Averages
 To incorporate polling data in a predictive model for the 2024 election, I use an ordinary least squares (OLS) regression model to analyze the relationship between national polling data from September of an election year and national two-party popular vote share, specifically for the Democratic candidate. In the model, I weighted the September polling data by the number of weeks remaining before the election. This adjustment accounts for the idea that polls taken closer to Election Day tend to be more predictive of voter behavior. 
