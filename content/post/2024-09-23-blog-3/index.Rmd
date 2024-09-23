@@ -1,8 +1,8 @@
 ---
-title: Blog 3: Polling
-author: Kaitlyn Vu
+title: "Blog 3: Polling"
+author: "Kaitlyn Vu"
 date: '2024-09-22'
-slug: blog-3
+slug: "blog-3"
 categories: []
 tags: []
 ---

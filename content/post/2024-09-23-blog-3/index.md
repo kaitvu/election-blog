@@ -1,8 +1,8 @@
 ---
-title: Blog 3
-author: Kaitlyn Vu
-date: '2024-09-18'
-slug: blog-3
+title: "Blog 3: Polling"
+author: "Kaitlyn Vu"
+date: '2024-09-22'
+slug: "blog-3"
 categories: []
 tags: []
 ---
@@ -28,9 +28,9 @@ So far, trends in the polling data for 2024 are fascinating: heading into the su
 ## Polling Averages for 2024
 To dive deeper into 2024, I create a plot of the polling averages by date with some potential "game-changers," which are events (e.g. party conventions) that *could* have an effect on voter behavior. The following plot only includes polling data from May to mid-September, since I want to focus on the presidential contest between Harris and Trump. 
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/poll averages 2024-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/poll averages 2024-1.png" width="960" />
 
-Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election campaign](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between the occurrence of such events and trends in public opinion. 
+Overall, it seems like polling changed little in the aftermath of these so-called "game-changers" with two notable exceptions: average poll approval diverged after the [first presidential debate](https://www.nytimes.com/2024/06/27/us/politics/biden-debate-democrats.html) in favor of the Republican candidate, and there was a massive spike in average poll approval for the Democratic candidate after Biden [ended his re-election bid](https://apnews.com/article/biden-drops-out-2024-election-ddffde72838370032bdcff946cfc2ce6). However, it is difficult to establish a direct causal relationship between the occurrence of such events and trends in public opinion. 
 
 ## Predicting 2024 National Two-Party Vote Share with Sept. Polling Averages
 To incorporate polling data in a predictive model for the 2024 election, I use an ordinary least squares (OLS) regression model to analyze the relationship between national polling data from September of an election year and national two-party popular vote share, specifically for the Democratic candidate. In the model, I weighted the September polling data by the number of weeks remaining before the election. This adjustment accounts for the idea that polls taken closer to Election Day tend to be more predictive of voter behavior. 

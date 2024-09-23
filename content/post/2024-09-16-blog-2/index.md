@@ -1,5 +1,5 @@
 ---
-title: "Blog 2"
+title: "Blog 2: The Economy"
 author: "Kaitlyn Vu"
 date: "2024-09-15"
 slug: "blog-2"

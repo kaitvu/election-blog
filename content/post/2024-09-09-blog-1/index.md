@@ -1,8 +1,8 @@
 ---
-title: Blog 1
-author: Kaitlyn Vu
+title: "Blog 1: Introduction"
+author: "Kaitlyn Vu"
 date: '2024-09-08'
-slug: blog-1
+slug: "blog-1"
 categories: []
 tags: []
 ---

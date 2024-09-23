@@ -1,8 +1,8 @@
 ---
-title: Blog 2: The Economy
-author: Kaitlyn Vu
+title: "Blog 2: The Economy"
+author: "Kaitlyn Vu"
 date: "2024-09-15"
-slug: blog-2
+slug: "blog-2"
 categories: []
 tags: []
 ---
