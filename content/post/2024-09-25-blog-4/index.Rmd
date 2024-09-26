@@ -297,8 +297,11 @@ actual_map <- d_state_pv |>
   )
 
 # plot 1: expert prediction 2020 maps
-cook_map + sabato_map + actual_map +
-  plot_layout(nrow = 2)
+layout <- " 
+AAABB#
+##CC##"
+
+cook_map + sabato_map + actual_map + plot_layout(design = layout)
 ```
 
 Again, Cook Political Report designates some states as "Toss Ups" while Sabato doesn't. Another interesting note is that Cook Political Report doesn't classify any states as "Lean Republican" for its 2020 predictions.
