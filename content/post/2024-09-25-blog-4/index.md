@@ -79,7 +79,7 @@ Although VPs (both former and sitting) have only competed in six general electio
 
 Based on the following table, 3 VPs have won their elections, while 4 lost. It's important to note here that the 1968 election is counted twice: both Richard Nixon (Dwight D. Eisenhower) and Hubert Humphrey (Lyndon B. Johnson) previously served as VP. The record only gets worse when considering the success of sitting VPs: as Politico [notes](https://www.politico.com/newsletters/politico-nightly/2024/07/22/the-curse-of-the-incumbent-vice-president-00170495), only one incumbent VP — George H.W. Bush in 1988 — who ran to directly succeed the president they served has been elected in the modern era. Therefore, when examining historical incumbency trends alone, Harris faces an uphill battle against the "curse of the incumbent vice president."
 
-## Combined Regression Model (Fundamentals & Polling)
+## Combined Regression Model (Economic Fundamentals & Polling)
 However, incumbency is far from the only factor in election outcomes. In this section, I begin to combine elements from several previous blogs to create a singular predictive model for the national two-party popular vote share. On the topic of incumbency, this model predicts the national two-party popular vote share for the incumbent party candidate — Harris in this case. This ordinary least squares (OLS) regression model has four coefficients: GDP quarterly growth in Q2 of the election year, RDI quarterly growth in Q2 of the election year, the incumbent party candidate's September national polling average (weighted by weeks left before the election), and incumbent (for incumbent president). As noted previously in Blog 2, I exclude 2020 from this analysis because of the economic effects of the COVID-19 pandemic. I also narrow the year range to 2000-2016 to better reflect modern voter demographics, polling methodologies, and partisan alignments. The regression table for this combined model is below. 
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for Combined Model (2000-2016)</caption>
@@ -164,14 +164,14 @@ I then utilize this model to predict Harris' expected vote share for 2024. This 
 ## Assessing Expert Predictions for 2020
 Next, I turn to expert predictions. This blog assesses models for the 2020 election from Cook Political Report and Sabato's Crystal Boll, which are both generally well-respected and reputable. The two models utiltize similar scales to predict election outcomes on the state level: Cook Political Report uses a 7-point scale (Safe Democrat, Likely Democrat, Lean Democrat, Toss Up, Lean Republican, Likely Republican, Safe Republican), and Sabato uses a similar 6-point scale that excludes "Toss Up" and replaces the term "Safe" with "Solid."
 
-# 2020 Maps
+### 2020 Maps
 First, I plotted maps of the 2020 predictions for both models, as well as the election's actual electoral map.
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/expert 2020 maps-1.png" width="960" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/expert 2020 maps-1.png" width="1056" />
 
 Again, Cook Political Report designates some states as "Toss Ups" while Sabato doesn't. Another interesting note is that Cook Political Report doesn't classify any states as "Lean Republican" for its 2020 predictions.
 
-# Mismatches between Cook Political Review & Sabato's Crystal Ball
+### Mismatches between Cook Political Report & Sabato's Crystal Ball
 Let's take a closer look at the differences between the models themselves before turning to the accuracy of their predictions. The following table presents the states where the two models have different predictions.
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -233,7 +233,7 @@ Let's take a closer look at the differences between the models themselves before
 
 There are only 9 differences in state ratings between the models, 6 of which are Cook Political Report's "Toss Up" states. One category (e.g. Lean vs Likely Democrat) separates each of the differences, which calls into question exactly how these models distinguish between each rating. Also, how would Sabato's Crystal Ball look different if it added a "Toss Up" category?
 
-# How Accurate Were These Expert Predictions?
+### How Accurate Were These Expert Predictions?
 Given the models' differences, it's important to analyze their predictive accuracy. To do so, I merge the expert predictions with state-level two-party popular vote data: a prediction is "correct" if it designated a state won by Biden as "Lean/Likely/Solid/Safe Democrat" and/or a state won by Trump as "Lean/Likely/Solid/Safe Republican." For simplicity, all of Cook Political Report's "Toss Up" states are counted as misses.  
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -257,7 +257,7 @@ Given the models' differences, it's important to analyze their predictive accura
 
 According to this table, Cook Political Report and Sabato's Crystal Ball had 2020 accuracy rates of approximately 88% and 98%, respectively. That is high! It's important to once again note that this calculation is slightly biased against Cook Political Report because it counts all the "Toss Up" states as incorrect.
 
-# What Did They Get Wrong?
+### What Did They Get Wrong?
 So, where did the models go astray? 
 
 First, all the states that Cook Political Report got "wrong" were designated as "Toss Up." This table shows the misses for Cook Political Report's 2020 model: "Margin" is the difference between Biden's percent of the state's two-party vote share minus Trump's, and "Winner" indicates the candidate that ultimately won the state.
