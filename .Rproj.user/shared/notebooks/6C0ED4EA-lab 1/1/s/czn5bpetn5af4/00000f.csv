@@ -1,0 +1,3 @@
+"0","d_popvote_wide <- d_popvote_wide |> "
+"0","    mutate(winner = case_when(democrat > republican ~ ""D"","
+"0","                              TRUE ~ ""R""))"

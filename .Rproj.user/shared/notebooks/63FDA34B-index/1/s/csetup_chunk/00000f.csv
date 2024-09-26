@@ -1,0 +1,139 @@
+"0","# hide code"
+"0","knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)"
+"0",""
+"0","# import libraries"
+"0","library(car)"
+"0","library(caret)"
+"0","library(CVXR)"
+"0","library(glmnet)"
+"0","library(tidyverse)"
+"0","library(patchwork)"
+"0","library(knitr)"
+"0","library(sjPlot)"
+"0","library(kableExtra)"
+"0","library(maps)"
+"0","library(readr)"
+"0","library(stringr)"
+"0",""
+"0","# import data"
+"0","d_pollav_nat <- read_csv(""national_polls_1968-2024.csv"")"
+"1","[1mRows: [22m[34m7378[39m [1mColumns: [22m[34m9[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (3): state, party, candidate
+[32mdbl[39m  (4): year, weeks_left, days_left, poll_support
+[33mlgl[39m  (1): before_convention
+[34mdate[39m (1): poll_date
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","fred_econ <- read_csv(""fred_econ.csv"") |>"
+"0","  filter(quarter == 2)"
+"1","[1mRows: [22m[34m387[39m [1mColumns: [22m[34m14[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[32mdbl[39m (14): year, quarter, GDP, GDP_growth_quarterly, RDPI, RDPI_growth_quarterly, CPI, unemployment, sp500_...
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","d_pv <- read_csv(""popvote_1948-2020.csv"")"
+"1","[1mRows: [22m[34m38[39m [1mColumns: [22m[34m9[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (2): party, candidate
+[32mdbl[39m (3): year, pv, pv2p
+[33mlgl[39m (4): winner, incumbent, incumbent_party, prev_admin
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","  d_pv$party[d_pv$party == ""democrat""] <- ""DEM"""
+"0","  d_pv$party[d_pv$party == ""republican""] <- ""REP"""
+"0","d_state_pv <- read_csv(""state_popvote_1948_2020.csv"")"
+"1","[1mRows: [22m[34m959[39m [1mColumns: [22m[34m14[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (1): state
+[32mdbl[39m (13): year, D_pv, R_pv, D_pv2p, R_pv2p, D_pv_lag1, R_pv_lag1, D_pv2p_lag1, R_pv2p_lag1, D_pv_lag2, R_p...
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","  d_state_pv <- d_state_pv |>"
+"0","    select(year, state, D_pv2p)"
+"0","states <- map_data(""state"") |>"
+"0","  rename(state = region)"
+"0","states$state <- str_to_title(states$state)"
+"0",""
+"0","# expert data"
+"0","d_cook <- read_csv(""CPR_EC_Ratings.csv"")[,-1] |> "
+"0","  mutate(rating_numeric = case_when(Rating == ""Solid D"" ~ 1,"
+"0","                                    Rating == ""Likely D"" ~ 2,"
+"0","                                    Rating == ""Lean D"" ~ 3,"
+"0","                                    Rating == ""Toss Up"" ~ 4,"
+"0","                                    Rating == ""Lean R"" ~ 5,"
+"0","                                    Rating == ""Likely R"" ~ 6,"
+"0","                                    Rating == ""Solid R"" ~ 7)) |> "
+"0","  mutate(solid_D = as.numeric(rating_numeric == 1),"
+"0","         likely_D = as.numeric(rating_numeric == 2),"
+"0","         lean_D = as.numeric(rating_numeric == 3),"
+"0","         toss_up = as.numeric(rating_numeric == 4),"
+"0","         lean_R = as.numeric(rating_numeric == 5),"
+"0","         likely_R = as.numeric(rating_numeric == 6),"
+"0","         solid_R = as.numeric(rating_numeric == 7))"
+"1","[38;5;232mNew names:
+[36m•[38;5;232m `` -> `...1`[39m
+"
+"1","[1mRows: [22m[34m474[39m [1mColumns: [22m[34m26[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (15): Office, Abbreviation, Rating, PluralityParty, RepCandidate, RepStatus, DemCandidate, DemStatus, ...
+[32mdbl[39m  (6): ...1, Cycle, RepVotesMajorPercent, DemVotesMajorPercent, ThirdVotesTotalPercent, ElectoralVotes
+[32mnum[39m  (3): RepVotes, DemVotes, PluralityVotes
+[33mlgl[39m  (2): Raw, Incumbent.Party
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","d_sabato <- read_csv(""sabato_crystal_ball_ratings.csv"") |> "
+"0","  rename(state_abb = state)"
+"1","[1mRows: [22m[34m306[39m [1mColumns: [22m[34m3[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (1): state
+[32mdbl[39m (2): year, rating
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","state_abb_xwalk <- d_state_pv |>"
+"0","  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> "
+"0","  select(state, state_abb) |> "
+"0","  distinct() "
+"0","state_abb_xwalk[51,]$state <- ""District of Columbia"""
+"0","state_abb_xwalk[51,]$state_abb <- ""DC"""
+"0",""
+"0","d_sabato <- d_sabato |> "
+"0","  left_join(state_abb_xwalk, by = ""state_abb"") |>"
+"0","  mutate(safe_D = as.numeric(rating == 1),"
+"0","         likely_D = as.numeric(rating == 2),"
+"0","         lean_D = as.numeric(rating == 3),"
+"0","         toss_up = as.numeric(rating == 4),"
+"0","         lean_R = as.numeric(rating == 5),"
+"0","         likely_R = as.numeric(rating == 6),"
+"0","         safe_R = as.numeric(rating == 7)) |>"
+"0","  rename(sabato_rating = rating)"

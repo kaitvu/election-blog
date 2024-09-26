@@ -1,0 +1,8 @@
+"0","pv_win_map <- pv_map |>"
+"0","  mutate(winner = ifelse(R_pv2p > D_pv2p, ""republican"", ""democrat""))"
+"0",""
+"0","pv_win_map |>"
+"0","  ggplot(aes(long, lat, group = group)) +"
+"0","  geom_polygon(aes(fill = winner)) + "
+"0","  scale_fill_manual(values = c(""dodgerblue4"", ""firebrick"")) +"
+"0","  theme_void()"

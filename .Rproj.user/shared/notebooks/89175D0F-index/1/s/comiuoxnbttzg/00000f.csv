@@ -1,0 +1,4 @@
+"0","# table 4: sitting vs heir rdi"
+"0","tab_model(reg_sitting_rdi, reg_heir_rdi, show.se = TRUE, "
+"0","          title = ""Comparison Regression Table for Q2 RDI Growth (1948-2020)"", "
+"0","          dv.labels = c(""Sitting Presidents"", ""Same-Party Heirs""))"

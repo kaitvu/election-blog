@@ -1,0 +1,3 @@
+"0","d_popvote |> "
+"0","  filter(year == 2020) |> "
+"0","  select(party, candidate, pv2p)"

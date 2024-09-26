@@ -1,0 +1,13 @@
+"0","d_popvote <- read_csv(""popvote_1948-2020.csv"")"
+"1","[1mRows: [22m[34m38[39m [1mColumns: [22m[34m9[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m─────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (2): party, candidate
+[32mdbl[39m (3): year, pv, pv2p
+[33mlgl[39m (4): winner, incumbent, incumbent_party, prev_admin
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"

@@ -1,0 +1,4 @@
+"0","modelsummary(list(reg_gdp, reg_gdp_2), stars = TRUE)"
+"2","Error in modelsummary(list(reg_gdp, reg_gdp_2), stars = TRUE) : 
+  could not find function ""modelsummary""
+"

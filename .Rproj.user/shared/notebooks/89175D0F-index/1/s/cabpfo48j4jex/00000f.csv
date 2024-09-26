@@ -1,0 +1,4 @@
+"0","# table 3: sitting vs heir gdp"
+"0","tab_model(reg_sitting_gdp, reg_heir_gdp, show.se = TRUE, "
+"0","          title = ""Comparison Regression Table for Q2 GDP Growth (1948-2020)"", "
+"0","          dv.labels = c(""Sitting Presidents"", ""Same-Party Heirs""))"

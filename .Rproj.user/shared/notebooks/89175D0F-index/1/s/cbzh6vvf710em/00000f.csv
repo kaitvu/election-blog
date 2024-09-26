@@ -1,0 +1,4 @@
+"0","# table 1: Q2 GDP and national popular vote share"
+"0","tab_model(reg_gdp_2, show.se = TRUE, "
+"0","          title = ""Regression Table for Q2 GDP Growth (1948-2016)"", "
+"0","          dv.labels = ""Incumbent Party's National Popular Vote Share"")"

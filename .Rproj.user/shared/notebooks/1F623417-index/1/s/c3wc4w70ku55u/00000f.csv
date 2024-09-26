@@ -1,0 +1,6 @@
+"0","regression <- lm(margin ~ year, data = d_pv_margin)"
+"0","summary(regression)$r.squared"
+"1","[1]"
+"1"," 0.1085371"
+"1","
+"

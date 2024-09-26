@@ -1,0 +1,36 @@
+"0","# hide code"
+"0","knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)"
+"0",""
+"0","# import libraries"
+"0","library(tidyverse)"
+"0","library(ggplot2)"
+"0","library(maps)"
+"0","library(blogdown)"
+"0",""
+"0","# import data"
+"0","d_pv <- read_csv(""popvote_1948-2020.csv"")"
+"1","[1mRows: [22m[34m38[39m [1mColumns: [22m[34m9[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m───────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (2): party, candidate
+[32mdbl[39m (3): year, pv, pv2p
+[33mlgl[39m (4): winner, incumbent, incumbent_party, prev_admin
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","states <- map_data(""state"")"
+"0","d_pv_states <- read_csv(""clean_wide_state_2pv_1948_2020.csv"")"
+"1","[1mRows: [22m[34m959[39m [1mColumns: [22m[34m14[39m
+"
+"1","[36m──[39m [1mColumn specification[22m [36m───────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (1): state
+[32mdbl[39m (13): year, D_pv, R_pv, D_pv2p, R_pv2p, D_pv_lag1, R_pv_lag1, D_pv2p_lag1, ...
+"
+"1","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"

@@ -1,0 +1,442 @@
+---
+title: "Blog 4: Incumbency & Expert Predictions"
+author: "Kaitlyn Vu"
+date: '2024-09-25'
+slug: blog-4
+categories: []
+tags: []
+---
+
+## Introduction
+Whether it's at the party or candidate level, nearly every forecasting model includes some measure of incumbency. Incumbent politicians are often understood to have an "advantage" over their challengers: they can harness the "bully pulpit" to command media attention and shape public opinion, get a head start on campaigning, and utilize the powers of their offices (e.g., control spending) to gain constituent favor. However, how does this so-called advantage fare in the face of an increasingly polarized electorate, questions of blame attribution, and incumbency fatigue? In this blog, I aim to incorporate and assess the value of incumbency in my predictive model for the 2024 presidential election. In addition, I also explore expert models for the 2020 presidential election — the Cook Political Report and Larry Sabato's Crystal Ball specifically — to determine the accuracy of such predictions. 
+
+```{r setup, include=FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+
+# import libraries
+library(car)
+library(caret)
+library(CVXR)
+library(glmnet)
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(sjPlot)
+library(kableExtra)
+library(maps)
+library(readr)
+library(stringr)
+
+# import data
+d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
+fred_econ <- read_csv("fred_econ.csv") |>
+  filter(quarter == 2)
+d_pv <- read_csv("popvote_1948-2020.csv")
+  d_pv$party[d_pv$party == "democrat"] <- "DEM"
+  d_pv$party[d_pv$party == "republican"] <- "REP"
+d_state_pv <- read_csv("state_popvote_1948_2020.csv")
+  d_state_pv <- d_state_pv |>
+    select(year, state, D_pv2p)
+states <- map_data("state") |>
+  rename(state = region)
+states$state <- str_to_title(states$state)
+
+# expert data
+d_cook <- read_csv("CPR_EC_Ratings.csv")[,-1] |> 
+  mutate(rating_numeric = case_when(Rating == "Solid D" ~ 1,
+                                    Rating == "Likely D" ~ 2,
+                                    Rating == "Lean D" ~ 3,
+                                    Rating == "Toss Up" ~ 4,
+                                    Rating == "Lean R" ~ 5,
+                                    Rating == "Likely R" ~ 6,
+                                    Rating == "Solid R" ~ 7)) |> 
+  mutate(solid_D = as.numeric(rating_numeric == 1),
+         likely_D = as.numeric(rating_numeric == 2),
+         lean_D = as.numeric(rating_numeric == 3),
+         toss_up = as.numeric(rating_numeric == 4),
+         lean_R = as.numeric(rating_numeric == 5),
+         likely_R = as.numeric(rating_numeric == 6),
+         solid_R = as.numeric(rating_numeric == 7))
+
+d_sabato <- read_csv("sabato_crystal_ball_ratings.csv") |> 
+  rename(state_abb = state)
+
+state_abb_xwalk <- d_state_pv |>
+  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> 
+  select(state, state_abb) |> 
+  distinct() 
+state_abb_xwalk[51,]$state <- "District of Columbia"
+state_abb_xwalk[51,]$state_abb <- "DC"
+
+d_sabato <- d_sabato |> 
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  mutate(safe_D = as.numeric(rating == 1),
+         likely_D = as.numeric(rating == 2),
+         lean_D = as.numeric(rating == 3),
+         toss_up = as.numeric(rating == 4),
+         lean_R = as.numeric(rating == 5),
+         likely_R = as.numeric(rating == 6),
+         safe_R = as.numeric(rating == 7)) |>
+  rename(sabato_rating = rating)
+```
+
+## Descriptive Tables of Incumbent Advantage
+I'll begin with incumbency, especially as it relates to the upcoming election The 2024 race presents an interesting, unprecedented question for forecasters: can we truly classify either former President Trump or Vice President Harris as an incumbent? For this blog, I'll focus on Harris' claims to incumbency: she is running as a candidate of the incumbent party as well as a vice president (VP). 
+
+This first table displays statistics for the success of past incumbent party candidates. "TRUE" indicates that the incumbent party was re-elected, while "FALSE" indicates that the incumbent party candidate lost the election. Out of 18 elections, the incumbent party has only won 8 contests (44%) — less than half.
+
+```{r incumbent party table}
+# table 1: incumbent party descriptive
+incumbent_party_table <- d_pv |> 
+  filter(winner) |> 
+  select(year, win_party = party, win_cand = candidate) |> 
+  mutate(win_party_last = lag(win_party, order_by = year),
+         win_cand_last = lag(win_cand, order_by = year)) |> 
+  mutate(reelect_party = win_party_last == win_party) |> 
+  filter(year > 1948 & year < 2024) |> 
+  group_by(reelect_party) |> 
+  summarize(N = n()) |> 
+  mutate(Percent = round(N/sum(N) * 100, 2))
+
+knitr::kable(incumbent_party_table, 
+             col.names = c("Incumbent Party Re-Elected", "Number of Elections", "Percentage")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+Although VPs (both former and sitting) have only competed in six general elections in the post-war era, looking at their past success may shed some light on Harris' bid. 
+
+```{r vp table}
+# table 2: former vp descriptive
+vp_table <- d_pv |> 
+  filter(year %in% c(1960, 1968, 1984, 1988, 2000, 2020)) |>
+  mutate(vp = if_else(candidate %in% c("Nixon, Richard M.", 
+                                       "Humphrey, Hubert", 
+                                       "Mondale, Walter", 
+                                       "Bush, George H.W.", 
+                                       "Gore, Al", 
+                                       "Biden, Joseph R."), 1, 0)) |>
+  filter(vp == 1) |>
+  group_by(winner) |> 
+  summarise(n = n()) |> 
+  mutate(percent = round((n / sum(n)) * 100, 2)) 
+
+knitr::kable(vp_table, 
+             col.names = c("VP Elected", "Number of Elections", "Percentage")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+Based on the following table, 3 VPs have won their elections, while 4 lost. It's important to note here that the 1968 election is counted twice: both Richard Nixon (Dwight D. Eisenhower) and Hubert Humphrey (Lyndon B. Johnson) previously served as VP. The record only gets worse when considering the success of sitting VPs: as Politico [notes](https://www.politico.com/newsletters/politico-nightly/2024/07/22/the-curse-of-the-incumbent-vice-president-00170495), only one incumbent VP — George H.W. Bush in 1988 — who ran to directly succeed the president they served has been elected in the modern era. Therefore, when examining historical incumbency trends alone, Harris faces an uphill battle against the "curse of the incumbent vice president."
+
+## Combined Regression Model (Fundamentals & Polling)
+However, incumbency is far from the only factor in election outcomes. In this section, I begin to combine elements from several previous blogs to create a singular predictive model for the national two-party popular vote share. On the topic of incumbency, this model predicts the national two-party popular vote share for the incumbent party candidate — Harris in this case. This ordinary least squares (OLS) regression model has four coefficients: GDP quarterly growth in Q2 of the election year, RDI quarterly growth in Q2 of the election year, the incumbent party candidate's September national polling average (weighted by weeks left before the election), and incumbent (for incumbent president). As noted previously in Blog 2, I exclude 2020 from this analysis because of the economic effects of the COVID-19 pandemic. I also narrow the year range to 2000-2016 to better reflect modern voter demographics, polling methodologies, and partisan alignments. The regression table for this combined model is below. 
+```{r combined regression model}
+# sept poll data
+poll <- d_pollav_nat |>
+  select(year, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 9) |>
+  group_by(year, party) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2)) |>
+  left_join(d_pv, by = c("year", "party")) |>
+  select(year, party, sept_poll)
+
+# train combined fundamentals-polling model
+train <- d_pv |> 
+  left_join(fred_econ, by = "year") |> 
+  filter(year >= 1968, 
+         incumbent_party) |>
+  mutate(incumbent = as.numeric(incumbent)) |>
+  left_join(poll, by = c("year", "party")) 
+
+# table 3: combined regression model
+combined <- lm(pv2p ~ GDP_growth_quarterly + RDPI_growth_quarterly + sept_poll + incumbent, 
+                   data = subset(train, year < 2020))
+
+tab_model(combined, show.se = TRUE, 
+          title = "Regression Table for Combined Model (2000-2016)", 
+          dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
+```
+
+Based on this table, Q2 GDP quarterly growth and average national September polling are relatively strong predictors of the national two-party popular vote share for the incumbent party candidate. On the other hand, Q2 RDI quarterly growth is a marginal predictor but lacks strong statistical significance. Incumbency status has no significant effect on the vote share. With R-squared values over 0.8, the model overall seems to be a good fit for the incumbent party candidate's national two-party popular vote share.
+
+I then utilize this model to predict Harris' expected vote share for 2024. This combined model of economic fundamentals and September national polling predicts that Harris will win approximately 53.4% of the national two-party popular vote, which is slightly higher than Biden's 51.3% from 2020.
+
+```{r combined model prediction}
+# econ 2024 data
+econ_24 <- fred_econ |> 
+  filter(year == 2024) |> 
+  select(year, GDP_growth_quarterly, RDPI_growth_quarterly)
+
+# polling 2024 data
+poll_24 <- d_pollav_nat |>
+  filter(month(poll_date) == 9, 
+         year == 2024, 
+         party == "DEM") |>
+  group_by(year) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2))
+  
+pred_data <- left_join(econ_24, poll_24, by = "year") |>
+  mutate(incumbent = 0)
+
+# 2024 prediction
+combined_pred <- predict(combined, pred_data, interval = "prediction")
+combined_pred <- round(combined_pred, 2)
+ 
+# table 4: combined model prediction
+knitr::kable(combined_pred, 
+             col.names = c("Prediction", "Lower Bound", "Upper Bound")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+## Assessing Expert Predictions for 2020
+Next, I turn to expert predictions. This blog assesses models for the 2020 election from Cook Political Report and Sabato's Crystal Boll, which are both generally well-respected and reputable. The two models utiltize similar scales to predict election outcomes on the state level: Cook Political Report uses a 7-point scale (Safe Democrat, Likely Democrat, Lean Democrat, Toss Up, Lean Republican, Likely Republican, Safe Republican), and Sabato uses a similar 6-point scale that excludes "Toss Up" and replaces the term "Safe" with "Solid."
+
+# 2020 Maps
+First, I plotted maps of the 2020 predictions for both models, as well as the election's actual electoral map.
+
+```{r expert 2020 maps, fig.width=10, fig.height=6}
+# sabato 2020 map
+d_sabato_2020 <- d_sabato |> 
+  filter(year == 2020) |>
+  mutate(sabato_text_rating = factor(sabato_rating, levels = 1:7, 
+                              labels = c("Safe Democrat", 
+                                         "Likely Democrat", 
+                                         "Lean Democrat", 
+                                         "Toss Up", 
+                                         "Lean Republican", 
+                                         "Likely Republican", 
+                                         "Safe Republican"))) |>
+  select(state, sabato_rating, sabato_text_rating)
+
+sabato_map <- d_sabato_2020 |>
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = sabato_text_rating), color = "white") +
+  scale_fill_manual(values = c(
+    "Safe Democrat" = "dodgerblue4", 
+    "Likely Democrat" = "#6699FF", 
+    "Lean Democrat" = "#99CCFF",
+    "Lean Republican" = "#FF9999",
+    "Likely Republican" = "#FF6666",
+    "Safe Republican" = "firebrick3"),
+    labels = c("Safe Democrat", 
+               "Likely Democrat", 
+               "Lean Democrat", 
+               "Lean Republican", 
+               "Likely Republican", 
+               "Safe Republican")) +
+  labs(
+    title = "Sabato's Crystal Ball",
+    fill = "Rating"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+  )
+
+# cook political 2020 map
+d_cook_2020 <- d_cook |>
+  filter(Cycle == 2020) |>
+  mutate(cook_text_rating = factor(rating_numeric, levels = 1:7, 
+                              labels = c("Solid Democrat", 
+                              "Likely Democrat", 
+                              "Lean Democrat", 
+                              "Toss Up", 
+                              "Lean Republican", 
+                              "Likely Republican", 
+                              "Solid Republican"))) |>
+  rename(state = State, 
+         cook_rating = rating_numeric) |>
+  select(cook_text_rating, state, cook_rating)
+
+cook_map <- d_cook_2020 |>
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = cook_text_rating), color = "white") +
+  scale_fill_manual(values = c(
+    "Solid Democrat" = "dodgerblue4", 
+    "Likely Democrat" = "#6699FF", 
+    "Lean Democrat" = "#99CCFF",
+    "Toss Up" = "#CCCCCC",
+    "Likely Republican" = "#FF6666",
+    "Solid Republican" = "firebrick3"),
+    labels = c("Solid Democrat", 
+               "Likely Democrat", 
+               "Lean Democrat", 
+               "Toss Up", 
+               "Likely Republican", 
+               "Solid Republican")) +
+  labs(
+    title = "Cook Political Report",
+    fill = "Rating"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+  )
+
+# actual 2024 map
+actual_map <- d_state_pv |>
+  filter(year == 2020) |>
+  mutate(R_pv2p = 100-D_pv2p, 
+        winner = ifelse(R_pv2p > D_pv2p, "Republican", "Democrat")) |>
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = winner), color = "white") +
+  scale_fill_manual(values = c(
+    "Democrat" = "dodgerblue4", 
+    "Republican" = "firebrick3"
+  )) +
+  labs(
+    title = "Actual 2020 Map",
+    fill = "Winner"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+  )
+
+# plot 1: expert prediction 2020 maps
+cook_map + sabato_map + actual_map + plot_layout(nrow = 2)
+```
+
+Again, Cook Political Report designates some states as "Toss Ups" while Sabato doesn't. Another interesting note is that Cook Political Report doesn't classify any states as "Lean Republican" for its 2020 predictions.
+
+# Mismatches between Cook Political Review & Sabato's Crystal Ball
+Let's take a closer look at the differences between the models themselves before turning to the accuracy of their predictions. The following table presents the states where the two models have different predictions.
+
+```{r expert mismatch table}
+# expert prediction data set
+d_expert <- d_cook_2020 |>
+  left_join(d_sabato_2020, by = "state") |> 
+  mutate(rating_match = as.numeric(cook_rating == sabato_rating))
+
+# table 5: expert mismatch table
+mismatch_table <- d_expert[d_expert$state %in% c(d_expert$state[d_expert$rating_match == 0]),] |>
+  select(state, cook_text_rating, sabato_text_rating) 
+
+color_palette <- c("Solid Democrat" = "dodgerblue4", 
+                   "Likely Democrat" = "#6699FF", 
+                   "Lean Democrat" = "#99CCFF",
+                   "Toss Up" = "#CCCCCC",
+                   "Lean Republican" = "#FF9999",
+                   "Likely Republican" = "#FF6666",
+                   "Solid Republican" = "firebrick3", 
+                   "Democrat" = "dodgerblue4", 
+                   "Republican" = "firebrick3")
+
+knitr::kable(mismatch_table, 
+             col.names = c("State", "Cook Political Report", "Sabato's Crystal Ball")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  column_spec(2, 
+              background = color_palette[mismatch_table$cook_text_rating], 
+              color = "white") |>
+  column_spec(3, 
+              background = color_palette[mismatch_table$sabato_text_rating], 
+              color = "white")
+```
+
+There are only 9 differences in state ratings between the models, 6 of which are Cook Political Report's "Toss Up" states. One category (e.g. Lean vs Likely Democrat) separates each of the differences, which calls into question exactly how these models distinguish between each rating. Also, how would Sabato's Crystal Ball look different if it added a "Toss Up" category?
+
+# How Accurate Were These Expert Predictions?
+Given the models' differences, it's important to analyze their predictive accuracy. To do so, I merge the expert predictions with state-level two-party popular vote data: a prediction is "correct" if it designated a state won by Biden as "Lean/Likely/Solid/Safe Democrat" and/or a state won by Trump as "Lean/Likely/Solid/Safe Republican." For simplicity, all of Cook Political Report's "Toss Up" states are counted as misses.  
+
+```{r expert correct table}
+# merge with state pv data
+d_state_pv_2020 <- d_state_pv |> 
+  filter(year == 2020) |> 
+  mutate(R_pv2p = 100-D_pv2p) |>
+  select(state, year, R_pv2p, D_pv2p) |> 
+  mutate(margin = D_pv2p - R_pv2p, 
+         winner = ifelse(D_pv2p > R_pv2p, "D", "R"))
+d_state_pv_2020[d_state_pv_2020$state == "District Of Columbia",]$state <- "District of Columbia"
+
+d_expert <- d_expert |>
+  left_join(d_state_pv_2020, by = "state") |>
+  mutate(cook_correct = as.numeric((winner == "D" & cook_rating < 4) | 
+                                   (winner == "R" & cook_rating > 4)),
+         sabato_correct = as.numeric((winner == "D" & sabato_rating < 4) | 
+                                     (winner == "R" & sabato_rating > 4))) |>
+  drop_na()
+
+# table 6: expert correct table
+correct_table <- d_expert |>
+  select(cook_correct, sabato_correct) |> 
+  colMeans()
+
+correct_table <- as.data.frame(t(correct_table))
+correct_table <- correct_table |>
+  pivot_longer(cols = everything(), 
+               names_to = "Model", 
+               values_to = "Percent Correct") |>
+  mutate(Model = recode(Model, 
+                        cook_correct = "Cook Political Report", 
+                        sabato_correct = "Sabato's Crystal Ball"), 
+         `Percent Correct` = round(`Percent Correct`*100,2))
+
+knitr::kable(correct_table, 
+             col.names = c("Model", "Percent Correct")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+  
+```
+
+According to this table, Cook Political Report and Sabato's Crystal Ball had 2020 accuracy rates of approximately 88% and 98%, respectively. That is high! It's important to once again note that this calculation is slightly biased against Cook Political Report because it counts all the "Toss Up" states as incorrect.
+
+# What Did They Get Wrong?
+So, where did the models go astray? 
+
+First, all the states that Cook Political Report got "wrong" were designated as "Toss Up." This table shows the misses for Cook Political Report's 2020 model: "Margin" is the difference between Biden's percent of the state's two-party vote share minus Trump's, and "Winner" indicates the candidate that ultimately won the state.
+
+```{r cook incorrect table}
+# table 7: cook incorrect table
+cook_wrong <- d_expert[d_expert$cook_correct == 0,]
+cook_wrong <- as.data.frame(cook_wrong)
+cook_wrong <- cook_wrong |>
+  select(state, cook_text_rating, margin, winner) |>
+  mutate(margin = round(margin, 2), 
+         winner = recode(winner,
+                         "R" = "Republican", 
+                         "D" = "Democrat"))
+
+knitr::kable(cook_wrong, 
+             col.names = c("State", "Rating", "Margin", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  column_spec(2, 
+              background = color_palette[cook_wrong$cook_text_rating], 
+              color = "white") |>
+  column_spec(4, 
+              background = color_palette[cook_wrong$winner], 
+              color = "white")
+```
+
+Given the close win margin in Georgia and North Carolina, we can give Cook Political Report some grace for classifying those two states as "Toss Up." However, the win margin in the remaining 4 states is relatively high — Florida, Iowa, Ohio, and Texas are all better classified as Lean/Likely Republican. 
+
+I do the same for Sabato's Crystal Ball.
+```{r sabato incorrect table}
+# sabato incorrect table
+sabato_wrong <- d_expert[d_expert$sabato_correct == 0,]
+sabato_wrong <- as.data.frame(sabato_wrong)
+sabato_wrong <- sabato_wrong |>
+  select(state, sabato_text_rating, margin, winner) |>
+  mutate(margin = round(margin, 2), 
+         winner = recode(winner,
+                         "R" = "Republican", 
+                         "D" = "Democrat"))
+
+knitr::kable(sabato_wrong, 
+             col.names = c("State", "Rating", "Margin", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  column_spec(2, 
+              background = color_palette[sabato_wrong$sabato_text_rating], 
+              color = "white") |>
+  column_spec(4, 
+              background = color_palette[sabato_wrong$winner], 
+              color = "white")
+```
+
+Sabato only predicted one state incorrectly: North Carolina. We [know now](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-north-carolina.html) that North Carolina was an extremely close race, so perhaps this model would have been better off calling the state as a "Toss Up."
+
+# Conclusion
+Thus, incumbency and expert predictions are both interesting factors to look at when considering election outcomes. In more ways than one, we're still grappling with questions about both topics for the 2024 race. Do we think that either candidate has an "incumbent advantage?" If so, how influential are the effects of their incumbency? On another note, how predictive will expert models be for this year? Interestingly, the state predictions from [Cook Political Report](https://www.cookpolitical.com/ratings/presidential-race-ratings) and [Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/2024-president/) look awfully similar for 2024.
+
+Only time will tell, and I'm excited to continue building my predictive model as we get closer to November 5. 
