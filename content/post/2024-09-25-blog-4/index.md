@@ -53,7 +53,7 @@ This first table displays statistics for the success of past incumbent party can
 </tbody>
 </table>
 
-Although VPs (both former and sitting) have only competed in six general elections in the post-war era, looking at their past success may shed some light on Harris' bid. 
+Although VPs (both former and sitting) have only competed in six general elections since the 1960s, looking at their past success may shed some light on Harris' bid. 
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
@@ -67,17 +67,17 @@ Although VPs (both former and sitting) have only competed in six general electio
   <tr>
    <td style="text-align:left;"> FALSE </td>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 57.14 </td>
+   <td style="text-align:right;"> 50 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> TRUE </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 42.86 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 50 </td>
   </tr>
 </tbody>
 </table>
 
-Based on the following table, 3 VPs have won their elections, while 4 lost. It's important to note here that the 1968 election is counted twice: both Richard Nixon (Dwight D. Eisenhower) and Hubert Humphrey (Lyndon B. Johnson) previously served as VP. The record only gets worse when considering the success of sitting VPs: as Politico [notes](https://www.politico.com/newsletters/politico-nightly/2024/07/22/the-curse-of-the-incumbent-vice-president-00170495), only one incumbent VP — George H.W. Bush in 1988 — who ran to directly succeed the president they served has been elected in the modern era. Therefore, when examining historical incumbency trends alone, Harris faces an uphill battle against the "curse of the incumbent vice president."
+Based on the following table, 5 VPs have won their elections, while 5 lost. It's important to note here that the 1968 election is counted twice: both Richard Nixon (Dwight D. Eisenhower) and Hubert Humphrey (Lyndon B. Johnson) previously served as VP. The record only gets worse when considering the success of sitting VPs: as Politico [notes](https://www.politico.com/newsletters/politico-nightly/2024/07/22/the-curse-of-the-incumbent-vice-president-00170495), only one incumbent VP — George H.W. Bush in 1988 — who ran to directly succeed the president they served has been elected in the modern era. Therefore, when examining historical incumbency trends alone, Harris faces an uphill battle against the "curse of the incumbent vice president."
 
 ## Combined Regression Model (Economic Fundamentals & Polling)
 However, incumbency is far from the only factor in election outcomes. In this section, I begin to combine elements from several previous blogs to create a singular predictive model for the national two-party popular vote share. On the topic of incumbency, this model predicts the national two-party popular vote share for the incumbent party candidate — Harris in this case. This ordinary least squares (OLS) regression model has four coefficients: GDP quarterly growth in Q2 of the election year, RDI quarterly growth in Q2 of the election year, the incumbent party candidate's September national polling average (weighted by weeks left before the election), and incumbent (for incumbent president). As noted previously in Blog 2, I exclude 2020 from this analysis because of the economic effects of the COVID-19 pandemic. I also narrow the year range to 2000-2016 to better reflect modern voter demographics, polling methodologies, and partisan alignments. The regression table for this combined model is below. 
