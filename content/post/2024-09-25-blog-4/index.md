@@ -1,7 +1,7 @@
 ---
 title: "Blog 4: Incumbency & Expert Predictions"
 author: "Kaitlyn Vu"
-date: '2024-09-25'
+date: '2024-09-29'
 slug: blog-4
 categories: []
 tags: []
@@ -338,4 +338,6 @@ Sabato only predicted one state incorrectly: North Carolina. We [know now](https
 # Conclusion
 Thus, incumbency and expert predictions are both interesting factors to look at when considering election outcomes. In more ways than one, we're still grappling with questions about both topics for the 2024 race. Do we think that either candidate has an "incumbent advantage?" If so, how influential are the effects of their incumbency? On another note, how predictive will expert models be for this year? Interestingly, the state predictions from [Cook Political Report](https://www.cookpolitical.com/ratings/presidential-race-ratings) and [Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/2024-president/) look awfully similar for 2024.
 
-Only time will tell, and I'm excited to continue building my predictive model as we get closer to November 5. 
+<img src="{{< blogdown/postref >}}index_files/figure-html/expert 2024 maps-1.png" width="960" />
+
+At the time of this blog's writing, both expert models have the same exact calls for all states, with the exception of NE-02 ("Lean Democrat" by Cook Political Report and "Likely Democrat" by Sabato's Crystal Ball). Only time will tell if these predictions are correct, and I'm excited to continue building my predictive model as we get closer to November 5. 

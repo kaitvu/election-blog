@@ -1,7 +1,7 @@
 ---
 title: "Blog 4: Incumbency & Expert Predictions"
 author: "Kaitlyn Vu"
-date: '2024-09-25'
+date: '2024-09-29'
 slug: blog-4
 categories: []
 tags: []
@@ -27,6 +27,7 @@ library(kableExtra)
 library(maps)
 library(readr)
 library(stringr)
+library(readxl)
 
 # import data
 d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
@@ -79,6 +80,8 @@ d_sabato <- d_sabato |>
          likely_R = as.numeric(rating == 6),
          safe_R = as.numeric(rating == 7)) |>
   rename(sabato_rating = rating)
+
+expert_2024 <- read_excel("expert_2024.xlsx")
 ```
 
 ## Descriptive Tables of Incumbent Advantage
@@ -232,7 +235,7 @@ sabato_map <- d_sabato_2020 |>
   ) +
   theme_void() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
 # cook political 2020 map
@@ -273,10 +276,10 @@ cook_map <- d_cook_2020 |>
   ) +
   theme_void() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
-# actual 2024 map
+# actual 2020 map
 actual_map <- d_state_pv |>
   filter(year == 2020) |>
   mutate(R_pv2p = 100-D_pv2p, 
@@ -294,7 +297,7 @@ actual_map <- d_state_pv |>
   ) +
   theme_void() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, vjust = 2)
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
 # plot 1: expert prediction 2020 maps
@@ -444,4 +447,59 @@ Sabato only predicted one state incorrectly: North Carolina. We [know now](https
 # Conclusion
 Thus, incumbency and expert predictions are both interesting factors to look at when considering election outcomes. In more ways than one, we're still grappling with questions about both topics for the 2024 race. Do we think that either candidate has an "incumbent advantage?" If so, how influential are the effects of their incumbency? On another note, how predictive will expert models be for this year? Interestingly, the state predictions from [Cook Political Report](https://www.cookpolitical.com/ratings/presidential-race-ratings) and [Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/2024-president/) look awfully similar for 2024.
 
-Only time will tell, and I'm excited to continue building my predictive model as we get closer to November 5. 
+```{r expert 2024 maps, fig.width=10, fig.height=3}
+cook_2024 <- expert_2024 |>
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = cook_text_rating), color = "white") +
+  scale_fill_manual(values = c(
+    "Solid Democrat" = "dodgerblue4", 
+    "Likely Democrat" = "#6699FF", 
+    "Lean Democrat" = "#99CCFF",
+    "Toss Up" = "#CCCCCC",
+    "Likely Republican" = "#FF6666",
+    "Solid Republican" = "firebrick3"),
+    labels = c("Solid Democrat", 
+               "Likely Democrat", 
+               "Lean Democrat", 
+               "Toss Up", 
+               "Likely Republican", 
+               "Solid Republican")) +
+  labs(
+    title = "Cook Political Report",
+    fill = "Rating"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2), 
+    legend.position = "none"
+  )
+
+sabato_2024 <- expert_2024 |>
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = sabato_text_rating), color = "white") +
+  scale_fill_manual(values = c(
+    "Safe Democrat" = "dodgerblue4", 
+    "Likely Democrat" = "#6699FF", 
+    "Toss Up" = "#CCCCCC",
+    "Likely Republican" = "#FF6666",
+    "Safe Republican" = "firebrick3"),
+    labels = c("Solid/Safe Democrat", 
+               "Likely Democrat",
+               "Toss Up", 
+               "Likely Republican", 
+               "Solid/Safe Republican")) +
+  labs(
+    title = "Sabato's Crystal Ball",
+    fill = "Rating"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  )
+
+cook_2024 + sabato_2024
+```
+
+At the time of this blog's writing, both expert models have the same exact calls for all states, with the exception of NE-02 ("Lean Democrat" by Cook Political Report and "Likely Democrat" by Sabato's Crystal Ball). Only time will tell if these predictions are correct, and I'm excited to continue building my predictive model as we get closer to November 5. 
