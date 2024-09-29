@@ -238,7 +238,7 @@ sabato_map <- d_sabato_2020 |>
     plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
-# cook political 2020 map
+# cook 2020 map
 d_cook_2020 <- d_cook |>
   filter(Cycle == 2020) |>
   mutate(cook_text_rating = factor(rating_numeric, levels = 1:7, 
@@ -385,7 +385,6 @@ correct_table <- correct_table |>
 knitr::kable(correct_table, 
              col.names = c("Model", "Percent Correct")) |>
   kableExtra::kable_styling(full_width = FALSE)
-  
 ```
 
 According to this table, Cook Political Report and Sabato's Crystal Ball had 2020 accuracy rates of approximately 88% and 98%, respectively. That is high! It's important to once again note that this calculation is slightly biased against Cook Political Report because it counts all the "Toss Up" states as incorrect.
@@ -421,7 +420,7 @@ Given the close win margin in Georgia and North Carolina, we can give Cook Polit
 
 I do the same for Sabato's Crystal Ball.
 ```{r sabato incorrect table}
-# sabato incorrect table
+# table 8: sabato incorrect table
 sabato_wrong <- d_expert[d_expert$sabato_correct == 0,]
 sabato_wrong <- as.data.frame(sabato_wrong)
 sabato_wrong <- sabato_wrong |>
@@ -448,6 +447,7 @@ Sabato only predicted one state incorrectly: North Carolina. We [know now](https
 Thus, incumbency and expert predictions are both interesting factors to look at when considering election outcomes. In more ways than one, we're still grappling with questions about both topics for the 2024 race. Do we think that either candidate has an "incumbent advantage?" If so, how influential are the effects of their incumbency? On another note, how predictive will expert models be for this year? Interestingly, the state predictions from [Cook Political Report](https://www.cookpolitical.com/ratings/presidential-race-ratings) and [Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/2024-president/) look awfully similar for 2024.
 
 ```{r expert 2024 maps, fig.width=10, fig.height=3}
+# cook 2024 map
 cook_2024 <- expert_2024 |>
   left_join(states, by = "state") |>
   ggplot(aes(long, lat, group = group)) + 
@@ -475,6 +475,14 @@ cook_2024 <- expert_2024 |>
     legend.position = "none"
   )
 
+# sabato 2024 map
+expert_2024$sabato_text_rating <- factor(expert_2024$sabato_text_rating, 
+                                  levels = c("Safe Democrat", 
+                                             "Likely Democrat", 
+                                             "Toss Up", 
+                                             "Likely Republican", 
+                                             "Safe Republican"))
+
 sabato_2024 <- expert_2024 |>
   left_join(states, by = "state") |>
   ggplot(aes(long, lat, group = group)) + 
@@ -499,6 +507,7 @@ sabato_2024 <- expert_2024 |>
     plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
+# plot 2: expert prediction 2024 maps
 cook_2024 + sabato_2024
 ```
 
