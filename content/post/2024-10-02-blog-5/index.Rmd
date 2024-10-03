@@ -152,7 +152,8 @@ demographic_table <- party_table |>
   left_join(race_table, by = "state")
 
 knitr::kable(demographic_table, 
-             col.names = c("State", "Democrat", "Republican", "Unaffiliated/Independent", "Unregistered", "Other Party", "Male", "Female", "Other Gender", "African-American", "Asian", "Non-Hispanic White", "Hispanic", "Native American", "Other Race")) |>
+             col.names = c("State", "Democrat", "Republican", "Unaffiliated/ Independent", "Unregistered", "Other Party", "Male", "Female", "Other Gender", "African-American", "Asian", "Non-Hispanic White", "Hispanic", "Native American", "Other Race"), 
+             align = c("l", rep("l", ncol(demographic_table) - 1))) |>
   add_header_above(c(" " = 1, "REGISTERED PARTY" = 5, "GENDER" = 3, "RACE" = 6)) |>
   column_spec(1, border_right = TRUE) |>
   column_spec(6, border_right = TRUE) |>
@@ -185,7 +186,7 @@ w3_reg <- lm(D_pv2p ~ sept_poll,
 
 # table 2: week 3 state sept polling model
 tab_model(w3_reg, show.se = TRUE, 
-          title = "Regression Table for State Sept. Polling (2020-2020)", 
+          title = "Regression Table for State Sept. Polling (2000-2020)", 
           dv.labels = "Democrat's State-Level Popular Vote Share")
 ```
 
@@ -244,7 +245,7 @@ w5_reg <- lm(D_pv2p ~ sept_poll + non_hispanic_white + african_american + hispan
 
 # table 4: state sept polling model with demographics
 tab_model(w5_reg, show.se = TRUE, 
-          title = "Regression Table for State Sept. Polling & Demographics (2000-2020)", 
+          title = "Regression Table for State Sept. Polling & Race (2000-2020)", 
           dv.labels = "Democrat's State-Level Popular Vote Share")
 ```
 
