@@ -29,30 +29,30 @@ In particular, I examine demographic data from 13 states: these states have all 
 
 The descriptive table of demographics — specifically registered party, gender, and race — from those 13 state voter file samples is below.
 
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:auto; overflow-x: scroll; width:100%; "><table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
 <tr>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">REGISTERED PARTY</div></th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">GENDER</div></th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="6"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">RACE</div></th>
+<th style="empty-cells: hide;border-bottom:hidden;position: sticky; top:0; background-color: #FFFFFF;" colspan="1"></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="5"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">REGISTERED PARTY</div></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="3"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">GENDER</div></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="6"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">RACE</div></th>
 </tr>
   <tr>
-   <th style="text-align:left;"> State </th>
-   <th style="text-align:left;"> Democrat </th>
-   <th style="text-align:left;"> Republican </th>
-   <th style="text-align:left;"> Unaffiliated/ Independent </th>
-   <th style="text-align:left;"> Unregistered </th>
-   <th style="text-align:left;"> Other Party </th>
-   <th style="text-align:left;"> Male </th>
-   <th style="text-align:left;"> Female </th>
-   <th style="text-align:left;"> Other Gender </th>
-   <th style="text-align:left;"> African-American </th>
-   <th style="text-align:left;"> Asian </th>
-   <th style="text-align:left;"> Non-Hispanic White </th>
-   <th style="text-align:left;"> Hispanic </th>
-   <th style="text-align:left;"> Native American </th>
-   <th style="text-align:left;"> Other Race </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> State </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Democrat </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Republican </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Unaffiliated/ Independent </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Unregistered </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Other Party </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Male </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Female </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Other Gender </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> African-American </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Asian </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Non-Hispanic White </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Hispanic </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Native American </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Other Race </th>
   </tr>
  </thead>
 <tbody>
@@ -278,7 +278,7 @@ The descriptive table of demographics — specifically registered party, gender,
    <td style="text-align:left;"> 1.48 </td>
   </tr>
 </tbody>
-</table>
+</table></div>
 
 Notably, I find the information on registered party especially interesting. In most of these voter file samples, the majority of individuals are registered as either "Unaffiliated/Independent" or did not register a party. It is important to note, however, voters in some states register [without reference to party](https://centerforpolitics.org/crystalball/registering-by-party-where-the-democrats-and-republicans-are-ahead/). These voter file samples are also fairly balanced between genders. As expected, non-Hispanic White voters comprise the largest percentage of the voter file samples compared to other racial categories.
 

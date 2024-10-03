@@ -146,7 +146,7 @@ race_table <- state_voterfile_complete |>
   ) |>
   select(state, `African-American`, Asian, `Non-Hispanic White`, Hispanic, `Native American`, `Other Race`)
 
-# table 1: descriptive demographics table of 2024 voter files for select states
+# table 1: descriptive demographics table of 2024 voter files for select states (I used ChatGPT to format this table)
 demographic_table <- party_table |>
   left_join(gender_table, by = "state") |>
   left_join(race_table, by = "state")
@@ -158,7 +158,8 @@ knitr::kable(demographic_table,
   column_spec(1, border_right = TRUE) |>
   column_spec(6, border_right = TRUE) |>
   column_spec(9, border_right = TRUE) |>
-  kableExtra::kable_styling(full_width = FALSE)
+  kableExtra::kable_styling(full_width = FALSE) |>
+  scroll_box(width = "100%", height = "auto", fixed_thead = TRUE)
 ```
 
 Notably, I find the information on registered party especially interesting. In most of these voter file samples, the majority of individuals are registered as either "Unaffiliated/Independent" or did not register a party. It is important to note, however, voters in some states register [without reference to party](https://centerforpolitics.org/crystalball/registering-by-party-where-the-democrats-and-republicans-are-ahead/). These voter file samples are also fairly balanced between genders. As expected, non-Hispanic White voters comprise the largest percentage of the voter file samples compared to other racial categories.
