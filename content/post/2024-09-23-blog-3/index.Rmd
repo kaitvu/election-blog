@@ -247,7 +247,7 @@ state_reg <- lm(D_pv2p ~ sept_poll,
 
 # table 3: state sept polling
 tab_model(state_reg, show.se = TRUE, 
-          title = "Regression Table for State Sept. Polling (2020-2020)", 
+          title = "Regression Table for State Sept. Polling (2000-2020)", 
           dv.labels = "Democrat's State-Level Popular Vote Share")
 ```
 

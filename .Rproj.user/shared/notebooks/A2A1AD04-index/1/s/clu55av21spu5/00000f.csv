@@ -16,5 +16,5 @@
 "0",""
 "0","# table 3: state sept polling"
 "0","tab_model(state_reg, show.se = TRUE, "
-"0","          title = ""Regression Table for State Sept. Polling (2020-2020)"", "
+"0","          title = ""Regression Table for State Sept. Polling (2000-2020)"", "
 "0","          dv.labels = ""Democrat's State-Level Popular Vote Share"")"

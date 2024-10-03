@@ -1,3 +1,0 @@
-"0","d_popvote_wide <- d_popvote |>"
-"0","    select(year, party, pv2p) |>"
-"0","    pivot_wider(names_from = party, values_from = pv2p)"

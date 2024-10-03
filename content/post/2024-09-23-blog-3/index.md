@@ -104,7 +104,7 @@ I follow a similar series of steps to put together state-level predictions for t
 This is a regression table for the Democratic candidate's state-level popular vote share and state-level polling in September for the presidential elections from 2000-2020.
 
 <table style="border-collapse:collapse; border:none;">
-<caption style="font-weight: bold; text-align:left;">Regression Table for State Sept. Polling (2020-2020)</caption>
+<caption style="font-weight: bold; text-align:left;">Regression Table for State Sept. Polling (2000-2020)</caption>
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">Democrat's State-Level Popular Vote Share</th>

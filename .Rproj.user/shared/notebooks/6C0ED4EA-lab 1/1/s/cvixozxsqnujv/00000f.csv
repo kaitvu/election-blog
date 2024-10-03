@@ -1,3 +1,0 @@
-"0","d_popvote_wide |> "
-"0","  group_by(winner) |>"
-"0","  summarise(races = n())"
