@@ -1,0 +1,350 @@
+---
+title: "Blog 5: Demographics"
+author: "Kaitlyn Vu"
+date: '2024-10-06'
+slug: "blog-5"
+categories: []
+tags: []
+---
+
+## Introduction
+Defined as group level characteristics that can be attached to individuals, campaigns often look to demographics to inform predictions of election outcomes — including the likelihood of candidate support and turnout — and determine which populations to target with their limited resources. As such, demographic conformity is almost an expected norm: individuals are expected to vote in line with their perceived group interests. 
+
+However, are demographics truly predictive of vote choice? A 2024 paper by Seo-young Silvia Kim and Jan Zilinsky [found](https://link.springer.com/article/10.1007/s11109-022-09816-z) that the accuracy for vote choice predictions is generally low (< 65%) when using just demographics. In this blog, I aim to apply demographics to my state-level popular vote model from Blog 3 to assess its predictive effects. I also use recent polling data to update last week's combined model for the incumbent party candidate's national popular vote share. 
+
+```{r setup, include=FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+
+# import libraries
+library(car)
+library(caret)
+library(CVXR)
+library(glmnet)
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(sjPlot)
+library(kableExtra)
+library(maps)
+library(readr)
+library(stringr)
+library(readxl)
+
+# import data
+d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
+d_pollav_state <- read_csv("state_polls_1968-2024.csv")
+fred_econ <- read_csv("fred_econ.csv") |>
+  filter(quarter == 2)
+d_pv <- read_csv("popvote_1948_2020.csv")
+  d_pv$party[d_pv$party == "democrat"] <- "DEM"
+  d_pv$party[d_pv$party == "republican"] <- "REP"
+d_state_pv <- read_csv("state_popvote_1948_2020.csv")
+  d_state_pv <- d_state_pv |>
+    select(year, state, D_pv2p) |>
+    mutate(R_pv2p = 100-D_pv2p)
+states <- map_data("state") |>
+  rename(state = region)
+states$state <- str_to_title(states$state)
+demographics <- read_csv("demographics.csv")
+  demographics <- demographics |>
+    filter(year >= 1980) |>
+    mutate(non_hispanic_white = not_hispanic_white, 
+           african_american = not_hispanic_black, 
+           hispanic = (hispanic_white + hispanic_black), 
+           asian = asian_pacific_islander, 
+           native_american = american_indian) |>
+    select(year, state, non_hispanic_white, african_american, hispanic, asian, native_american)
+
+# import and clean state voter files
+state_voterfile <- list.files("voterfile data")
+state_voterfile_complete <- read_csv(paste0("voterfile data/", state_voterfile[1]))
+for (i in 2:length(state_voterfile)) {
+  temp <- read_csv(paste0("voterfile data/",state_voterfile[i]))
+  state_voterfile_complete <- rbind(state_voterfile_complete, temp)
+}
+
+state_abb_xwalk <- d_state_pv |>
+  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> 
+  select(state, state_abb) |> 
+  distinct() 
+state_abb_xwalk[51,]$state <- "District of Columbia"
+state_abb_xwalk[51,]$state_abb <- "DC"
+
+state_voterfile_complete <- state_voterfile_complete |>
+  filter(sii_deceased == 0) |>
+  select(sii_state, sii_gender, sii_race, svi_party_registration) |>
+  rename(state_abb = sii_state, 
+         gender = sii_gender,
+         race = sii_race, 
+         reg_party = svi_party_registration) |>
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  select(state, gender, race, reg_party)
+```
+
+## Examining Demographics for 2024 Voter File Samples
+One of the ways in which campaigns measure individual-level demographics is through state voter files. Before applying demographics to my predictive models, I wanted to take a closer look at the 2024 voter file data that [Statara](https://statara.com/) graciously provided to our class. Thank you to our excellent TF Matthew Dardet, who initially cleaned these voter files and took a 1% sample from each state's 2024 voter file. I work with those 1% samples here.
+
+In particular, I examine demographic data from 13 states: these states have all been designated as either "Lean/Likely Democrat," "Lean/Likely Republican," or "Toss Up" in the 2024 state-level predictions from Cook Political Report and Sabato's Crystal Ball, which were the expert models examined last week. I exclude NE-02 and ME-02 as data on the congressional district level was difficult to obtain. Assuming that states designated as "Safe/Solid Democrat" or "Safe/Solid Republican" by these expert models are confident calls for their respective parties, we should look at these 13 states to try to predict where their electoral votes will end up. 
+
+The descriptive table of demographics — specifically registered party, gender, and race — from those 13 state voter file samples is below.
+
+```{r voter file demographic table}
+# registered party
+party_table <- state_voterfile_complete |>
+  mutate(reg_party = case_when(
+    reg_party == "D" ~ "Democrat",
+    reg_party == "R" ~ "Republican",
+    reg_party == "U" ~ "Unaffiliated/Independent",
+    is.na(reg_party) ~ "Unregistered",
+    TRUE ~ "Other Party"
+  )) |>
+  group_by(state, reg_party) |>
+  summarize(count = n()) |>
+  mutate(reg_party_avg = round(count / (sum(count))*100, 2)) |>
+  select(-count) |>
+  pivot_wider(
+    names_from = reg_party, 
+    values_from = reg_party_avg
+  )  |>
+  select(state, Democrat, Republican, `Unaffiliated/Independent`, Unregistered, `Other Party`)
+
+# gender
+gender_table <- state_voterfile_complete |>
+  mutate(gender = case_when(
+    gender == "M" ~ "Male",
+    gender == "F" ~ "Female",
+    TRUE ~ "Other Gender"
+  )) |>
+  group_by(state, gender) |>
+  summarize(count = n()) |>
+  mutate(reg_gender_avg = round(count / (sum(count))*100, 2)) |>
+  select(-count) |>
+  pivot_wider(
+    names_from = gender, 
+    values_from = reg_gender_avg
+  ) |>
+  select(state, Male, Female, `Other Gender`)
+
+# race
+race_table <- state_voterfile_complete |>
+  mutate(race = case_when(
+    race == "B" ~ "African-American",
+    race == "A" ~ "Asian",
+    race == "W" ~ "Non-Hispanic White",
+    race == "H" ~ "Hispanic",
+    race == "N" ~ "Native American", 
+    TRUE ~ "Other Race"
+  )) |>
+  group_by(state, race) |>
+  summarize(count = n()) |>
+  mutate(reg_race_avg = round(count / (sum(count))*100, 2)) |>
+  select(-count) |>
+  pivot_wider(
+    names_from = race, 
+    values_from = reg_race_avg
+  ) |>
+  select(state, `African-American`, Asian, `Non-Hispanic White`, Hispanic, `Native American`, `Other Race`)
+
+# table 1: descriptive demographics table of 2024 voter files for select states (I used ChatGPT to format this table)
+demographic_table <- party_table |>
+  left_join(gender_table, by = "state") |>
+  left_join(race_table, by = "state")
+
+knitr::kable(demographic_table, 
+             col.names = c("State", "Democrat", "Republican", "Unaffiliated/ Independent", "Unregistered", "Other Party", "Male", "Female", "Other Gender", "African-American", "Asian", "Non-Hispanic White", "Hispanic", "Native American", "Other Race"), 
+             align = c("l", rep("l", ncol(demographic_table) - 1))) |>
+  add_header_above(c(" " = 1, "REGISTERED PARTY" = 5, "GENDER" = 3, "RACE" = 6)) |>
+  column_spec(1, border_right = TRUE) |>
+  column_spec(6, border_right = TRUE) |>
+  column_spec(9, border_right = TRUE) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  scroll_box(width = "100%", height = "auto", fixed_thead = TRUE)
+```
+
+Notably, I find the information on registered party especially interesting. In most of these voter file samples, the majority of individuals are registered as either "Unaffiliated/Independent" or did not register a party. It is important to note, however, voters in some states register [without reference to party](https://centerforpolitics.org/crystalball/registering-by-party-where-the-democrats-and-republicans-are-ahead/). These voter file samples are also fairly balanced between genders. As expected, non-Hispanic White voters comprise the largest percentage of the voter file samples compared to other racial categories.
+
+## Revisiting Blog 3's State Sept. Polling Averages Model
+To predict state-level outcomes and ultimately the Electoral College, I start by updating my state-level popular vote share model from Blog 3 with new polling data; I now have polling data for the entire month of September. 
+
+This is a regression table for the Democratic candidate's state-level popular vote share and state-level polling averages in September (weighted by weeks left before the election) for the presidential elections from 2000-2020.
+
+```{r week 3 state sept polling model}
+# re-build state sept polling model from week 3
+w3_state_model <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 9, 
+         party == "DEM", 
+         year >= 2000) |>
+  group_by(year, state) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2)) |>
+  left_join(d_state_pv, by = c("year", "state")) |>
+  select(year, state, sept_poll, D_pv2p) |>
+  drop_na()
+
+w3_reg <- lm(D_pv2p ~ sept_poll, 
+            data = w3_state_model)
+
+# table 2: week 3 state sept polling model
+tab_model(w3_reg, show.se = TRUE, 
+          title = "Regression Table for State Sept. Polling (2000-2020)", 
+          dv.labels = "Democrat's State-Level Popular Vote Share")
+```
+
+With an R-squared value of 0.84, this table suggests that state-level September polling is a strong predictor for the Democratic candidate’s two-party popular vote share for that state. Like Blog 3, I then use this regression model to predict Vice President Harris' share of the two-party popular vote at the state-level. 
+
+```{r week 3 state sept polling prediction}
+# week 3 state sept polling model prediction
+w3_24 <- d_pollav_state |>
+  filter(month(poll_date) == 9, 
+         party == "DEM", 
+         year == 2024) |>
+  select(state, weeks_left, poll_date, poll_support) |>
+  group_by(state) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2))
+
+w3_pred <- predict(w3_reg, w3_24, interval = "prediction")
+
+w3_table <- bind_cols(w3_24,
+  as.data.frame(w3_pred) |> rename_with(~paste0("D_", .))) |>
+  mutate(D_fit = round(D_fit, 2), 
+         D_lwr = round(D_lwr, 2), 
+         D_upr = round(D_upr, 2), 
+         winner = if_else(D_fit>50, "Harris", "Trump")) |>
+  select(-sept_poll) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", "Nevada", "New Hampshire", "New Mexico", "North Carolina", "Pennsylvania", "Texas", "Virginia", "Wisconsin"))
+
+# table 3: week 3 state sept polling model prediction
+knitr::kable(w3_table, 
+             col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(w3_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(w3_table$winner == "Trump"), background = "#FFD1D1")
+```
+
+This model predicts that Harris will win 12 out of the 13 states — including all 7 key battleground states — while Trump only wins Texas under this model. Of note: the numbers here are quite similar to those predicted a few weeks ago in Blog 3, although with smaller prediction intervals. This indicates that there is less uncertainty, which makes sense given that we are now closer to November 5, 2024. However, many of these races remain contested as the predicted two-party popular vote share for Harris is quite close to 50% (e.g. Nevada at 53.10%, Arizona at 52.69%). With this model, Harris would carry the Electoral College by a margin of **319** to former President Trump's **219**. 
+
+## Adding Demographics to the State Sept. Polling Averages Model
+I now turn to incorporating demographics data — specifically race — into my September polling averages model. To do so, I created a new ordinary least squares (OLS) regression model using past state-level September polling averages and demographics data on race from the U.S. Census for 2000-2020. The regression table is below. 
+
+```{r state sept polling and demographics model}
+# add demographics to week 3 state model
+w5_state_model <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 9, 
+         party == "DEM", 
+         year >= 2000) |>
+  group_by(year, state) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2)) |>
+  left_join(d_state_pv, by = c("year", "state")) |>
+  select(year, state, sept_poll, D_pv2p) |>
+  drop_na() |>
+  left_join(demographics, by = c("year", "state"))
+
+w5_reg <- lm(D_pv2p ~ sept_poll + non_hispanic_white + african_american + hispanic + asian + native_american,
+             data = w5_state_model)
+
+# table 4: state sept polling model with demographics
+tab_model(w5_reg, show.se = TRUE, 
+          title = "Regression Table for State Sept. Polling & Race (2000-2020)", 
+          dv.labels = "Democrat's State-Level Popular Vote Share")
+```
+
+Similarly, the R-squared values of approximately 0.85 indicate a relatively good fit for the model. Here, September polling averages are the strongest predictor of the Democratic candidate's state-level two-party popular vote share with the race category coefficients as weaker predictors in comparison. 
+
+I input the race data from the 2024 voter file samples to create state-level predictions of Harris' two-party popular vote share for the upcoming election.
+
+```{r state sept polling and demographics prediction}
+# state sept polling and demographics model prediction
+w5_24 <- w3_24 |>
+  left_join(race_table, by = "state") |>
+  rename(african_american = `African-American`, 
+         asian = Asian, 
+         non_hispanic_white = `Non-Hispanic White`, 
+         hispanic = Hispanic, 
+         native_american = `Native American`) |>
+  select(-`Other Race`) |>
+  drop_na()
+
+w5_pred <- predict(w5_reg, w5_24, interval = "prediction")
+
+w5_table <- bind_cols(w5_24,
+  as.data.frame(w5_pred) |> rename_with(~paste0("D_", .))) |>
+  mutate(D_fit = round(D_fit, 2), 
+         D_lwr = round(D_lwr, 2), 
+         D_upr = round(D_upr, 2), 
+         winner = if_else(D_fit>50, "Harris", "Trump")) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", "Nevada", "New Hampshire", "New Mexico", "North Carolina", "Pennsylvania", "Texas", "Virginia", "Wisconsin")) |>
+  select(state, D_fit, D_lwr, D_upr, winner)
+
+# table 5: state sept polling and demographics model prediction
+knitr::kable(w5_table, 
+             col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(w5_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(w5_table$winner == "Trump"), background = "#FFD1D1")
+```
+
+This model seems to be a bit more optimistic regarding Harris' prospects: the Vice President's two-party vote share in each state is greater than the previous model. However, some of these results appear counter-intuitive at face value. For example, this model predicts that Harris will win both Texas and Florida — both of which have been won by the Republican candidate in recent elections — by 58.62% and 55.45%, respectively. Of course, we have to take into account the wide prediction intervals, but these results seem unlikely with just face validity. Perhaps, then, the demographic variables included in this model overestimate the potential gains for Harris in some of these states. With this model, Harris would carry the Electoral College by a margin of **389** to Trump's **149**. 
+
+## Updating Last Week's National Popular Vote Share Model
+Lastly, I also update the incumbent party candidate's national popular vote share model from Blog 4 with the recent September polling data. The following regression table is copied from last week's blog. 
+
+```{r week 4 combined regression model}
+# sept poll data
+poll <- d_pollav_nat |>
+  select(year, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 9) |>
+  group_by(year, party) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2)) |>
+  left_join(d_pv, by = c("year", "party")) |>
+  select(year, party, sept_poll)
+
+# train combined model
+train <- d_pv |> 
+  left_join(fred_econ, by = "year") |> 
+  filter(year >= 1968, 
+         incumbent_party) |>
+  mutate(incumbent = as.numeric(incumbent)) |>
+  left_join(poll, by = c("year", "party"))
+
+# table 6: week 4 combined regression model
+combined <- lm(pv2p ~ GDP_growth_quarterly + RDPI_growth_quarterly + sept_poll + incumbent, 
+                   data = subset(train, year < 2020))
+
+tab_model(combined, show.se = TRUE, 
+          title = "Regression Table for Combined Model (2000-2016)", 
+          dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
+```
+
+This model is then utilized to predict Harris' expected share of the national two-party popular vote. Similar to last week, the combined model of economic fundamentals and national September polling averages predicts that Harris will win by approximately 53.4%. The numbers here are quite similar to the ones from Blog 4, changing by a few decimal points.
+
+```{r updated combined model prediction}
+# econ 2024 data
+econ_24 <- fred_econ |> 
+  filter(year == 2024) |> 
+  select(year, GDP_growth_quarterly, RDPI_growth_quarterly)
+
+# polling 2024 data
+poll_24 <- d_pollav_nat |>
+  filter(month(poll_date) == 9, 
+         year == 2024, 
+         party == "DEM") |>
+  group_by(year) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2))
+  
+pred_data <- left_join(econ_24, poll_24, by = "year") |>
+  mutate(incumbent = 0)
+
+# 2024 prediction
+combined_pred <- predict(combined, pred_data, interval = "prediction")
+combined_pred <- round(combined_pred, 2)
+ 
+# table 7: combined model prediction
+knitr::kable(combined_pred, 
+             col.names = c("Prediction", "Lower Bound", "Upper Bound")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+## Conclusion
+In line with my other blogs, the models in this week's entry anticipate that Harris will win both the national two-party popular vote as well as obtain the 270 electoral votes required to win the Electoral College. However, my attempt at incorporating demographics in my state-level predictive model produced unexpected — and seemingly unlikely — election outcomes, which is a source of growth for future work. As such, I'm eager keep developing my predictions for the national popular vote and the Electoral College and look forward to learning about campaign-focused factors in the coming weeks.
