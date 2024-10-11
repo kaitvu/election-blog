@@ -1,0 +1,430 @@
+---
+title: Blog 6
+author: Kaitlyn Vu
+date: '2024-10-09'
+slug: blog-6
+categories: []
+tags: []
+---
+
+## Introduction
+Turning the page on election "fundamentals," our course now turns to examining presidential campaigns and their impact on voter behavior. Campaigns capture the attention of thousands of voters across the country, helping them learn about political candidates and influence the electoral process. 
+
+My blog this week focuses on the "air war" between campaigns: advertising has both the power to persuade and mobilize voters to the ballot box. First, I create a series of descriptive figures and tables to assess past trends in campaign ad spending on both the national and state levels. I then update my models to predict both the national two-party popular vote and the Electoral College for the upcoming 2024 election. 
+
+```{r setup, include=FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+
+# import libraries
+library(car)
+library(caret)
+library(CVXR)
+library(glmnet)
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(sjPlot)
+library(kableExtra)
+library(maps)
+library(readr)
+library(stringr)
+library(readxl)
+library(scales)
+
+# import data
+d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
+d_pollav_state <- read_csv("state_polls_1968-2024.csv")
+fred_econ <- read_csv("fred_econ.csv") |>
+  filter(quarter == 2)
+d_pv <- read_csv("popvote_1948_2020.csv")
+  d_pv$party[d_pv$party == "democrat"] <- "DEM"
+  d_pv$party[d_pv$party == "republican"] <- "REP"
+d_state_pv <- read_csv("state_popvote_1948_2020.csv")
+  d_state_pv <- d_state_pv |>
+    select(year, state, D_pv2p) |>
+    mutate(R_pv2p = 100-D_pv2p)
+states <- map_data("state") |>
+  rename(state = region)
+states$state <- str_to_title(states$state)
+ec <- read_csv("corrected_ec_1948_2024.csv") 
+  ec <- ec |>
+    filter(year == 2024)
+expert_24 <- read_excel("expert_2024.xlsx")
+national_party_id <- read_csv("national_party_id.csv") 
+  national_party_id$party[national_party_id$party == "democrat"] <- "DEM"
+  national_party_id$party[national_party_id$party == "republican"] <- "REP"
+
+state_abb_xwalk <- d_state_pv |>
+  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> 
+  select(state, state_abb) |> 
+  distinct() 
+state_abb_xwalk[51,]$state <- "District of Columbia"
+state_abb_xwalk[51,]$state_abb <- "DC"
+
+# import ads data
+ad_campaigns <- read_csv("ad_campaigns_2000-2012.csv")
+ad_creative <- read_csv("ad_creative_2000-2012.csv")
+ads_2020 <- read_csv("ads_2020.csv")
+campaign_spending <- read_csv("FEC_contributions_by_state_2008_2024.csv")
+```
+
+## Examining Ad Spending in Past Presidential Elections
+
+Before we get to predictions for 2024, let's take a look back at campaign ad spending in previous elections. The following visualization plots campaign ad spending by month for the presidential elections from 2000-2012. 
+
+```{r ad spending by month, fig.width=11, fig.height=6}
+# plot 1: ad spending by month (2000-2012)
+ad_campaigns |>
+  mutate(year = as.numeric(substr(air_date, 1, 4))) |>
+  mutate(month = as.numeric(substr(air_date, 6, 7))) |>
+  filter(year %in% c(2000, 2004, 2008, 2012), month > 7, month < 11) |>
+  group_by(cycle, air_date, party) |>
+  summarise(total_cost = sum(total_cost)) |>
+  mutate(air_date = as.Date(air_date)) |>
+  ggplot(aes(x = air_date, y = total_cost, color = party)) +
+  scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_color_manual(values = c("dodgerblue3", "firebrick3"), name = "Party") +
+  geom_line() + geom_point(size = 0.5) +
+  facet_wrap(cycle ~ ., scales = "free") +
+  xlab("") + ylab("Ad Spend") +
+  labs(title = "Ad Spending by Month (2000-2012)") +
+  theme_bw() +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11),
+        strip.text.x = element_text(size = 14),
+        legend.text = element_text(size = 11),
+        legend.title = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 3), 
+        panel.spacing = unit(1.5, "lines"))
+```
+
+Unsurprisingly, campaigns increase their funding for ads closer to the election — ad expenditures increase over time for all four elections. It's important to note the scale of each individual plot here: Senator Mitt Romney's campaign surpasses 15 million in ad spending by November 2012, which is significantly higher than the maximum spending of the three previous elections (2 million in 2000, 6 million in 2004, and 3 million in 2008).
+
+However, does increased ad spending translate into an electoral advantage for the candidate with more air time? Focusing on the 13 potential toss-up states for the 2024 election (from last week's blog), I identify the candidate with the higher state-level ad spending from the 2004, 2008, and 2012 presidential elections. The "match" column indicates whether or not that candidate with the higher state-level ad spending won the state. 
+
+```{r state spending advantage and winner}
+# tidy ad data
+state_ads <- ad_campaigns |>
+  mutate(year = as.numeric(substr(air_date, 1, 4))) |>
+  mutate(month = as.numeric(substr(air_date, 6, 7))) |>
+  mutate(state = state.name[match(state, state.abb)]) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", 
+                      "Nevada", "New Hampshire", "New Mexico", "North Carolina", 
+                      "Pennsylvania", "Texas", "Virginia", "Wisconsin"), 
+         month >= 8, 
+         year %in% c(2004, 2008, 2012)) |>
+  select(party, state, total_cost, year) |>
+  group_by(state, year, party) |>
+  summarize(total_cost = sum(total_cost), .groups = 'drop') |>
+  group_by(state, year) |>
+  mutate(spending_winner = ifelse(total_cost == max(total_cost), party, NA)) |>
+  summarize(spending_winner = first(na.omit(spending_winner)), .groups = 'drop') |>
+  left_join(d_state_pv |> filter(year %in% c(2004, 2008, 2012)), by = c("state", "year")) |>
+  mutate(winner = if_else(D_pv2p > R_pv2p, "Democrat", "Republican"),
+         spending_winner = str_to_title(spending_winner),
+         match = if_else(winner == spending_winner, "Yes", "No"),) |>
+  select(state, year, spending_winner, winner, match) |>
+  pivot_wider(names_from = year, 
+              values_from = c(spending_winner, winner, match)) |>
+  select(
+    state,
+    spending_winner_2004,
+    match_2004,
+    spending_winner_2008,
+    match_2008,
+    spending_winner_2012,
+    match_2012
+  )
+
+# table 1: matching state spending advantage and winner (2004-2012)
+knitr::kable(state_ads, 
+             col.names = c("State", "Spending Advantage", "Match", 
+                           "Spending Advantage", "Match", 
+                           "Spending Advantage", "Match"), 
+             align = c("l", rep("l", ncol(state_ads) - 1))) |>
+  add_header_above(c(" " = 1, "2004" = 2, "2008" = 2, "2012" = 2)) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  column_spec(3, background = ifelse(state_ads$match_2004 == "Yes", "#A8E6CF", "#FFD1D1")) |>
+  column_spec(5, background = ifelse(state_ads$match_2008 == "Yes", "#A8E6CF", "#FFD1D1")) |>
+  column_spec(7, background = ifelse(state_ads$match_2012 == "Yes", "#A8E6CF", "#FFD1D1"))
+```
+
+As we can see in this table, candidates that spent the most on ads in the 13 selected states did not always end up carrying that state. This correlation (at face value) appears to the strongest in the 2008 contest, where the candidate with the state-level spending advantage won 11 out of 13 states; That's a much better performance than the 2004 (4 out of 13) and 2012 presidential elections (5 out of 13).
+
+Looking at 2020, this table presents at the number of campaign ad airings between April and September in each of the 13 states, arranged from the greatest to lowest total cost. The table also indicates which candidate had the air advantage (greater number of aired ads), as well as who ultimately won the state.
+
+```{r state ads 2020}
+ads_2020_table <- ads_2020 |>
+  rename(state_abb = state) |>
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  select(-state_abb) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", 
+                      "Nevada", "New Hampshire", "New Mexico", "North Carolina", 
+                      "Pennsylvania", "Texas", "Virginia", "Wisconsin")) |>
+  group_by(state) |>
+  summarize(biden_airings = sum(biden_airings), 
+            trump_airings = sum(trump_airings), 
+            total_cost = sum(total_cost), .groups = 'drop') |>
+  arrange(desc(total_cost)) |>
+  left_join(d_state_pv |> filter(year==2020), by = "state") |>
+  mutate(state_winner = if_else(D_pv2p>R_pv2p, "Biden", "Trump"), 
+         airings_winner = if_else(biden_airings>trump_airings, "Biden", "Trump")) |>
+  select(state, biden_airings, trump_airings, total_cost, airings_winner, state_winner)
+
+# table 2: state ads 2020
+knitr::kable(ads_2020_table, 
+             col.names = c("State", "Biden Airings", "Trump Airings", "Total Cost", "Air Advantage", "State Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+There are only 4 cases here where the candidate with the air advantage went on to lose the state: President Biden had the air advantage in both Trump-won Texas and Florida, while Trump had the air advantage in Biden-won Georgia and New Mexico. 
+
+Notably, Florida (138 million), Pennsylvania (95 million), and North Carolina (66 million) have the highest total ad spending between April and September 2020. How has total ad spending in these 13 states changed over time? The next line plot visualizes trends in total costs of ad campaigns over 5 presidential elections (2000, 2004, 2008, 2012, 2020). We do not have access to data from 2016, so spending in that election year is omitted.
+
+```{r ad costs by state, fig.width=11, fig.height=6}
+# plot 2: ad costs by state
+ad_campaigns |>
+  mutate(year = as.numeric(substr(air_date, 1, 4))) |>
+  mutate(month = as.numeric(substr(air_date, 6, 7))) |>
+  mutate(state = state.name[match(state, state.abb)]) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", 
+                      "Nevada", "New Hampshire", "New Mexico", "North Carolina", 
+                      "Pennsylvania", "Texas", "Virginia", "Wisconsin"), 
+         month >= 4, 
+         month <= 9,
+         year %in% c(2000, 2004, 2008, 2012)) |>
+  group_by(state, year) |>
+  summarize(total_cost_sum = sum(total_cost, na.rm = TRUE), .groups = "drop") |>
+   bind_rows(ads_2020_table |> 
+               select(state, total_cost) |>
+               mutate(year = 2020) |>
+               rename(total_cost_sum = total_cost)) |>
+  ggplot(aes(x = factor(year, levels = c(2000, 2004, 2008, 2012, 2020)), 
+             y = total_cost_sum, 
+             color = state, 
+             group = state)) +
+  geom_line() +
+  geom_point() +
+  scale_x_discrete(breaks = c("2000", "2004", "2008", "2012", "2020")) +  
+  labs(title = "Total Costs of Ad Campaigns (Apr-Sept) by State & Year",
+       x = "Year",
+       y = "Total Ad Costs (USD)",
+       color = "State") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11),
+        strip.text.x = element_text(size = 14),
+        legend.text = element_text(size = 11),
+        legend.title = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 3))
+
+```
+
+First and foremost, total ad spending in Florida has been on a strong upward trend since 2008 — candidates put the most money into Floridian ads in 2004, 2012, and 2020. It's also interesting to note the states that have increased in total ad spending from 2012 to 2020, mainly Pennsylvania, North Carolina, Wisconsin, Arizona, Minnesota, and Nevada in addition to Florida. Those states now comprise our core battleground states, which makes sense why candidates are increasingly investing in ads aired there. 
+
+Although we do not yet have access to full campaign ad spending for the 2024 election, CNN [reports](https://www.cnn.com/2024/10/08/politics/2024-election-most-expensive/index.html) that this year’s spending to elect a president and members of Congress will hit at least 15.9 billion USD — the nation’s most expensive federal election to date. Campaign ad spending is only expected to [pick up](https://www.nytimes.com/2024/09/17/us/elections/presidential-campaign-advertising-spending.html) as we near the election: groups backing Vice President Harris have reserved 332 million USD worth of airtime for TV and radio ads, compared to about 194 million USD from Trump's supporters. The spending race in the swing states is particularly interesting to track as the Harris campaign is [set to spend](https://www.axios.com/2024/08/03/trump-harris-pennsylvania-ad-spending-president) 109.2 million USD to the Trump campaign's 101.7 million USD in Pennsylvania alone.
+
+## National Two-Party Popular Vote Model
+
+Next, I shift back to updating my electoral predictions for the national two-party popular vote share. Building upon my model, I add a new variable to the regression: the national two-party percentage of voters. We [know](https://link.springer.com/article/10.1007/s11109-022-09816-z) that partisan affiliation is a strong demographic predictor of turnout and voting behavior, which is why I wanted to include it in my model. This data set was kindly put together using data from Pew Research Center and Gallup by my incredible classmate, Alex Heuss! The regression table for the new national popular vote share model is below. 
+
+```{r national model}
+# sept poll data
+poll <- d_pollav_nat |>
+  select(year, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 9) |>
+  group_by(year, party) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2)) |>
+  left_join(d_pv, by = c("year", "party")) |>
+  select(year, party, sept_poll)
+
+# build national model
+nat_model <- d_pv |> 
+  left_join(fred_econ, by = "year") |> 
+  filter(year >= 1968, 
+         incumbent_party) |>
+  mutate(incumbent = as.numeric(incumbent)) |>
+  left_join(poll, by = c("year", "party")) |>
+  left_join(national_party_id, by = c("year", "party"))
+
+# table 3: national regression model
+nat_reg <- lm(pv2p ~ GDP_growth_quarterly + RDPI_growth_quarterly + sept_poll + two_party_percent + incumbent, 
+              data = subset(nat_model, year < 2020))
+
+tab_model(nat_reg, show.se = TRUE, 
+          title = "Regression Table for National Model (2000-2016)", 
+          dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
+```
+
+With an R-squared value of 0.88, this table suggests that my model is a strong predictor for the incumbent party candidate’s national two-party popular vote share. That being said, Q2 GDP quarterly growth and September national polling averages are the key predictors in this model; the Q2 RDI quarterly growth, national two-party percentage, and incumbent status coefficients are not statistically significant, indicating the lack of a clear effect on the incumbent party's vote share in this model. I then use this regression model to predict Harris' share of the national two-party popular vote. 
+
+```{r national prediction}
+# econ 2024 data
+econ_24 <- fred_econ |> 
+  filter(year == 2024) |> 
+  select(year, GDP_growth_quarterly, RDPI_growth_quarterly)
+
+# polling 2024 data
+poll_24 <- d_pollav_nat |>
+  filter(month(poll_date) == 9, 
+         year == 2024, 
+         party == "DEM") |>
+  group_by(year) |>
+  summarize(sept_poll = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE),2))
+
+# party id data
+party_24 <- national_party_id |>
+  filter(year == 2024, 
+         party == "DEM") |>
+  select(year, two_party_percent)
+  
+pred_data <- left_join(econ_24, poll_24, by = "year") |>
+  mutate(incumbent = 0) |>
+  left_join(party_24, by = "year")
+
+# 2024 prediction
+nat_pred <- predict(nat_reg, pred_data, interval = "prediction")
+nat_pred <- round(nat_pred, 2)
+ 
+# table 4: national model prediction
+knitr::kable(nat_pred, 
+             col.names = c("Prediction", "Lower Bound", "Upper Bound")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+Here, Harris is predicted to win the national two-party popular vote by 53.3%. This is consistent with the results from my previous blogs, which all have Harris winning approximately 53% of the popular vote. Notably, however, this week's prediction intervals are slightly larger than those of the last two weeks' predictions. Going forward, I may simplify my national model by focusing solely on Q2 GDP quarterly growth and September polling averages, which may help to reduce over-fitting or noise.
+
+## State Two-Party Popular Vote Model & Electoral College Prediction
+
+I now make my Electoral College prediction for this week. To do so, I adapt the model I've used to predict the Democratic candidate's state two-party vote share in previous weeks: I add October state-level polling averages as another coefficient in my mostly poll-based state model. This is a regression table for the Democratic candidate's state-level popular vote share and state-level polling averages in both September and October (weighted by weeks left before the election) for the presidential elections from 2000-2020.
+
+```{r state model}
+# build state model
+state_model <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year >= 2000) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  left_join(d_state_pv, by = c("year", "state")) |>
+  select(year, state, month_9, month_10, D_pv2p) |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10)
+
+state_reg <- lm(D_pv2p ~ sept_poll + oct_poll, 
+                data = state_model)
+
+# table 5: state regression model
+tab_model(state_reg, show.se = TRUE, 
+          title = "Regression Table for State Model (2000-2020)", 
+          dv.labels = "Democrat's State-Level Popular Vote Share")
+```
+
+Once again, the relatively high R-squared values of 0.88 suggest that state-level September and October polling are strong predictors for the Democratic candidate’s two-party popular vote share for that state. More specifically, the model shows that October polling is a strong and significant predictor of the Democrat's state-level popular vote share, while September polling has a smaller, negative effect. The prediction for 2024 follows.
+
+```{r state model prediction}
+# state polling 2024 data
+state_poll_24 <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year == 2024) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10)
+
+# 2024 prediction
+w6_pred <- predict(state_reg, state_poll_24, interval = "prediction")
+
+w6_table <- bind_cols(state_poll_24,
+  as.data.frame(w6_pred) |> rename_with(~paste0("D_", .))) |>
+  mutate(D_fit = round(D_fit, 2), 
+         D_lwr = round(D_lwr, 2), 
+         D_upr = round(D_upr, 2), 
+         winner = if_else(D_fit>50, "Harris", "Trump")) |>
+  select(-sept_poll,
+         -oct_poll, 
+         -year) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", "Nevada", "New Hampshire", "New Mexico", "North Carolina", "Pennsylvania", "Texas", "Virginia", "Wisconsin"))
+
+# table 6: state model prediction
+knitr::kable(w6_table, 
+             col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(w6_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(w6_table$winner == "Trump"), background = "#FFD1D1")
+```
+
+Again focusing on the 13 "competitive" races, the model predicts that Harris will win 12 out of the 13 states, while Trump only wins Texas. This is the same finding as the first run of the state model from last week's blog, although the prediction intervals are slightly smaller with overall lower predictions (e.g. last week's model predicted Harris to win Georgia at 53.20% vs 51.85% this week). This week's inclusion of October polling averages may suggest focusing more on late-stage polling when making predictions. Again, I've only included October polling data up to the writing of this blog (October 10, 2024). 
+
+I also visualize my state-level predictions in a potential Electoral College map. Incorporating back in the other states (excluded as they are confident calls for either Harris or Trump), I get the following map!
+
+```{r week 6 prediction map}
+# tidy state-level prediction
+pred_map <- expert_24 |>
+  mutate(winner = if_else(cook_text_rating == "Solid Democrat", 
+                          "Harris", 
+                          if_else(cook_text_rating == "Solid Republican", 
+                                  "Trump", 
+                                  NA_character_))) |>
+  slice(-c(52:56)) |>
+  select(state, winner) |>
+  left_join(w6_table |> select(state, winner_w6 = winner), by = "state") |>
+  mutate(winner = coalesce(winner, winner_w6)) |>
+  select(state, winner) |>
+  mutate(winner = if_else(state == "Maine", "Harris", winner))
+
+# figure 3: week 6 predicted electoral map
+pred_map |> 
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = winner), color = "white") +
+  scale_fill_manual(values = c(
+    "Harris" = "dodgerblue4", 
+    "Trump" = "firebrick3"
+  )) +
+  labs(
+    title = "Week 6 Predicted Electoral Map",
+    fill = "Winner"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  )
+```
+
+More concisely, here are the tallied Electoral College votes for both candidates using this week's state model. 
+
+```{r week 6 ec prediction}
+ec_table <- pred_map |>
+  left_join(ec, by = "state") |>
+  select(state, winner, electors) |>
+  mutate(winner = case_when(
+    winner == "Harris" ~ "Kamala Harris",
+    winner == "Trump" ~ "Donald Trump",
+    TRUE ~ winner
+  )) |>
+  group_by(winner) |>
+  summarize(count = sum(electors))
+
+# table 7: week 6 predicted electoral table
+knitr::kable(ec_table, 
+             col.names = c("Candidate", "Electoral College Votes")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+## Conclusion
+
+Once more, Harris is predicted to win both the national two-party popular vote and the Electoral College (by a margin of 349-189). I remain unconvinced that Harris will win Florida, but the rest of the state predictions seem quite plausible to me — especially given the close nature of all the swing state races. Perhaps I'll turn to simplifying my models in the handful of blogs that remain. Additionally, I really enjoyed diving deeper into past campaign ad spending and the "air war" this week. 
