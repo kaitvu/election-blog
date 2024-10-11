@@ -1,8 +1,8 @@
 ---
-title: Blog 6
-author: Kaitlyn Vu
+title: "Blog 6: The Air War"
+author: "Kaitlyn Vu"
 date: '2024-10-09'
-slug: blog-6
+slug: "blog-6"
 categories: []
 tags: []
 ---
@@ -300,7 +300,7 @@ There are only 4 cases here where the candidate with the air advantage went on t
 
 Notably, Florida (138 million), Pennsylvania (95 million), and North Carolina (66 million) have the highest total ad spending between April and September 2020. How has total ad spending in these 13 states changed over time? The next line plot visualizes trends in total costs of ad campaigns over 5 presidential elections (2000, 2004, 2008, 2012, 2020). We do not have access to data from 2016, so spending in that election year is omitted.
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/ad costs by state-1.png" width="1056" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/ad costs by state-1.png" width="960" />
 
 First and foremost, total ad spending in Florida has been on a strong upward trend since 2008 — candidates put the most money into Floridian ads in 2004, 2012, and 2020. It's also interesting to note the states that have increased in total ad spending from 2012 to 2020, mainly Pennsylvania, North Carolina, Wisconsin, Arizona, Minnesota, and Nevada in addition to Florida. Those states now comprise our core battleground states, which makes sense why candidates are increasingly investing in ads aired there. 
 
@@ -557,7 +557,7 @@ Again focusing on the 13 "competitive" races, the model predicts that Harris wil
 
 I also visualize my state-level predictions in a potential Electoral College map. Incorporating back in the other states (excluded as they are confident calls for either Harris or Trump), I get the following map!
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/week 6 prediction map-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/week 6 prediction map-1.png" width="960" />
 
 More concisely, here are the tallied Electoral College votes for both candidates using this week's state model. 
 
