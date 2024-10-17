@@ -1,7 +1,7 @@
 ---
 title: "Blog 7: The Ground Game"
 author: "Kaitlyn Vu"
-date: '2024-10-16'
+date: '2024-10-17'
 slug: blog-7
 categories: []
 tags: []
@@ -154,9 +154,11 @@ I also map the location of these campaign events for each of the 3 election cycl
 
 ```{r campaign events maps, fig.width=10, fig.height=6}
 # compile geographic info
-us_geo <- states(cb = TRUE) |> 
+us_geo <- suppressMessages(suppressWarnings(
+  states(cb = TRUE) |> 
   shift_geometry() |> 
   filter(STUSPS %in% unique(field_offices$state))
+))
 
 campaign_events <- campaign_events |> 
   filter(between(longitude, -180, -60), between(latitude, 20, 72))
@@ -257,7 +259,9 @@ I decided to take a closer look at [Pennsylvania](https://www.nbcnews.com/politi
 
 ```{r pa map}
 # load pa data & tidy county turnout
-pa_counties <- counties(state = "PA", cb = TRUE)
+pa_counties <- suppressMessages(suppressWarnings(
+  counties(state = "PA", cb = TRUE)
+))
 
 pa_county_20 <- county_turnout |>
   filter(state == "PENNSYLVANIA") |>
@@ -314,7 +318,7 @@ So far, both 2024 candidates have hosted events in Philadelphia and Erie. I thin
 ## Field Offices
 Next, I survey past trends in the location and number of campaign field offices. We only have data on field offices for 2012 and 2016, so the geographical spread of field offices for those two election cycles is mapped below.
 
-```{r, fig.width=10, fig.height=6}
+```{r, fig.width=10, fig.height=4}
 # tidy field offices data
 fo_transformed <- st_as_sf(field_offices |> drop_na(), coords = c("longitude", "latitude"), crs = 4326) |>
   st_transform(crs = st_crs(us_geo)) |>
