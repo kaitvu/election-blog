@@ -1,7 +1,7 @@
 ---
 title: "Blog 6: The Air War"
 author: "Kaitlyn Vu"
-date: '2024-10-09'
+date: '2024-10-13'
 slug: "blog-6"
 categories: []
 tags: []
@@ -254,7 +254,7 @@ nat_reg <- lm(pv2p ~ GDP_growth_quarterly + RDPI_growth_quarterly + sept_poll + 
               data = subset(nat_model, year < 2020))
 
 tab_model(nat_reg, show.se = TRUE, 
-          title = "Regression Table for National Model (2000-2016)", 
+          title = "Regression Table for National Model (1968-2016)", 
           dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
 ```
 
@@ -371,7 +371,7 @@ Again focusing on the 13 "competitive" races, the model predicts that Harris wil
 
 I also visualize my state-level predictions in a potential Electoral College map. Incorporating back in the other states (excluded as they are confident calls for either Harris or Trump), I get the following map!
 
-```{r week 6 prediction map, fig.width=10, fig.height=6}
+```{r week 6 prediction map, fig.width=10, fig.height=5.5}
 # tidy state-level prediction
 pred_map <- expert_24 |>
   mutate(winner = if_else(cook_text_rating == "Solid Democrat", 
@@ -401,7 +401,10 @@ pred_map |>
   ) +
   theme_void() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2), 
+    legend.title = element_text(size = 11),
+    legend.text = element_text(size = 11), 
+    legend.key.size = unit(0.8, "cm") 
   )
 ```
 
@@ -417,7 +420,8 @@ ec_table <- pred_map |>
     TRUE ~ winner
   )) |>
   group_by(winner) |>
-  summarize(count = sum(electors))
+  summarize(count = sum(electors)) |>
+  arrange(desc(count))
 
 # table 7: week 6 predicted electoral table
 knitr::kable(ec_table, 

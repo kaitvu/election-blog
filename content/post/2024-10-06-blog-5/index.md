@@ -625,7 +625,7 @@ This model seems to be a bit more optimistic regarding Harris' prospects: the Vi
 Lastly, I also update the incumbent party candidate's national popular vote share model from Blog 4 with the recent September polling data. The following regression table is copied from last week's blog. 
 
 <table style="border-collapse:collapse; border:none;">
-<caption style="font-weight: bold; text-align:left;">Regression Table for Combined Model (2000-2016)</caption>
+<caption style="font-weight: bold; text-align:left;">Regression Table for Combined Model (1968-2016)</caption>
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">National Popular Vote Share for Incumbent Party Candidate</th>

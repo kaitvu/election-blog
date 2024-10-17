@@ -1,0 +1,614 @@
+---
+title: "Blog 7: The Ground Game"
+author: "Kaitlyn Vu"
+date: '2024-10-16'
+slug: blog-7
+categories: []
+tags: []
+---
+
+## Introduction
+From canvassing to phone banks, the second main aspect of presidential campaigns is the "ground game." The on-the-ground efforts of political organizing require a completely different set of infrastructure than the "air war" discussed in last week's blog: campaigns must work to identify and selectively target individual voters, while coordinating thousands of volunteers and field offices across the country. Former President Barack Obama's 2008 campaign against the late Senator John McCain is [widely considered](https://www.hks.harvard.edu/publications/groundbreakers-how-obamas-22-million-volunteers-transformed-campaigning-america) to have revolutionized the modern conceptualization of the ground game — we know that this side of the campaigning effects voting behavior to a certain extent. 
+
+In this penultimate blog update, I first examine historical trends in "ground game" mobilization — specifically campaign events and field offices — across the 2012-2024 presidential elections. I pay particular attention to the states and geographical regions targeted by these campaigning efforts. Then, I transition to updating my models to predict the national two-party popular vote and the Electoral College for the quickly-approaching 2024 election. 
+
+```{r setup, include=FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+
+# import libraries
+library(car)
+library(caret)
+library(CVXR)
+library(glmnet)
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(sjPlot)
+library(kableExtra)
+library(maps)
+library(readr)
+library(stringr)
+library(readxl)
+library(scales)
+library(ggpubr)
+library(tigris)
+library(sf)
+library(tools)
+
+# import data
+d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
+d_pollav_state <- read_csv("state_polls_1968-2024.csv")
+fred_econ <- read_csv("fred_econ.csv") |>
+  filter(quarter == 2)
+d_pv <- read_csv("popvote_1948_2020.csv")
+  d_pv$party[d_pv$party == "democrat"] <- "DEM"
+  d_pv$party[d_pv$party == "republican"] <- "REP"
+d_state_pv <- read_csv("state_popvote_1948_2020.csv")
+  d_state_pv <- d_state_pv |>
+    select(year, state, D_pv2p) |>
+    mutate(R_pv2p = 100-D_pv2p)
+states <- map_data("state") |>
+  rename(state = region)
+states$state <- str_to_title(states$state)
+ec <- read_csv("corrected_ec_1948_2024.csv") 
+  ec <- ec |>
+    filter(year == 2024)
+expert_24 <- read_excel("expert_2024.xlsx")
+
+state_abb_xwalk <- d_state_pv |>
+  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> 
+  select(state, state_abb) |> 
+  distinct() 
+state_abb_xwalk[51,]$state <- "District of Columbia"
+state_abb_xwalk[51,]$state_abb <- "DC"
+
+# import turnout & campaign data
+campaign_events <- read_csv("campaign_events_geocoded.csv")
+  campaign_events$party[campaign_events$candidate %in% c("Trump / Pence", "Trump", "Pence", "Trump/Pence", "Vance")] <- "REP"
+  campaign_events$party[campaign_events$candidate %in% c("Biden / Harris", "Biden", "Harris", "Biden/Harris", "Walz", "Kaine", "Clinton", "Clinton / Kaine")] <- "DEM"
+county_turnout <- read_csv("county_turnout.csv")
+field_offices <- read_csv("fieldoffice_2012-2016_byaddress.csv")
+```
+
+## Campaign Events 
+
+Arguably, the "ground game" of campaigns is most visibility manifested in campaign events, including rallies, speeches, and town halls. To start, I examine the number of campaign events over time for the 2016, 2020, and 2024 (so far) presidential elections — the visualization is below.
+
+```{r campaign events over time, fig.width=10, fig.height=6}
+# 2016 campaign events plot
+ce16 <- campaign_events |> 
+  group_by(date, party) |> 
+  summarize(n_events = n(), year) |> 
+  filter(year == 2016) |> 
+  ggplot(aes(x = date, y = n_events, color = party), show.legend = FALSE) + 
+  geom_point() + 
+  geom_smooth() + 
+  labs(title = "2016",
+       x = "Month",
+       y = "Campaign Events", 
+       color = "Party") + 
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  scale_x_date(date_labels = "%b") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# 2020 campaign events plot
+ce20 <- campaign_events |> 
+  group_by(date, party) |> 
+  summarize(n_events = n(), year) |> 
+  filter(year == 2020) |> 
+  ggplot(aes(x = date, y = n_events, color = party)) + 
+  geom_point() + 
+  geom_smooth() + 
+  labs(title = "2020",
+       x = "Month",
+       y = "Campaign Events", 
+       color = "Party") + 
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  scale_x_date(date_labels = "%b") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# 2024 campaign events plot
+ce24 <- campaign_events |> 
+  group_by(date, party) |> 
+  summarize(n_events = n(), year) |> 
+  filter(year == 2024) |> 
+  ggplot(aes(x = date, y = n_events, color = party)) + 
+  geom_point() + 
+  geom_smooth() + 
+  labs(title = "2024",
+       x = "Month",
+       y = "Campaign Events", 
+       color = "Party") + 
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  scale_x_date(date_labels = "%b") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# figure 1: campaign events over time (2016-2024)
+layout <- " 
+AAABB#
+##CC##"
+
+ce16 + ce20 + ce24 + 
+  plot_layout(design = layout) +
+  plot_annotation(
+    title = "Number of Campaign Events Over Time (2016-2024)",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
+    )
+  )
+```
+
+As expected, the number of campaign events for both parties increases over time. While 2016 and 2020 exhibit a sharp increase in campaign events approaching Election Day, the 2024 trend remains relatively flat with fewer events overall, particularly for the Republican candidate. 
+
+I also map the location of these campaign events for each of the 3 election cycles. Each circle represents a campaign event, colored blue if hosted by the Democratic candidate and red for the Republican candidate.
+
+```{r campaign events maps, fig.width=10, fig.height=6}
+# compile geographic info
+us_geo <- states(cb = TRUE) |> 
+  shift_geometry() |> 
+  filter(STUSPS %in% unique(field_offices$state))
+
+campaign_events <- campaign_events |> 
+  filter(between(longitude, -180, -60), between(latitude, 20, 72))
+
+ce_transformed <- st_as_sf(campaign_events |> drop_na(), coords = c("longitude", "latitude"), crs = 4326) |>
+  st_transform(crs = st_crs(us_geo)) |>
+  shift_geometry() |> 
+  st_make_valid()
+
+# 2016 campaign events map
+ce16_map <- ggplot() +
+  geom_sf(data = us_geo) + 
+  geom_sf(data = ce_transformed |> filter(year == 2016), aes(color = party), size = 3, alpha = 0.75, pch = 16, show.legend = FALSE) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  labs(title = "2016",
+       color = "Party") + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# 2020 campaign events map
+ce20_map <- ggplot() +
+  geom_sf(data = us_geo) + 
+  geom_sf(data = ce_transformed |> filter(year == 2020), aes(color = party), size = 3, alpha = 0.75, pch = 16, show.legend = FALSE) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  labs(title = "2020",
+       color = "Party") + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# 2024 campaign events map
+ce24_map <- ggplot() +
+  geom_sf(data = us_geo) + 
+  geom_sf(data = ce_transformed |> filter(year == 2024), aes(color = party), size = 3, alpha = 0.75, pch = 16) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  labs(title = "2024",
+       color = "Party") + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2),
+    legend.position = c(1.5, 1)
+  )
+
+# figure 2: campaign events maps (2016-2024)
+(ce16_map + ce20_map) / ce24_map + 
+  plot_layout(nrow = 2, heights = c(2, 2)) +
+  plot_annotation(
+    title = "Location of Campaign Events (2016-2024)",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
+    )
+  )
+```
+
+Looking at these maps, there seems to be a lot of geographic overlap in the locations that campaigns choose to host their events. Many campaign events take place in the Great Lakes region (near the "blue wall" states of Michigan and Wisconsin) as well as the Mid-Atlantic and southern states along the East Coast. The density of dots appears to be the highest and most geographically spread in 2016, which indicates a larger number of campaign events held over a greater number of states. In comparison, campaign events in 2024 seem to have concentrated in a handful of states so far, including Wisconsin, Michigan, Pennsylvania, Georgia, and Pennsylvania. 
+
+The following table presents the number of campaign events in our 13 states of interest for 2024 over the past 3 presidential elections. The final row of the table displays the total number of events across all these states for each campaign. 
+
+```{r campaign events counts table}
+# tidy campaign events data
+ce_table <- campaign_events |>
+  rename(state_abb = state) |>
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", 
+                      "Nevada", "New Hampshire", "New Mexico", "North Carolina", 
+                      "Pennsylvania", "Texas", "Virginia", "Wisconsin")) |>
+  group_by(year, state, party) |>
+  summarize(n = n(), .groups = 'drop') |>
+  pivot_wider(
+    names_from = c(party, year), 
+    values_from = n
+  ) |>
+  mutate(across(everything(), ~ replace_na(., 0))) 
+
+total_row <- ce_table |>
+  summarise(across(where(is.numeric), sum, na.rm = TRUE)) |>
+  mutate(state = "TOTAL EVENTS")
+ce_table <- bind_rows(ce_table, total_row)
+
+# table 1: campaign events counts table (2016-2024)
+knitr::kable(ce_table, 
+             col.names = c("State", "Clinton", "Trump", 
+                           "Biden", "Trump", 
+                           "Harris", "Trump"), 
+             align = c("l", rep("l", ncol(ce_table) - 1))) |>
+  add_header_above(c(" " = 1, "2016" = 2, "2020" = 2, "2024" = 2)) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(nrow(ce_table), 
+                       italic = TRUE)
+```
+
+By simply looking at the total events row, we see that the 2016 presidential election had the highest number of campaign events in these states. Former President Trump beat both Secretary Clinton and President Biden in terms of the volume of campaign events in these states for 2016 and 2020, although Vice President Harris holds a slight advantage in 2024 thus far. On the individual state level, it's interesting to note that neither candidate has hosted a campaign event in Florida for the 2024 electoral cycle, despite the high number of events in previous elections. Also, at this point in the cycle, the number of campaign events in Georgia has more than doubled from the 2020 election for both parties. Once again, the battleground states of Michigan, North Carolina, and Pennsylvania have attracted significant campaign attention across all 3 elections. 
+
+I decided to take a closer look at [Pennsylvania](https://www.nbcnews.com/politics/2024-election/trump-harris-pennsylvania-battleground-visits-map-rcna175691), which is one of the most important battleground states in the 2024 contest. This is a county-level map of Pennsylvania, where the fill color of each county indicates the margin by which the Democratic or Republican candidate won that county in 2020 — a more intense blue or red symbolizes a wider margin of victory for the appropriate party. Over this map, I've also plotted the location of 2024 campaign events by party so far. Some of these circles are overlapped on top of each other — meaning that the candidates hosted events in the same city  — and that is represented by a darker blue/purple colored circle. 
+
+```{r pa map}
+# load pa data & tidy county turnout
+pa_counties <- counties(state = "PA", cb = TRUE)
+
+pa_county_20 <- county_turnout |>
+  filter(state == "PENNSYLVANIA") |>
+  select(county_name, party, candidatevotes) |>
+  group_by(county_name) |>
+  pivot_wider(
+    names_from = party, 
+    values_from = candidatevotes
+  ) |>
+  mutate(
+    total_votes = DEMOCRAT + REPUBLICAN,
+    margin = (DEMOCRAT - REPUBLICAN) / total_votes * 100
+  ) |>
+  rename(NAME = county_name) |>
+  ungroup()
+
+pa_county_20$NAME <- toTitleCase(tolower(pa_county_20$NAME))
+pa_county_geo <- pa_counties |>
+  left_join(pa_county_20, by = "NAME")
+
+pa_events <- st_as_sf(campaign_events, coords = c("longitude", "latitude"), crs = 4326)
+
+# figure 3: pa map with 2020 margin & 2024 campaign events
+ggplot() +
+  geom_sf(data = pa_counties, fill = "lightgray", color = "black") + 
+  geom_sf(data = pa_county_geo, aes(fill = margin), color = "black", alpha = 0.8) + 
+  geom_sf(data = pa_events |> filter(year == 2024, state == "PA"), aes(color = party), size = 4, alpha = 0.6) + 
+  labs(
+    title = "PA 2020 Election Margin & 2024 Campaign Events",
+    fill = "Margin (%)",
+    color = "Party"
+  ) +  
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_blank(),   
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  ) +
+  scale_fill_gradient2(
+    high = "dodgerblue3", 
+    mid = "white", 
+    low = "firebrick3",
+    midpoint = 0,
+    limits = c(-70, 70),
+    name = "Margin (%)"
+  ) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3"))
+```
+
+So far, both 2024 candidates have hosted events in Philadelphia and Erie. I think it's important to examine campaign activity in the lighter colored counties, which indicates a narrower win margin in 2020. For example, the Harris campaign has hosted events in York county and Luzerne county (both won by Trump in 2020) and in Lehigh county and Northampton county (narrowly won by Biden in 2020). The Trump campaign has likewise hosted an event in the counties surrounding Philadelphia, which went for Biden in 2020. To some extent, this map is evidence that campaigns pay attention to previous election results to inform future campaign investments.
+
+## Field Offices
+Next, I survey past trends in the location and number of campaign field offices. We only have data on field offices for 2012 and 2016, so the geographical spread of field offices for those two election cycles is mapped below.
+
+```{r, fig.width=10, fig.height=6}
+# tidy field offices data
+fo_transformed <- st_as_sf(field_offices |> drop_na(), coords = c("longitude", "latitude"), crs = 4326) |>
+  st_transform(crs = st_crs(us_geo)) |>
+  shift_geometry() |> 
+  st_make_valid() |>
+  mutate(party = if_else(party == "democrat", "DEM", "REP"))
+
+# 2012 field offices map
+fo12_map <- ggplot() +
+  geom_sf(data = us_geo) + 
+  geom_sf(data = fo_transformed |> filter(year == 2012), aes(color = party), size = 3, alpha = 0.75, pch = 16, show.legend = FALSE) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  labs(title = "2012",
+       color = "Party") + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# 2016 field offices map
+fo16_map <- ggplot() +
+  geom_sf(data = us_geo) + 
+  geom_sf(data = fo_transformed |> filter(year == 2016), aes(color = party), size = 3, alpha = 0.75, pch = 16) +
+  scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
+  labs(title = "2016",
+       color = "Party") + 
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
+  ) 
+
+# figure 4: field offices maps (2012-2016)
+fo12_map + fo16_map +
+  plot_annotation(
+    title = "Location of Campaign Field Offices (2012-2016)",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
+    )
+  )
+```
+
+The field offices follow a similar pattern as the campaign events, concentrating along the West/East coasts and the Great Lakes region. At face value, the density of offices seem quite similar across both elections, perhaps with less offices across both parties in 2016 relative to 2012. Notably, we see a clear growth of Republican field offices in Arizona from 2012 to 2016. 
+
+The next table displays the number of field offices in the 13 states for the 2012 and 2016 presidential elections. Again, the final row of the table provides the total number of field offices across all these states for each campaign.   
+
+```{r field offices counts table}
+# tidy field offices data
+fo_table <- field_offices |>
+  rename(state_abb = state) |>
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", 
+                      "Nevada", "New Hampshire", "New Mexico", "North Carolina", 
+                      "Pennsylvania", "Texas", "Virginia", "Wisconsin")) |>
+  group_by(year, state, party) |>
+  summarize(n = n(), .groups = 'drop') |>
+  pivot_wider(
+    names_from = c(party, year), 
+    values_from = n
+  ) |>
+  mutate(across(everything(), ~ replace_na(., 0))) 
+
+total_row <- fo_table |>
+  summarise(across(where(is.numeric), sum, na.rm = TRUE)) |>
+  mutate(state = "TOTAL OFFICES")
+fo_table <- bind_rows(fo_table, total_row)
+
+# table 2: field offices counts table (2012-2016)
+knitr::kable(fo_table, 
+             col.names = c("State", "Obama", "Romney", 
+                           "Clinton", "Trump"), 
+             align = c("l", rep("l", ncol(fo_table) - 1))) |>
+  add_header_above(c(" " = 1, "2012" = 2, "2016" = 2)) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(nrow(fo_table), 
+                       italic = TRUE)
+```
+
+Overall, the total number of field offices in these states seems to have dropped from 2012 to 2016. Exceptions include the increase in Republican field offices in Arizona (+18) and Georgia (+1), as well as the increase in Democratic field offices in Minnesota (+1), New Hampshire (+4), Pennsylvania (+3), and Texas (+2) — not significantly large increases.
+
+## National Two-Party Popular Vote Model
+I now transition to updating my national two-party popular vote prediction. For this week's national model, I exclude Q2 RDI quarterly growth and the national two-party percentage of voters included in Blog 6. Instead, I add the national October polling averages (weighted by weeks left before the election) as another coefficient. The regression table for this week's national popular vote share model is below. 
+
+```{r national model}
+# national poll data
+nat_poll <- d_pollav_nat |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10)) |>
+  group_by(year, party, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10)
+
+# build national model
+nat_model <- d_pv |> 
+  left_join(fred_econ, by = "year") |> 
+  filter(year >= 1968, 
+         incumbent_party) |>
+  mutate(incumbent = as.numeric(incumbent)) |>
+  left_join(nat_poll, by = c("year", "party"))
+
+# table 3: national regression model
+nat_reg <- lm(pv2p ~ GDP_growth_quarterly + sept_poll + oct_poll + incumbent, 
+              data = subset(nat_model, year < 2020))
+
+tab_model(nat_reg, show.se = TRUE, 
+          title = "Regression Table for National Model (1968-2016)", 
+          dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
+```
+
+The model has an R-squared value of 0.89 and R-squared adjusted value of 0.84, which suggests that it is a strong predictor for the incumbent party candidate’s national two-party popular vote share. Of note here is that Q2 GDP growth and October national polling averages are statistically significant predictors of the incumbent party candidate's vote share, while September polling averages and incumbent status are not statistically significant. Again, we only have data on polling averages up to the date of this blog's writing (October 17, 2024). I use this model to predict Harris' share of the national two-party popular vote. 
+
+```{r national prediction}
+# national 2024 data
+nat_pred_data <- nat_model |>
+  filter(year == 2024) |>
+  select(GDP_growth_quarterly, sept_poll, oct_poll) |>
+  mutate(incumbent = 0)
+
+# 2024 prediction
+nat_pred <- predict(nat_reg, nat_pred_data, interval = "prediction")
+nat_pred <- round(nat_pred, 2)
+ 
+# table 4: national model prediction
+knitr::kable(nat_pred, 
+             col.names = c("Prediction", "Lower Bound", "Upper Bound")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+In a slight decrease from previous weeks, this model predicts that Harris will win the national two-party popular vote by approximately 51.9%. Perhaps this national model comes closer to conveying the tightly contested nature of this year's presidential election — for context, Biden defeated Trump 51.3% to 46.9% in 2020. The prediction intervals are also smaller here than the previous two weeks, which is a good sign. 
+
+```{r week 7 pv2p prediction}
+harris_share <- nat_pred[1, 1]
+trump_share <- 100 - harris_share
+
+pv_table <- data.frame(
+  candidate = c("Kamala Harris", "Donald Trump"),
+  pv2p = c(harris_share, trump_share)
+)
+
+knitr::kable(pv_table, 
+             col.names = c("Candidate", "Two-Party Popular Vote Share (%)")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+
+## State Two-Party Popular Vote Model & Electoral College Prediction
+Next up is updating the state model. This week, I add campaign events data — the total number of events in a given state — to the state model from Blog 6. Since we only have campaign events data from 2016 on, this state-level model is limited to 2016-2020, which is important to keep in mind. The regression table for the Democratic candidate's state-level popular vote share follows.
+
+```{r state model}
+# states campaign events data
+ce_states <- campaign_events |>
+  rename(state_abb = state) |>
+  left_join(state_abb_xwalk, by = "state_abb") |>
+  group_by(year, state) |>
+  filter(party == "DEM") |>
+  summarize(campaign_events=n()) |>
+  mutate(state = ifelse(state == "District of Columbia", "District Of Columbia", state))
+
+# build state model
+state_model <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year >= 2016) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  left_join(d_state_pv, by = c("year", "state")) |>
+  select(year, state, month_9, month_10, D_pv2p) |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10) |>
+  left_join(ce_states, by = c("year", "state")) |>
+  mutate(across(everything(), ~ replace_na(., 0)))
+
+# table 5: state regression model
+state_reg <- lm(D_pv2p ~ sept_poll + oct_poll + campaign_events, 
+                data = state_model)
+
+tab_model(state_reg, show.se = TRUE, 
+          title = "Regression Table for State Model (2016-2020)", 
+          dv.labels = "Democrat's State-Level Popular Vote Share")
+```
+
+In this model, only October state-level polling averages are a statistically significant predictor of the Democrat's state-level popular vote share. The R-squared value of 0.82 and adjusted R-squared value of 0.81 indicate that the model has a relatively good fit. Here is this model's 2024 prediction for our 13 states of interest:
+
+```{r state model prediction}
+# state 2024 data
+state_pred_data <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year == 2024) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10) |>
+  left_join(ce_states, by = c("year", "state")) |>
+  mutate(across(everything(), ~ replace_na(., 0)))
+
+# 2024 prediction
+w7_pred <- predict(state_reg, state_pred_data, interval = "prediction")
+
+w7_table <- bind_cols(state_pred_data,
+  as.data.frame(w7_pred) |> rename_with(~paste0("D_", .))) |>
+  mutate(D_fit = round(D_fit, 2), 
+         D_lwr = round(D_lwr, 2), 
+         D_upr = round(D_upr, 2), 
+         winner = if_else(D_fit>50, "Harris", "Trump")) |>
+  select(-sept_poll,
+         -oct_poll, 
+         -year, 
+         -campaign_events) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", "Nevada", "New Hampshire", "New Mexico", "North Carolina", "Pennsylvania", "Texas", "Virginia", "Wisconsin"))
+
+# table 6: state model prediction
+knitr::kable(w7_table, 
+             col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(w7_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(w7_table$winner == "Trump"), background = "#FFD1D1")
+```
+
+This week's state model predicts that Harris will win 11 out of 13 states, while Trump wins Florida and Texas. Harris' margins of victory are smaller here (e.g. Michigan at 51.61% this week vs 52.93% in Blog 6), and the prediction intervals are slightly larger relative to last week. Personally, I feel a little more at ease that this model predicted Trump to win Florida — given the [current state](https://www.nytimes.com/interactive/2024/us/elections/polls-president-florida.html) of the polls, I doubt that Harris will be able to flip the state as last week's state model predicted. 
+
+Adding back in the other states, we get the following Electoral College map for this week's model.
+
+```{r week 7 prediction map, fig.width=10, fig.height=5.5}
+# tidy state-level prediction
+pred_map <- expert_24 |>
+  mutate(winner = if_else(cook_text_rating == "Solid Democrat", 
+                          "Harris", 
+                          if_else(cook_text_rating == "Solid Republican", 
+                                  "Trump", 
+                                  NA_character_))) |>
+  slice(-c(52:56)) |>
+  select(state, winner) |>
+  left_join(w7_table |> select(state, winner_w7 = winner), by = "state") |>
+  mutate(winner = coalesce(winner, winner_w7)) |>
+  select(state, winner) |>
+  mutate(winner = if_else(state == "Maine", "Harris", winner))
+
+# figure 5: week 7 predicted electoral map
+pred_map |> 
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = winner), color = "white") +
+  scale_fill_manual(values = c(
+    "Harris" = "dodgerblue4", 
+    "Trump" = "firebrick3"
+  )) +
+  labs(
+    title = "Week 7 Predicted Electoral Map",
+    fill = "Winner"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2), 
+    legend.title = element_text(size = 11),
+    legend.text = element_text(size = 11), 
+    legend.key.size = unit(0.8, "cm") 
+  )
+```
+
+Here is the predicted tally for the Electoral College votes!
+
+```{r week 7 ec prediction}
+ec_table <- pred_map |>
+  left_join(ec, by = "state") |>
+  select(state, winner, electors) |>
+  mutate(winner = case_when(
+    winner == "Harris" ~ "Kamala Harris",
+    winner == "Trump" ~ "Donald Trump",
+    TRUE ~ winner
+  )) |>
+  group_by(winner) |>
+  summarize(count = sum(electors)) |>
+  arrange(desc(count))
+
+# table 7: week 7 predicted electoral table
+knitr::kable(ec_table, 
+             col.names = c("Candidate", "Electoral College Votes")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+## Conclusion
+Another week, another predicted presidential victory for Harris. A few thoughts moving into next week: I think that removing Q2 RDI growth in the national model was a good decision (in terms of its statistical insignificance and for the sake of reducing over-fitting), so that coefficient may not return for my final national model. For the state model, incorporating data on campaign events decreased the number of observations and only allowed me to train the model on 2 presidential elections. It could be argued here that narrowing down the state model to Trump-era races is productive, given that today's political environment is a very different world from that of the early 2000s. However, I'm not sure if I'll continue to incorporate campaign-related data into my models moving forward — they generally appear to be weaker predictors of vote share and tend to vary greatly from candidate to candidate. Onward!

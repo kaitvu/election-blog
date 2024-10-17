@@ -1,7 +1,7 @@
 ---
 title: "Blog 6: The Air War"
 author: "Kaitlyn Vu"
-date: '2024-10-09'
+date: '2024-10-13'
 slug: "blog-6"
 categories: []
 tags: []
@@ -311,7 +311,7 @@ Although we do not yet have access to full campaign ad spending for the 2024 ele
 Next, I shift back to updating my electoral predictions for the national two-party popular vote share. Building upon my model, I add a new variable to the regression: the national two-party percentage of voters. We [know](https://link.springer.com/article/10.1007/s11109-022-09816-z) that partisan affiliation is a strong demographic predictor of turnout and voting behavior, which is why I wanted to include it in my model. This data set was kindly put together using data from Pew Research Center and Gallup by my incredible classmate, Alex Heuss! The regression table for the new national popular vote share model is below. 
 
 <table style="border-collapse:collapse; border:none;">
-<caption style="font-weight: bold; text-align:left;">Regression Table for National Model (2000-2016)</caption>
+<caption style="font-weight: bold; text-align:left;">Regression Table for National Model (1968-2016)</caption>
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">National Popular Vote Share for Incumbent Party Candidate</th>
@@ -570,12 +570,12 @@ More concisely, here are the tallied Electoral College votes for both candidates
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> Donald Trump </td>
-   <td style="text-align:right;"> 189 </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> Kamala Harris </td>
    <td style="text-align:right;"> 349 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Donald Trump </td>
+   <td style="text-align:right;"> 189 </td>
   </tr>
 </tbody>
 </table>

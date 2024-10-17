@@ -313,7 +313,7 @@ combined <- lm(pv2p ~ GDP_growth_quarterly + RDPI_growth_quarterly + sept_poll +
                    data = subset(train, year < 2020))
 
 tab_model(combined, show.se = TRUE, 
-          title = "Regression Table for Combined Model (2000-2016)", 
+          title = "Regression Table for Combined Model (1968-2016)", 
           dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
 ```
 
