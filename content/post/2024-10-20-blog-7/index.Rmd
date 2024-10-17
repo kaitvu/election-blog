@@ -154,11 +154,7 @@ I also map the location of these campaign events for each of the 3 election cycl
 
 ```{r campaign events maps, fig.width=10, fig.height=6}
 # compile geographic info
-us_geo <- suppressMessages(suppressWarnings(
-  states(cb = TRUE) |> 
-  shift_geometry() |> 
-  filter(STUSPS %in% unique(field_offices$state))
-))
+us_geo <- readRDS("us_geo.rds")
 
 campaign_events <- campaign_events |> 
   filter(between(longitude, -180, -60), between(latitude, 20, 72))
@@ -259,9 +255,7 @@ I decided to take a closer look at [Pennsylvania](https://www.nbcnews.com/politi
 
 ```{r pa map}
 # load pa data & tidy county turnout
-pa_counties <- suppressMessages(suppressWarnings(
-  counties(state = "PA", cb = TRUE)
-))
+pa_counties <- readRDS("pa_counties.rds")
 
 pa_county_20 <- county_turnout |>
   filter(state == "PENNSYLVANIA") |>
