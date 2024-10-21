@@ -1,7 +1,7 @@
 ---
 title: "Blog 7: The Ground Game"
 author: "Kaitlyn Vu"
-date: '2024-10-17'
+date: '2024-10-20'
 slug: blog-7
 categories: []
 tags: []

@@ -1,7 +1,7 @@
 ---
 title: "Blog 7: The Ground Game"
 author: "Kaitlyn Vu"
-date: '2024-10-17'
+date: '2024-10-20'
 slug: blog-7
 categories: []
 tags: []
@@ -89,7 +89,9 @@ ce16 <- campaign_events |>
        y = "Campaign Events", 
        color = "Party") + 
   scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
-  scale_x_date(date_labels = "%b") +
+  scale_x_date(date_labels = "%b", 
+               date_breaks = "1 month", 
+               limits = as.Date(c("2016-09-01", "2016-11-5"))) +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
@@ -108,7 +110,9 @@ ce20 <- campaign_events |>
        y = "Campaign Events", 
        color = "Party") + 
   scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
-  scale_x_date(date_labels = "%b") +
+  scale_x_date(date_labels = "%b", 
+               date_breaks = "1 month", 
+               limits = as.Date(c("2020-09-01", "2020-11-5"))) +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
@@ -127,7 +131,9 @@ ce24 <- campaign_events |>
        y = "Campaign Events", 
        color = "Party") + 
   scale_color_manual(values = c("DEM" = "dodgerblue3", "REP" = "firebrick3")) + 
-  scale_x_date(date_labels = "%b") +
+  scale_x_date(date_labels = "%b", 
+               date_breaks = "1 month", 
+               limits = as.Date(c("2024-09-01", "2024-10-20"))) +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, vjust = 2)
