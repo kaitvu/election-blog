@@ -125,7 +125,7 @@ Next, let's assess the out-of-sample fit for this model. I performed 1,000 runs 
 <img src="{{< blogdown/postref >}}index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
 The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party's performance by a wider margin than it overestimates.
 
-Here is a summary visualization for this week's prediction of the national two-party popular vote!
+Here is a summary visualization for this week's prediction of the national two-party popular vote! The dashed black line indicates 50% of the national popular vote. 
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/national prediction viz-1.png" width="960" />
 
@@ -305,7 +305,7 @@ Incorporating in the other states, here is this week's Electoral College map!
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/week 8 prediction map-1.png" width="960" />
 
-Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. 
+Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. The dashed black line indicates 270 electoral votes, which is the number of votes required to win the Electoral College. 
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/state model prediction viz-1.png" width="960" />
 

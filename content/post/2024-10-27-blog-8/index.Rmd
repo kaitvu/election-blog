@@ -76,7 +76,7 @@ However, there's also evidence to prove that shocks don't truly have a predictiv
 
 Let's quickly revisit the polling visualization with potential "game-changers" from Blog 3. Here is the updated plot with national polling averages to the date of this blog's writing (October 24, 2024). 
 
-```{r poll averages 2024, fig.width=11}
+```{r poll averages 2024, fig.width=11, fig.height=6}
 # figure 1: polling averages by date with "game changers" 2024
 d_pollav_nat |> 
   filter(year == 2024, 
@@ -262,7 +262,7 @@ ggplot() +
 ```
 The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party's performance by a wider margin than it overestimates.
 
-Here is a summary visualization for this week's prediction of the national two-party popular vote!
+Here is a summary visualization for this week's prediction of the national two-party popular vote! The dashed black line indicates 50% of the national popular vote. 
 
 ```{r national prediction viz, fig.width=10, fig.height=3}
 harris_share <- nat_pred[1, 1]
@@ -445,7 +445,7 @@ pred_map |>
   )
 ```
 
-Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. 
+Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. The dashed black line indicates 270 electoral votes, which is the number of votes required to win the Electoral College. 
 
 ```{r state model prediction viz, fig.width=10, fig.height=3}
 # figure 7: state model prediction
@@ -468,7 +468,7 @@ ggplot(ec_table, aes(x = "", y = count, fill = winner)) +
   scale_fill_manual(values = c("Kamala Harris" = "dodgerblue3", "Donald Trump" = "firebrick3")) +  
   labs(title = "Predicted Electoral College Votes",
        x = NULL,
-       y = "Electoral Votes", 
+       y = NULL, 
        fill = "Candidate") +
   theme_minimal() + 
   theme(

@@ -121,7 +121,7 @@
 <p>Next, let&rsquo;s assess the out-of-sample fit for this model. I performed 1,000 runs of a cross-validation, randomly selecting half of the election years in my data set to test the model each run. Here, the mean of the absolute value of the out-of-sample residuals was approximately 3.63. Considering that the national two-party vote share spans nearly 20 points, this suggests a positive indication of the model&rsquo;s performance. This histogram displays the distribution of out-of-sample errors for this week&rsquo;s national model.</p>
 <img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
 The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party's performance by a wider margin than it overestimates.
-<p>Here is a summary visualization for this week&rsquo;s prediction of the national two-party popular vote!</p>
+<p>Here is a summary visualization for this week&rsquo;s prediction of the national two-party popular vote! The dashed black line indicates 50% of the national popular vote.</p>
 <img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national prediction viz-1.png" width="960" />
 <h2 id="state-two-party-popular-vote-model--electoral-college-prediction">State Two-Party Popular Vote Model &amp; Electoral College Prediction</h2>
 <p>Moving onto my state-level model, I utilize September state polling averages, October state polling averages, and an indicator for the incumbent party (1 if an incumbent party candidate, 0 if not) as coefficients. Not bounded by the campaign events data of last week, I train the model on presidential elections from 2000 to 2020. The regression table for the Democratic candidate&rsquo;s state-level popular vote share is below.</p>
@@ -287,7 +287,7 @@ The errors appear slightly right-skewed, indicating the model occasionally under
 <p>New Hampshire, Virginia, and New Mexico have the highest predicted win margins for Harris. Close states include Arizona, Georgia, and North Carolina. Pennsylvania is higher on this chart than I would&rsquo;ve expected — it currently sits in the middle of the pack with very similar margins to the other swing states of Michigan, Nevada, Wisconsin, and Minnesota.</p>
 <p>Incorporating in the other states, here is this week&rsquo;s Electoral College map!</p>
 <img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/week 8 prediction map-1.png" width="960" />
-<p>Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week.</p>
+<p>Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. The dashed black line indicates 270 electoral votes, which is the number of votes required to win the Electoral College.</p>
 <img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/state model prediction viz-1.png" width="960" />
 <h2 id="conclusion">Conclusion</h2>
 <p>Once again, I predict that Harris will win both the national two-party popular vote and the Electoral College. We&rsquo;re less than 14 days away from the election, so I&rsquo;m excited (and a little scared) to see how our predictions will shake out. Looking forward to putting together my final election prediction next week!</p>
