@@ -74,7 +74,7 @@ campaign_spending <- read_csv("FEC_contributions_by_state_2008_2024.csv")
 Before we get to predictions for 2024, let's take a look back at campaign ad spending in previous elections. The following visualization plots campaign ad spending by month for the presidential elections from 2000-2012. 
 
 ```{r ad spending by month, fig.width=11, fig.height=6}
-# plot 1: ad spending by month (2000-2012)
+# figure 1: ad spending by month (2000-2012)
 ad_campaigns |>
   mutate(year = as.numeric(substr(air_date, 1, 4))) |>
   mutate(month = as.numeric(substr(air_date, 6, 7))) |>
@@ -184,7 +184,7 @@ There are only 4 cases here where the candidate with the air advantage went on t
 Notably, Florida (138 million), Pennsylvania (95 million), and North Carolina (66 million) have the highest total ad spending between April and September 2020. How has total ad spending in these 13 states changed over time? The next line plot visualizes trends in total costs of ad campaigns over 5 presidential elections (2000, 2004, 2008, 2012, 2020). We do not have access to data from 2016, so spending in that election year is omitted.
 
 ```{r ad costs by state, fig.width=10, fig.height=6}
-# plot 2: ad costs by state
+# figure 2: ad costs by state
 ad_campaigns |>
   mutate(year = as.numeric(substr(air_date, 1, 4))) |>
   mutate(month = as.numeric(substr(air_date, 6, 7))) |>

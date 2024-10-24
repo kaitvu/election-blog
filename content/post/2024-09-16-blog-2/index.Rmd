@@ -89,7 +89,7 @@ gdp_plot_2 <- d_inc_econ_2 |>
   theme(plot.title = element_text(size = 14), 
         plot.margin = margin(10, 0, 0, 30))
 
-# plot 1: Q2 GDP and national popular vote share (I used ChatGPT to help format the plots side-by-side)
+# figure 1: Q2 GDP and national popular vote share (I used ChatGPT to help format the plots side-by-side)
 gdp_plot_1 + gdp_plot_2 + 
   plot_annotation(title = "Incumbent Party's National Popular Vote Share and Q2 GDP Growth",
                   theme = theme(
@@ -145,7 +145,7 @@ rdi_plot_2 <- d_inc_econ_2 |>
   theme(plot.title = element_text(size = 14), 
        plot.margin = margin(10, 0, 0, 25) )
 
-# plot 2: Q2 RDI and national popular vote share 
+# figure 2: Q2 RDI and national popular vote share 
 rdi_plot_1 + rdi_plot_2 + 
   plot_annotation(title = "Incumbent Party's National Popular Vote Share and Q2 RDI Growth",
                   theme = theme(
@@ -215,7 +215,7 @@ heir_plot_gdp <- d_heir_econ |>
   theme(plot.title = element_text(size = 14), 
         plot.margin = margin(10, 0, 0, 25))
 
-# plot 3: sitting vs heir gdp
+# figure 3: sitting vs heir gdp
 sitting_plot_gdp + heir_plot_gdp + 
   plot_annotation(title = "Sitting Presidents vs Same-Party Heirs for Q2 GDP Growth",
                   theme = theme(
@@ -270,7 +270,7 @@ heir_plot_rdi <- d_heir_econ |>
   theme(plot.title = element_text(size = 14), 
         plot.margin = margin(10, 0, 0, 25))
 
-# plot 4: sitting vs heir rdi
+# figure 4: sitting vs heir rdi
 sitting_plot_rdi + heir_plot_rdi + 
   plot_annotation(title = "Sitting Presidents vs Same-Party Heirs for Q2 RDI Growth",
                   theme = theme(

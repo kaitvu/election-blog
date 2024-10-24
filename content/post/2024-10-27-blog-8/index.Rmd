@@ -1,0 +1,489 @@
+---
+title: "Blog 8: Shocks"
+author: "Kaitlyn Vu"
+date: '2024-10-27'
+slug: blog-8
+categories: []
+tags: []
+---
+
+## Introduction
+We're in the home stretch, folks! Welcome to my last blog update for the 2024 presidential election, which less than two weeks away. This week, we discussed "shocks," a broad category of external factors and events that aren't the result of campaigns or systematic fundamental forces. Such shocks can range from pandemics to natural disasters and local college football victories, all with potential implications for voter behavior — depending on who you ask. 
+
+In this blog, I briefly discuss the role of shocks in presidential elections and continue to update my national and state-level models in preparation for my final prediction!
+
+```{r setup, include=FALSE}
+# hide code
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+
+# import libraries
+library(car)
+library(caret)
+library(CVXR)
+library(glmnet)
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(sjPlot)
+library(kableExtra)
+library(maps)
+library(readr)
+library(stringr)
+library(readxl)
+library(scales)
+library(ggpubr)
+library(tigris)
+library(sf)
+library(tools)
+
+# import data
+d_pollav_nat <- read_csv("national_polls_1968-2024.csv")
+d_pollav_state <- read_csv("state_polls_1968-2024.csv")
+fred_econ <- read_csv("fred_econ.csv") |>
+  filter(quarter == 2)
+d_pv <- read_csv("popvote_1948_2020.csv")
+  d_pv$party[d_pv$party == "democrat"] <- "DEM"
+  d_pv$party[d_pv$party == "republican"] <- "REP"
+d_state_pv <- read_csv("state_popvote_1948_2020.csv")
+  d_state_pv <- d_state_pv |>
+    select(year, state, D_pv2p) |>
+    mutate(R_pv2p = 100-D_pv2p)
+states <- map_data("state") |>
+  rename(state = region)
+states$state <- str_to_title(states$state)
+ec <- read_csv("corrected_ec_1948_2024.csv") 
+  ec <- ec |>
+    filter(year == 2024)
+expert_24 <- read_excel("expert_2024.xlsx")
+national_party_id <- read_csv("national_party_id.csv") 
+  national_party_id$party[national_party_id$party == "democrat"] <- "DEM"
+  national_party_id$party[national_party_id$party == "republican"] <- "REP"
+
+state_abb_xwalk <- d_state_pv |>
+  mutate(state_abb = state.abb[match(d_state_pv$state, state.name)]) |> 
+  select(state, state_abb) |> 
+  distinct() 
+state_abb_xwalk[51,]$state <- "District of Columbia"
+state_abb_xwalk[51,]$state_abb <- "DC"
+
+hurricanes <- read_csv("hurricanes_1996_2016.csv")
+```
+
+## Assessing Shocks
+The effects of shocks on elections are perhaps best understood through the logic of retrospection, where voters look to the past to assess incumbent performance. To [Christopher Achen and Larry Bartels](https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists?srsltid=AfmBOooJLrwf2Na-MT6i50wNH-lmkWRNnBe4VaKlWVyLFriDwas1hnk9), voters' supposed reactions to shocks paint a bleak picture for democracy: voters are swayed by irrelevant factors — such as shark attacks — and fail to accurately evaluate the current government and incumbent. [Andrew Healy and Neil Malhotra](https://www.nowpublishers.com/article/Details/QJPS-9057) likewise finds that voters punish incumbents for random events (droughs, floods, economic shocks, etc) and fail to differentiate between government-caused outcomes and uncontrollable external factors. Following this perspective, shocks and their impact on voting behavior undermine the democratic ideal of elections as accountability mechanisms.
+
+However, there's also evidence to prove that shocks don't truly have a predictive effect on election outcomes. [Marco Mendoza and Semra Sevi](https://www.researchgate.net/publication/354002319_Did_exposure_to_COVID-19_affect_vote_choice_in_the_2020_presidential_election) find that COVID-19 exposure didn't consistently affect voting — pre-existing partisan identities had a much stronger role. 
+
+Let's quickly revisit the polling visualization with potential "game-changers" from Blog 3. Here is the updated plot with national polling averages to the date of this blog's writing (October 24, 2024). 
+
+```{r poll averages 2024, fig.width=11}
+# figure 1: polling averages by date with "game changers" 2024
+d_pollav_nat |> 
+  filter(year == 2024, 
+        as.Date(poll_date) > as.Date("2024-06-01")) |> 
+  ggplot(aes(x = poll_date, y = poll_support, color = party)) +
+  geom_point(size = 1) + 
+  geom_line() +
+  geom_segment(x = as.Date("2024-06-27"), xend = as.Date("2024-06-27"), y = 0, yend = 43, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-06-27"), y = 43.5, label = "First \n Pres. Debate", size = 4) +
+  geom_segment(x = as.Date("2024-07-01"), xend = as.Date("2024-07-01"), y = 0, yend = 45, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-07-01"), y = 45.5, label = "Trump v. US \n Decision", size = 4) +
+  geom_segment(x = as.Date("2024-07-13"), xend = as.Date("2024-07-13"), y = 0, yend = 46, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-07-12"), y = 46.5, label = "Trump Assassination \n Attempt", size = 4) +
+  geom_rect(xmin = as.Date("2024-07-15"), xmax = as.Date("2024-07-18"), ymin = 0, ymax = 44, alpha = 0.1, color = NA, fill = "grey") +
+  annotate("text", x = as.Date("2024-07-16"), y = 44.25, label = "RNC", size = 4) +
+  geom_segment(x = as.Date("2024-07-21"), xend = as.Date("2024-07-21"), y = 0, yend = 45, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-07-22"), y = 45.5, label = "Biden Leaves \n Race", size = 4) +
+  geom_segment(x = as.Date("2024-08-05"), xend = as.Date("2024-08-05"), y = 0, yend = 47, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-08-05"), y = 47.5, label = "Harris Offically \n Nominated", size = 4) +
+  geom_rect(xmin = as.Date("2024-08-19"), xmax = as.Date("2024-08-22"), ymin = 0, ymax = 48, alpha = 0.1, color = NA, fill = "grey") +
+  annotate("text", x = as.Date("2024-08-20"), y = 48.25, label = "DNC", size = 4) + 
+  geom_segment(x = as.Date("2024-09-10"), xend = as.Date("2024-09-10"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-09-10"), y = 47, label = "Second \n Pres. Debate", size = 4) +
+  geom_segment(x = as.Date("2024-09-15"), xend = as.Date("2024-09-15"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-09-15"), y = 49.1, label = "Second Trump \n Assassination Attempt", size = 4) +
+    geom_segment(x = as.Date("2024-09-26"), xend = as.Date("2024-09-26"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-09-26"), y = 47.5, label = "Hurricane \n Helene", size = 4) +
+  geom_segment(x = as.Date("2024-10-01"), xend = as.Date("2024-10-01"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-10-01"), y = 46.5, label = "VP Debate", size = 4) +
+  geom_segment(x = as.Date("2024-10-09"), xend = as.Date("2024-10-09"), y = 0, yend = 48.5, linetype = "dashed", alpha = 0.4, color = "grey") +
+  annotate("text", x = as.Date("2024-10-09"), y = 49.1, label = "Hurricane \n Milton", size = 4) +
+  scale_x_date(date_labels = "%b",
+               breaks = seq(as.Date("2024-01-01"), as.Date("2024-12-01"), by = "1 month")) + 
+  scale_y_continuous(breaks = seq(39, 49, by = 2)) +
+  scale_color_manual(values = c("dodgerblue2", "firebrick2")) +
+  labs(x = "Date",
+       y = "Average National Poll Approval", 
+       title = "Polling Averages by Date with Potential Game Changers, 2024", 
+       color = "Party") + 
+  theme_classic() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  )
+```
+
+Again, it is difficult to establish a causal relationship between potential "game-changers" and trends in public opinion. That being said, polling doesn't seem to change much following these events. Perhaps it's because America has become so [politically calcified](https://www.newser.com/story/327917/a-theory-to-explain-modern-politics-calcification.html) that such "shocks" don't affect us: we'll still be voting for our party's candidate at the end of the day. It's interesting to think about what would happen if we put the craziness of the 2024 election cycle in the context of another presidential election year — would these potential "game-changers" have more of a notable effect?
+
+To conclude this discussion on shocks, I briefly look at the potential effect of hurricanes on electoral outcomes. For this graph, I plot a regression between the number of hurricanes in a presidential election year (occurring before November) and the two-party popular vote share for the incumbent party's candidate.
+
+```{r hurricanes, fig.width=10, fig.height=6}
+# create hurricanes regression model
+hurricanes_model <- lm(pv2p ~ n, data = hurricanes |>
+  filter(YEAR %in% c(1996, 2000, 2004, 2008, 2012, 2016), 
+         MONTH_NAME != "November", 
+         MONTH_NAME != "December") |>
+  group_by(YEAR) |>
+  summarize(n=n()) |>
+  rename(year = YEAR) |>
+  left_join(d_pv, by = "year") |>
+  filter(incumbent_party == TRUE))
+
+# save slope and r-squared
+slope <- coef(hurricanes_model)[2]
+r_squared <- summary(hurricanes_model)$r.squared
+
+# figure 2: hurricane regression model
+hurricanes |>
+  filter(YEAR %in% c(1996, 2000, 2004, 2008, 2012, 2016), 
+         MONTH_NAME != "November", 
+         MONTH_NAME != "December") |>
+  group_by(YEAR) |>
+  summarize(n=n()) |>
+  rename(year = YEAR) |>
+  left_join(d_pv, by = "year") |>
+  filter(incumbent_party == TRUE) |>
+  ggplot(aes(x = n, y = pv2p)) + 
+  geom_text(aes(label = year), vjust = -0.5) +  
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +  
+  labs(title = "Incumbent Party Two-Party Vote Share & Hurricanes",
+       x = "Number of Hurricanes",
+       y = "Incumbent Party Two-Party Popular Vote Share (%)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  ) +
+  annotate("text", x = Inf, y = -Inf, label = paste("Slope:", round(slope, 2), "\nR-squared:", round(r_squared, 2)), 
+           hjust = 1.1, vjust = -0.4, size = 4, color = "black", fontface = "italic")
+
+```
+
+For this regression, the slope of the line of best fit is barely greater than 0 and the R-squared value of 0.17 is low. This seems to indicate that there isn't a strong relationship between the number of hurricanes in a presidential election year and the two-party popular vote for the incumbent party's candidate. Specifically, the low R-squared value indicates that only a small portion of vote share variation is explained by the number of hurricanes, implying that other factors likely play a much larger role in influencing election outcomes.
+
+So, do shocks matter for presidential election outcomes? The answer is obviously complicated, but these two simple analyses seem to signal that they do not. 
+
+## National Two-Party Popular Vote Model
+For this week's national model, I test a different combination of the factors that I've been using previous weeks: quarterly GDP growth for Q2 of the election year, national October polling averages (weighted by weeks left before the election), national two-party percentage of voters, and an incumbent variable (1 if the incumbent party candidate was also the incumbent president, 0 if not). The regression table is below!
+
+```{r national model}
+# national poll data
+nat_poll <- d_pollav_nat |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) == 10) |>
+  group_by(year, party, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  drop_na() |>
+  rename(oct_poll = month_10)
+
+# build national model
+nat_model <- d_pv |> 
+  left_join(fred_econ, by = "year") |> 
+  filter(year >= 1968, 
+         incumbent_party) |>
+  mutate(incumbent = as.numeric(incumbent)) |>
+  left_join(nat_poll, by = c("year", "party")) |>
+  left_join(national_party_id, by = c("year", "party"))
+
+# table 1: national regression model
+nat_reg <- lm(pv2p ~ GDP_growth_quarterly + oct_poll + two_party_percent + incumbent, 
+              data = subset(nat_model, year < 2020))
+
+tab_model(nat_reg, show.se = TRUE, 
+          title = "Regression Table for National Model (1968-2016)", 
+          dv.labels = "National Popular Vote Share for Incumbent Party Candidate")
+```
+
+The model has an R-squared value of 0.92 and R-squared adjusted value of 0.88, which suggests that it is a strong predictor for the incumbent party candidate’s national two-party popular vote share. Here, Q2 GDP growth and October national polling averages are statistically significant predictors, while two-party percent and incumbent status aren't statistically significant. Once again, we only have polling data up to the date of this blog's writing (October 24, 2024). I now use this model to predict Vice President Harris' (the incumbent party candidate) share of the national two-party popular vote. 
+
+```{r national prediction table}
+# national 2024 data
+nat_pred_data <- nat_model |>
+  filter(year == 2024) |>
+  select(GDP_growth_quarterly, oct_poll, two_party_percent) |>
+  mutate(incumbent = 0)
+
+# 2024 prediction
+nat_pred <- predict(nat_reg, nat_pred_data, interval = "prediction")
+nat_pred <- round(nat_pred, 2)
+ 
+# table 2: national model prediction
+knitr::kable(nat_pred, 
+             col.names = c("Prediction", "Lower Bound", "Upper Bound")) |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+Similar to last week, this model predicts that Harris will win 52% of the national two-party popular vote. The prediction intervals are also smaller here than the previous two weeks! 
+
+Next, let's assess the out-of-sample fit for this model. I performed 1,000 runs of a cross-validation, randomly selecting half of the election years in my data set to test the model each run. Here, the mean of the absolute value of the out-of-sample residuals was approximately 3.63. Considering that the national two-party vote share spans nearly 20 points, this suggests a positive indication of the model's performance. This histogram displays the distribution of out-of-sample errors for this week's national model.
+
+```{r national model out-of-sample fit, fig.width=10, fig.height=6}
+# set seed
+set.seed(02171)
+
+# run cross-validation
+out_samp_errors <- sapply(1:1000, function(i) {
+  years_out_samp <- sample(nat_model$year, 6)
+  mod <- lm(pv2p ~ GDP_growth_quarterly + oct_poll + two_party_percent + incumbent, 
+            data = nat_model[!(nat_model$year %in% years_out_samp), ])
+  out_samp_pred <- predict(mod, newdata = nat_model[nat_model$year %in% years_out_samp, ])
+  if (any(is.na(out_samp_pred)) || any(is.na(nat_model$pv2p[nat_model$year %in% years_out_samp]))) {
+    return(NA)
+  }
+  
+  out_samp_truth <- nat_model$pv2p[nat_model$year %in% years_out_samp]
+  mean(abs(out_samp_pred - out_samp_truth))
+})
+
+out_samp_errors <- na.omit(out_samp_errors)
+mean_out_samp_error <- mean(out_samp_errors)
+
+# figure 3: out-of-sample errors from cross validation
+ggplot() +
+  geom_histogram(mapping = aes(x = out_samp_errors), fill = "#9999CC", binwidth = 0.5) + 
+  labs(title = "National Model Out-of-Sample Errors from Cross-Validation",
+       x = "Out-of-Sample Mean Absolute Errors",
+       y = "Count") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
+  )
+```
+The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party's performance by a wider margin than it overestimates.
+
+Here is a summary visualization for this week's prediction of the national two-party popular vote!
+
+```{r national prediction viz, fig.width=10, fig.height=3}
+harris_share <- nat_pred[1, 1]
+trump_share <- 100 - harris_share
+
+pv_table <- data.frame(
+  candidate = c("Kamala Harris", "Donald Trump"),
+  pv2p = c(harris_share, trump_share))
+
+# figure 4: national model prediction 
+ggplot(pv_table, aes(x = "", y = pv2p, fill = candidate)) +
+  geom_bar(stat = "identity", width = 0.3) + 
+  geom_hline(yintercept = 50, linetype = "dashed", color = "black", size = 1) + 
+  geom_text(aes(label = paste0(pv2p, "%")), position = position_stack(vjust = 0.5), color = "white") + 
+  scale_fill_manual(values = c("Kamala Harris" = "dodgerblue3", "Donald Trump" = "firebrick3")) +  
+  labs(title = "Predicted National Two-Party Popular Vote Share",
+       x = NULL,
+       y = NULL, 
+       fill = "Candidate") +
+  theme_minimal() + 
+  theme(
+    axis.text.x = element_blank(),  
+    axis.ticks.x = element_blank(),
+    panel.grid.major.y = element_blank(),  
+    panel.grid.minor.y = element_blank(),  
+    panel.grid.major.x = element_blank(),  
+    panel.grid.minor.x = element_blank(),  
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2),  
+    plot.margin = margin(10, 10, 10, 10) 
+  ) +
+  coord_flip() +  
+  ylim(0, 100) + 
+  theme(aspect.ratio = 0.4) 
+```
+
+## State Two-Party Popular Vote Model & Electoral College Prediction
+Moving onto my state-level model, I utilize September state polling averages, October state polling averages, and an indicator for the incumbent party (1 if an incumbent party candidate, 0 if not) as coefficients. Not bounded by the campaign events data of last week, I train the model on presidential elections from 2000 to 2020. The regression table for the Democratic candidate's state-level popular vote share is below.
+
+```{r state model}
+# build state model
+state_model <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year >= 2000) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  left_join(d_state_pv, by = c("year", "state")) |>
+  select(year, state, month_9, month_10, D_pv2p) |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10) |>
+  left_join(d_pv |>
+  select(year, party, incumbent_party) |>
+  filter(party == "DEM") |>
+  mutate(incumbent_party = if_else(incumbent_party == "TRUE", 1, 0)) |>
+  select(-party), by = "year")
+
+# table 3: state regression model
+state_reg <- lm(D_pv2p ~ sept_poll + oct_poll + incumbent_party, 
+                data = subset(state_model, year <= 2020))
+
+tab_model(state_reg, show.se = TRUE, 
+          title = "Regression Table for State Model (2000-2020)", 
+          dv.labels = "Democrat's State-Level Popular Vote Share")
+```
+
+Higher than last week, the R-squared values of 0.89 indicate the model's strong fit. All the coefficients here are statistically significant. October polling is a strong positive predictor of the Democratic state-level popular vote share with the incumbent variable also a significant positive coefficient. On the other hand, September polling is a negative, slightly smaller coefficient, indicating that higher September polling averages slightly reduce the predicted Democratic vote share — which seems counter-intuitive. This may indicate some noise in earlier polls or possible overemphasis on early polling that might shift by Election Day.
+
+This is the state model's prediction for our 13 states of interest. 
+
+```{r state model prediction table}
+# state 2024 data
+state_pred_data <- d_pollav_state |>
+  select(year, state, weeks_left, poll_date, poll_support, party) |>
+  filter(month(poll_date) %in% c(9, 10),
+         party == "DEM", 
+         year == 2024) |>
+  group_by(year, state, month = month(poll_date)) |>
+  summarize(poll_support = round(weighted.mean(poll_support, weeks_left, na.rm = TRUE), 2), .groups = "drop") |>
+  pivot_wider(names_from = month, 
+              values_from = poll_support, 
+              names_prefix = "month_") |>
+  drop_na() |>
+  rename(sept_poll = month_9, 
+         oct_poll = month_10) |>
+  mutate(incumbent_party = 0)
+
+# 2024 prediction
+w8_pred <- predict(state_reg, state_pred_data, interval = "prediction")
+
+w8_table <- bind_cols(state_pred_data,
+  as.data.frame(w8_pred) |> rename_with(~paste0("D_", .))) |>
+  mutate(D_fit = round(D_fit, 2), 
+         D_lwr = round(D_lwr, 2), 
+         D_upr = round(D_upr, 2), 
+         winner = if_else(D_fit>50, "Harris", "Trump")) |>
+  select(-sept_poll,
+         -oct_poll, 
+         -year, 
+         -incumbent_party) |>
+  filter(state %in% c("Arizona", "Florida", "Georgia", "Michigan", "Minnesota", "Nevada", "New Hampshire", "New Mexico", "North Carolina", "Pennsylvania", "Texas", "Virginia", "Wisconsin"))
+
+# table 4: state model prediction
+knitr::kable(w8_table, 
+             col.names = c("State", "Prediction", "Lower Bound", "Upper Bound", "Winner")) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::row_spec(row = which(w8_table$winner == "Harris"), background = "#D3E5FF") |>
+  kableExtra::row_spec(row = which(w8_table$winner == "Trump"), background = "#FFD1D1")
+```
+
+Like last week, this model predicts that Harris will win 11 out of the 13 states, with Trump winning Florida and Texas again. The electoral margin continues to decrease from week to week (e.g. Pennsylvania 51.69% this week vs 51.79% in Blog 7 and 52.86% in Blog 6) with smaller prediction intervals as well. Obviously, these races are still extremely close and most of the prediction intervals include 50%. 
+
+To visualize this, I calculate the predicted win margin for Harris in the 13 state races with their confidence intervals, sorted by greatest to smallest predicted margin. Since I'm calculating the predicted win margin for the Democratic candidate, a negative win margin favors the Republican candidate. The black dot is the predicted win margin, with the blue dot (favoring Democrats) representing the upper bound and the red dot (favoring Republicans) representing the lower bound of the win margin.
+
+```{r state win margins prediction, fig.width=10, fig.height=6}
+# figure 5: state win margins predictions
+w8_table |>
+  mutate(R_fit = 100 - D_fit,
+         R_lwr = 100 - D_upr,
+         R_upr = 100 - D_lwr,  
+         margin = D_fit - R_fit,
+         margin_lwr = D_lwr - R_fit, 
+         margin_upr = D_upr - R_fit,
+         state = reorder(state, margin)) |>
+ggplot(aes(x = margin, y = state)) +
+  geom_segment(aes(x = margin_lwr, xend = margin_upr, yend = state), color = "lightgray", size = 2) +  
+  geom_point(aes(x = margin), color = "black", size = 3) +  
+  geom_point(aes(x = margin_lwr), color = "firebrick3", size = 3) +  
+  geom_point(aes(x = margin_upr), color = "dodgerblue3", size = 3) +  
+  labs(title = "Predicted Democratic Win Margin with Confidence Intervals by State",
+       x = "Predicted Democratic Win Margin",
+       y = "State") +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(-15, 15, by = 5)) +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
+```
+
+New Hampshire, Virginia, and New Mexico have the highest predicted win margins for Harris. Close states include Arizona, Georgia, and North Carolina. Pennsylvania is higher on this chart than I would've expected — it currently sits in the middle of the pack with very similar margins to the other swing states of Michigan, Nevada, Wisconsin, and Minnesota.
+
+Incorporating in the other states, here is this week's Electoral College map!
+
+```{r week 8 prediction map, fig.width=10, fig.height=5.5}
+# tidy state-level prediction
+pred_map <- expert_24 |>
+  mutate(winner = if_else(cook_text_rating == "Solid Democrat", 
+                          "Harris", 
+                          if_else(cook_text_rating == "Solid Republican", 
+                                  "Trump", 
+                                  NA_character_))) |>
+  slice(-c(52:56)) |>
+  select(state, winner) |>
+  left_join(w8_table |> select(state, winner_w8 = winner), by = "state") |>
+  mutate(winner = coalesce(winner, winner_w8)) |>
+  select(state, winner) |>
+  mutate(winner = if_else(state == "Maine", "Harris", winner))
+
+# figure 6: week 8 predicted electoral map
+pred_map |> 
+  left_join(states, by = "state") |>
+  ggplot(aes(long, lat, group = group)) + 
+  geom_polygon(aes(fill = winner), color = "white") +
+  scale_fill_manual(values = c(
+    "Harris" = "dodgerblue4", 
+    "Trump" = "firebrick3"
+  )) +
+  labs(
+    title = "Week 8 Predicted Electoral Map",
+    fill = "Winner"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2), 
+    legend.title = element_text(size = 11),
+    legend.text = element_text(size = 11), 
+    legend.key.size = unit(0.8, "cm") 
+  )
+```
+
+Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. 
+
+```{r state model prediction viz, fig.width=10, fig.height=3}
+# figure 7: state model prediction
+ec_table <- pred_map |>
+  left_join(ec, by = "state") |>
+  select(state, winner, electors) |>
+  mutate(winner = case_when(
+    winner == "Harris" ~ "Kamala Harris",
+    winner == "Trump" ~ "Donald Trump",
+    TRUE ~ winner
+  )) |>
+  group_by(winner) |>
+  summarize(count = sum(electors)) |>
+  arrange(desc(count))
+
+ggplot(ec_table, aes(x = "", y = count, fill = winner)) +
+  geom_bar(stat = "identity", width = 0.3) + 
+  geom_hline(yintercept = 270, linetype = "dashed", color = "black", size = 1) + 
+  geom_text(aes(label = count), position = position_stack(vjust = 0.5), color = "white") + 
+  scale_fill_manual(values = c("Kamala Harris" = "dodgerblue3", "Donald Trump" = "firebrick3")) +  
+  labs(title = "Predicted Electoral College Votes",
+       x = NULL,
+       y = "Electoral Votes", 
+       fill = "Candidate") +
+  theme_minimal() + 
+  theme(
+    axis.text.x = element_blank(),  
+    axis.ticks.x = element_blank(),
+    panel.grid.major.y = element_blank(),  
+    panel.grid.minor.y = element_blank(),  
+    panel.grid.major.x = element_blank(),  
+    panel.grid.minor.x = element_blank(),  
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2),  
+    plot.margin = margin(10, 10, 10, 10) 
+  ) +
+  coord_flip() +  
+  theme(aspect.ratio = 0.4)
+```
+
+## Conclusion
+Once again, I predict that Harris will win both the national two-party popular vote and the Electoral College. We're less than 14 days away from the election, so I'm excited (and a little scared) to see how our predictions will shake out. Looking forward to putting together my final election prediction next week!

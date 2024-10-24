@@ -301,7 +301,7 @@ actual_map <- d_state_pv |>
     plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
-# plot 1: expert prediction 2020 maps
+# figure 1: expert prediction 2020 maps
 layout <- " 
 AAABB#
 ##CC##"
@@ -508,7 +508,7 @@ sabato_2024 <- expert_2024 |>
     plot.title = element_text(hjust = 0.5, face = "bold", size = 14, vjust = 2)
   )
 
-# plot 2: expert prediction 2024 maps
+# figure 2: expert prediction 2024 maps
 cook_2024 + sabato_2024
 ```
 

@@ -101,7 +101,7 @@ plot_24 <- d_pollav_nat |>
     legend.position = "right"
   )
 
-# plot 1: polling averages by date (2016-2024)
+# figure 1: polling averages by date (2016-2024)
 plot_16 + plot_20 + plot_24 + 
   plot_layout(ncol = 3) +
   plot_annotation(title = "Polling Averages by Date, 2016-2024",
@@ -117,7 +117,7 @@ So far, trends in the polling data for 2024 are fascinating: heading into the su
 To dive deeper into 2024, I create a plot of the polling averages by date with some potential "game-changers," which are events (e.g. party conventions) that *could* have an effect on voter behavior. The following plot only includes polling data from May to mid-September, since I want to focus on the presidential contest between Harris and Trump. 
 
 ```{r poll averages 2024, fig.width=10}
-# plot 2: polling averages by date with "game changers" 2024
+# figure 2: polling averages by date with "game changers" 2024
 d_pollav_nat |> 
   filter(year == 2024, 
         as.Date(poll_date) > as.Date("2024-05-01")) |> 
