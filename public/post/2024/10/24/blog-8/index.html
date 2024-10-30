@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+  <head><script src="/election-blog/livereload.js?mindelay=10&amp;v=2&amp;port=4321&amp;path=election-blog/livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Blog 8: Shocks | Kaitlyn Vu</title>
@@ -24,10 +24,10 @@
 </div>
 
 <main>
-<script src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/kePrint/kePrint.js"></script>
-<link href="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/lightable/lightable.css" rel="stylesheet" />
-<script src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/kePrint/kePrint.js"></script>
-<link href="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/election-blog/post/2024/10/24/blog-8/index_files/kePrint/kePrint.js"></script>
+<link href="/election-blog/post/2024/10/24/blog-8/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/election-blog/post/2024/10/24/blog-8/index_files/kePrint/kePrint.js"></script>
+<link href="/election-blog/post/2024/10/24/blog-8/index_files/lightable/lightable.css" rel="stylesheet" />
 <h2 id="introduction">Introduction</h2>
 <p>We&rsquo;re in the home stretch, folks! Welcome to my last blog update for the 2024 presidential election, which less than two weeks away. This week, we discussed &ldquo;shocks,&rdquo; a broad category of external factors and events that aren&rsquo;t the result of campaigns or systematic fundamental forces. Such shocks can range from pandemics to natural disasters and local college football victories, all with potential implications for voter behavior — depending on who you ask.</p>
 <p>In this blog, I briefly discuss the role of shocks in presidential elections and continue to update my national and state-level models in preparation for my final prediction!</p>
@@ -35,10 +35,10 @@
 <p>The effects of shocks on elections are perhaps best understood through the logic of retrospection, where voters look to the past to assess incumbent performance. To <a href="https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists?srsltid=AfmBOooJLrwf2Na-MT6i50wNH-lmkWRNnBe4VaKlWVyLFriDwas1hnk9">Christopher Achen and Larry Bartels</a>, voters&rsquo; supposed reactions to shocks paint a bleak picture for democracy: voters are swayed by irrelevant factors — such as shark attacks — and fail to accurately evaluate the current government and incumbent. <a href="https://www.nowpublishers.com/article/Details/QJPS-9057">Andrew Healy and Neil Malhotra</a> likewise finds that voters punish incumbents for random events (droughs, floods, economic shocks, etc) and fail to differentiate between government-caused outcomes and uncontrollable external factors. Following this perspective, shocks and their impact on voting behavior undermine the democratic ideal of elections as accountability mechanisms.</p>
 <p>However, there&rsquo;s also evidence to prove that shocks don&rsquo;t truly have a predictive effect on election outcomes. <a href="https://www.researchgate.net/publication/354002319_Did_exposure_to_COVID-19_affect_vote_choice_in_the_2020_presidential_election">Marco Mendoza and Semra Sevi</a> find that COVID-19 exposure didn&rsquo;t consistently affect voting — pre-existing partisan identities had a much stronger role.</p>
 <p>Let&rsquo;s quickly revisit the polling visualization with potential &ldquo;game-changers&rdquo; from Blog 3. Here is the updated plot with national polling averages to the date of this blog&rsquo;s writing (October 24, 2024).</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/poll averages 2024-1.png" width="1056" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/poll averages 2024-1.png" width="1056" />
 <p>Again, it is difficult to establish a causal relationship between potential &ldquo;game-changers&rdquo; and trends in public opinion. That being said, polling doesn&rsquo;t seem to change much following these events. Perhaps it&rsquo;s because America has become so <a href="https://www.newser.com/story/327917/a-theory-to-explain-modern-politics-calcification.html">politically calcified</a> that such &ldquo;shocks&rdquo; don&rsquo;t affect us: we&rsquo;ll still be voting for our party&rsquo;s candidate at the end of the day. It&rsquo;s interesting to think about what would happen if we put the craziness of the 2024 election cycle in the context of another presidential election year — would these potential &ldquo;game-changers&rdquo; have more of a notable effect?</p>
 <p>To conclude this discussion on shocks, I briefly look at the potential effect of hurricanes on electoral outcomes. For this graph, I plot a regression between the number of hurricanes in a presidential election year (occurring before November) and the two-party popular vote share for the incumbent party&rsquo;s candidate.</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/hurricanes-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/hurricanes-1.png" width="960" />
 <p>For this regression, the slope of the line of best fit is barely greater than 0 and the R-squared value of 0.17 is low. This seems to indicate that there isn&rsquo;t a strong relationship between the number of hurricanes in a presidential election year and the two-party popular vote for the incumbent party&rsquo;s candidate. Specifically, the low R-squared value indicates that only a small portion of vote share variation is explained by the number of hurricanes, implying that other factors likely play a much larger role in influencing election outcomes.</p>
 <p>So, do shocks matter for presidential election outcomes? The answer is obviously complicated, but these two simple analyses seem to signal that they do not.</p>
 <h2 id="national-two-party-popular-vote-model">National Two-Party Popular Vote Model</h2>
@@ -119,10 +119,10 @@
 </table>
 <p>Similar to last week, this model predicts that Harris will win 52% of the national two-party popular vote. The prediction intervals are also smaller here than the previous two weeks!</p>
 <p>Next, let&rsquo;s assess the out-of-sample fit for this model. I performed 1,000 runs of a cross-validation, randomly selecting half of the election years in my data set to test the model each run. Here, the mean of the absolute value of the out-of-sample residuals was approximately 3.63. Considering that the national two-party vote share spans nearly 20 points, this suggests a positive indication of the model&rsquo;s performance. This histogram displays the distribution of out-of-sample errors for this week&rsquo;s national model.</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
 The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party's performance by a wider margin than it overestimates.
 <p>Here is a summary visualization for this week&rsquo;s prediction of the national two-party popular vote! The dashed black line indicates 50% of the national popular vote.</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national prediction viz-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/national prediction viz-1.png" width="960" />
 <h2 id="state-two-party-popular-vote-model--electoral-college-prediction">State Two-Party Popular Vote Model &amp; Electoral College Prediction</h2>
 <p>Moving onto my state-level model, I utilize September state polling averages, October state polling averages, and an indicator for the incumbent party (1 if an incumbent party candidate, 0 if not) as coefficients. Not bounded by the campaign events data of last week, I train the model on presidential elections from 2000 to 2020. The regression table for the Democratic candidate&rsquo;s state-level popular vote share is below.</p>
 <table style="border-collapse:collapse; border:none;">
@@ -283,12 +283,12 @@ The errors appear slightly right-skewed, indicating the model occasionally under
 </table>
 <p>Like last week, this model predicts that Harris will win 11 out of the 13 states, with Trump winning Florida and Texas again. The electoral margin continues to decrease from week to week (e.g. Pennsylvania 51.69% this week vs 51.79% in Blog 7 and 52.86% in Blog 6) with smaller prediction intervals as well. Obviously, these races are still extremely close and most of the prediction intervals include 50%.</p>
 <p>To visualize this, I calculate the predicted win margin for Harris in the 13 state races with their confidence intervals, sorted by greatest to smallest predicted margin. Since I&rsquo;m calculating the predicted win margin for the Democratic candidate, a negative win margin favors the Republican candidate. The black dot is the predicted win margin, with the blue dot (favoring Democrats) representing the upper bound and the red dot (favoring Republicans) representing the lower bound of the win margin.</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/state win margins prediction-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/state win margins prediction-1.png" width="960" />
 <p>New Hampshire, Virginia, and New Mexico have the highest predicted win margins for Harris. Close states include Arizona, Georgia, and North Carolina. Pennsylvania is higher on this chart than I would&rsquo;ve expected — it currently sits in the middle of the pack with very similar margins to the other swing states of Michigan, Nevada, Wisconsin, and Minnesota.</p>
 <p>Incorporating in the other states, here is this week&rsquo;s Electoral College map!</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/week 8 prediction map-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/week 8 prediction map-1.png" width="960" />
 <p>Similar to the state prediction, I create another visualization to summarize the Electoral College prediction for this week. The dashed black line indicates 270 electoral votes, which is the number of votes required to win the Electoral College.</p>
-<img src="https://kaitvu.github.io/election-blog/post/2024/10/24/blog-8/index_files/figure-html/state model prediction viz-1.png" width="960" />
+<img src="/election-blog/post/2024/10/24/blog-8/index_files/figure-html/state model prediction viz-1.png" width="960" />
 <h2 id="conclusion">Conclusion</h2>
 <p>Once again, I predict that Harris will win both the national two-party popular vote and the Electoral College. We&rsquo;re less than 14 days away from the election, so I&rsquo;m excited (and a little scared) to see how our predictions will shake out. Looking forward to putting together my final election prediction next week!</p>
 
