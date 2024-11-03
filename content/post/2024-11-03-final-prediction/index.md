@@ -1,7 +1,7 @@
 ---
 title: "Final Prediction for 2024 Presidential Election"
 author: "Kaitlyn Vu"
-date: '2024-11-3'
+date: '2024-11-03'
 slug: final-prediction
 categories: []
 tags: []

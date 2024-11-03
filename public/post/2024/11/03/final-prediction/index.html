@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head><script src="/election-blog/livereload.js?mindelay=10&amp;v=2&amp;port=4321&amp;path=election-blog/livereload" data-no-instant defer></script>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Final Prediction for 2024 Presidential Election | Kaitlyn Vu</title>
@@ -24,97 +24,31 @@
 </div>
 
 <main>
-<script src="/election-blog/post/2024/11/03/final-prediction/index_files/kePrint/kePrint.js"></script>
-<link href="/election-blog/post/2024/11/03/final-prediction/index_files/lightable/lightable.css" rel="stylesheet" />
-<script src="/election-blog/post/2024/11/03/final-prediction/index_files/kePrint/kePrint.js"></script>
-<link href="/election-blog/post/2024/11/03/final-prediction/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/kePrint/kePrint.js"></script>
+<link href="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/kePrint/kePrint.js"></script>
+<link href="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/lightable/lightable.css" rel="stylesheet" />
 <h2 id="introduction">Introduction</h2>
-<p>This week, I present my final prediction models for the national
-two-party popular vote and the Electoral College for the 2024
-presidential election. My final prediction models are multivariate
-ordinary least squares (OLS) regression models using national and
-state-level data from 1968-2020 to then predict for 2024. I predict that
-Vice President Kamala Harris will win the 2024 presidential election,
-earning <strong>51.96%</strong> of the national popular vote and carrying the
-Electoral College with <strong>319 electoral votes</strong>.</p>
+<p>This week, I present my final prediction models for the national two-party popular vote and the Electoral College for the 2024 presidential election. My final prediction models are multivariate ordinary least squares (OLS) regression models using national and state-level data from 1968-2020 to then predict for 2024. I predict that Vice President Kamala Harris will win the 2024 presidential election, earning <strong>51.96%</strong> of the national popular vote and carrying the Electoral College with <strong>319 electoral votes</strong>.</p>
 <h2 id="the-national-two-party-popular-vote-model">The National Two-Party Popular Vote Model</h2>
-<p>First, I created a multivariate OLS regression model to predict the
-national two-party popular vote.</p>
+<p>First, I created a multivariate OLS regression model to predict the national two-party popular vote.</p>
 <p>Here is the equation for the national model. <img src="national_model.png" alt=""></p>
-<p>In this model, the dependent variable is the incumbent party candidate&rsquo;s
-share of the national two-party popular vote (%). The incumbent party is
-the party of the sitting president during the presidential election
-year.</p>
+<p>In this model, the dependent variable is the incumbent party candidate&rsquo;s share of the national two-party popular vote (%). The incumbent party is the party of the sitting president during the presidential election year.</p>
 <p>The independent variables consist of the following:</p>
 <ol>
-<li><strong>Q2 GDP Quarterly Growth</strong>: the national GDP growth (%) for Quarter
-2 of a presidential election year</li>
-<li><strong>Weighted National October Polling Averages</strong>: the average of
-national October horse-race polls, sourced from
-<a href="https://projects.fivethirtyeight.com/polls/">538</a> and weighted by
-weeks left before the election</li>
-<li><strong>National Two-Party Percentage</strong>: the national two-party percentage
-of party affiliation, sourced from
-<a href="https://news.gallup.com/poll/15370/party-affiliation.aspx">Gallup</a>
-and <a href="https://www.pewresearch.org/politics/2024/04/09/the-partisanship-and-ideology-of-american-voters/">Pew Research
-Center</a></li>
-<li><strong>Incumbent Status</strong>: whether the incumbent party candidate is also
-the incumbent president (1) or not (0)</li>
+<li><strong>Q2 GDP Quarterly Growth</strong>: the national GDP growth (%) for Quarter 2 of a presidential election year</li>
+<li><strong>Weighted National October Polling Averages</strong>: the average of national October horse-race polls, sourced from <a href="https://projects.fivethirtyeight.com/polls/">FiveThirtyEight</a> and weighted by weeks left before the election</li>
+<li><strong>National Two-Party Percentage</strong>: the national two-party percentage of party affiliation, sourced from <a href="https://news.gallup.com/poll/15370/party-affiliation.aspx">Gallup</a> and <a href="https://www.pewresearch.org/politics/2024/04/09/the-partisanship-and-ideology-of-american-voters/">Pew Research Center</a></li>
+<li><strong>Incumbent Status</strong>: whether the incumbent party candidate is also the incumbent president (1) or not (0)</li>
 </ol>
 <h3 id="national-model-justification">National Model Justification</h3>
-<p>For Q2 GDP growth, I draw on <a href="https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists?srsltid=AfmBOorl6iN4qgweThT5hVNygA3GYiEx8IZYUksJEgexdWLE3Es2imza">Achen and Bartels
-(2014)</a>,
-who examine the role of &ldquo;economic voting&rdquo; in predicting voter behavior
-in their book <em>Democracy for Realists</em>. They note that economic distress
-can be politically damaging to incumbents as voters attribute economic
-downturns to the incumbent and subsequently vote &ldquo;by their pocketbooks.&rdquo;
-Furthermore, Achen and Bartels note that voters have relatively short
-time horizons: they tend to focus on economic growth in a presidential
-election year, rather than evaluating the entirety of the incumbent&rsquo;s
-term. Although their analysis mainly focuses on income growth, real
-disposable personal income (RDPI) growth was not statistically
-significant and reduced the R-squared values when I included it in
-previous versions of my prediction model. As such, I utilize GDP growth
-from Quarter 2 (Q2) of an election year in my model: Q2 is the period of
-April through June, which provides a stable but recent snapshot of the
-pre-election national economy.</p>
-<p>For national October polling averages, I look to <a href="https://gking.harvard.edu/files/bj215.pdf">Gelman and King
-(1993)</a>, who found that the
-number of days before an election matters for poll accuracy. Their
-article discuss how early polls present &ldquo;fairly miserable forecasts&rdquo; of
-election outcomes, although polls eventually converge to actual
-electoral results &ldquo;shortly before Election Day.&rdquo; To address this
-finding, I include national polling averages on the general election for
-the month of October weighted by weeks left before the election; this
-adjustment accounts for the idea that polls taken closer to Election Day
-tend to be more predictive of voter behavior.</p>
-<p>For national two-party percentage, I reference <a href="https://link.springer.com/article/10.1007/s11109-022-09816-z">Kim and Zilinsky
-(2024)</a>.
-Among a mix of demographic variables (e.g. race, gender, age,
-education), they conclude that partisan identification is the strongest
-predictor of the national two-party vote share. I therefore include the
-national two-party percentages of party affiliation in my model.</p>
-<p>For incumbent status, incumbent politicians are often understood to have
-a structural <a href="https://www.jstor.org/stable/448401">“advantage”</a> over
-their challengers: they can harness the “bully pulpit” to command media
-attention and shape public opinion, get a head start on campaigning, and
-utilize the powers of their offices (e.g., control spending) to gain
-constituent favor. However, <a href="https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/voters-dont-care-much-about-incumbency/ECFE39E003912F8AF65C2AD14A34BD8C">Brown
-(2014)</a>
-finds that voters do not significantly respond to incumbency status when
-structural advantages — such as advertising, credit claiming and
-position-taking — are held constant. That being said, I still believe
-that it is important to account for incumbency in my model: I utilize a
-numeric variable that is equal to 1 if the incumbent party candidate is
-also the incumbent president and 0 if not.</p>
+<p>For Q2 GDP growth, I draw on <a href="https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists?srsltid=AfmBOorl6iN4qgweThT5hVNygA3GYiEx8IZYUksJEgexdWLE3Es2imza">Achen and Bartels (2014)</a>, who examine the role of &ldquo;economic voting&rdquo; in predicting voter behavior in their book <em>Democracy for Realists</em>. They note that economic distress can be politically damaging to incumbents as voters attribute economic downturns to the incumbent and subsequently vote &ldquo;by their pocketbooks.&rdquo; Furthermore, Achen and Bartels note that voters have relatively short time horizons: they tend to focus on economic growth in a presidential election year, rather than evaluating the entirety of the incumbent&rsquo;s time in office. Although their analysis mainly focuses on income growth, real disposable personal income (RDPI) growth was not statistically significant and reduced the R-squared values when I included it in previous versions of my prediction model. As such, I utilize GDP growth from Quarter 2 (Q2) of an election year in my model: Q2 is the period of April through June, which provides a stable but recent snapshot of the pre-election national economy.</p>
+<p>For national October polling averages, I look to <a href="https://gking.harvard.edu/files/bj215.pdf">Gelman and King (1993)</a>, who found that the number of days before an election matters for poll accuracy. Their article discuss how early polls present &ldquo;fairly miserable forecasts&rdquo; of election outcomes, although polls eventually converge to actual electoral results &ldquo;shortly before Election Day.&rdquo; To address this finding, I include national polling averages on the general election for the month of October weighted by weeks left before the election; this adjustment accounts for the idea that polls taken closer to Election Day tend to be more predictive of voter behavior.</p>
+<p>For national two-party percentage, I reference <a href="https://link.springer.com/article/10.1007/s11109-022-09816-z">Kim and Zilinsky (2024)</a>. Among a mix of demographic variables (e.g. race, gender, age, education), they conclude that partisan identification is the strongest predictor of the national two-party vote share. I therefore include the national two-party percentages of party affiliation in my model.</p>
+<p>For incumbent status, incumbent politicians are often understood to have a structural <a href="https://www.jstor.org/stable/448401">“advantage”</a> over their challengers: they can harness the “bully pulpit” to command media attention and shape public opinion, get a head start on campaigning, and utilize the powers of their offices (e.g., control spending) to gain constituent favor. However, <a href="https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/voters-dont-care-much-about-incumbency/ECFE39E003912F8AF65C2AD14A34BD8C">Brown (2014)</a> finds that voters do not significantly respond to incumbency status when structural advantages — such as advertising, credit claiming and position-taking — are held constant. That being said, I still believe that it is important to account for incumbency in my model: I utilize a numeric variable that is equal to 1 if the incumbent party candidate is also the incumbent president and 0 if not.</p>
 <h3 id="national-model-regression-table">National Model Regression Table</h3>
-<p>I train my model on data from 1968 to 2016, which covers 13 presidential
-elections. Notably, I exclude 2020, which is a significant economic
-outlier because of the unprecedented <a href="https://www.brookings.edu/articles/ten-facts-about-covid-19-and-the-u-s-economy/">economic
-turmoil</a>
-from the COVID-19 pandemic.</p>
-<p>The regression table for my final national two-party popular vote
-predictive model follows.</p>
+<p>I train my model on data from 1968 to 2016, which covers 13 presidential elections. Notably, I exclude 2020, which is a significant economic outlier because of the unprecedented <a href="https://www.brookings.edu/articles/ten-facts-about-covid-19-and-the-u-s-economy/">economic turmoil</a> from the COVID-19 pandemic.</p>
+<p>The regression table for my final national two-party popular vote predictive model follows.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for National Model (1968-2016)</caption>
 <tr>
@@ -173,77 +107,23 @@ predictive model follows.</p>
 </tr>
 </table>
 <h3 id="interpretation-of-coefficients">Interpretation of Coefficients</h3>
-<p>All coefficients are statistically significant except for two-party
-percent and incumbent at the 99% confidence level.</p>
+<p>All coefficients are statistically significant except for two-party percent and incumbent at the 99% confidence level.</p>
 <ol>
-<li><strong>Q2 GDP Quarterly Growth</strong>: For every percent increase in Q2 GDP
-growth, there is a 0.50% point increase in the incumbent party
-candidate&rsquo;s national two-party popular vote share. This coefficient
-is statistically significant (p = 0.007), showing a positive
-relationship between GDP growth and popular vote share.</li>
-<li><strong>Weighted National October Polling Averages</strong>: For every percent
-increase in the October polling average, there is a 0.47% point
-increase in the incumbent party candidate&rsquo;s national two-party
-popular vote share. This coefficient is statistically significant (p
-&lt; 0.001), which indicates that October polling averages are also a
-strong predictor of national popular vote share.</li>
-<li><strong>National Two-Party Percentage</strong>: For every percent increase in the
-national two-party percent, there is a 0.12% point increase in the
-incumbent party candidate&rsquo;s national two-party popular vote share.
-This coefficient is not statistically significant (p = 0.093) at
-this confidence interval.</li>
-<li><strong>Incumbent Status</strong>: For every percent increase in incumbency
-status, there is a 1.13% point increase in the incumbent party
-candidate&rsquo;s national two-party popular vote share. This coefficient
-is not statistically significant (p = 0.327) at this confidence
-interval.</li>
+<li><strong>Q2 GDP Quarterly Growth</strong>: For every percent increase in Q2 GDP growth, there is a 0.50% point increase in the incumbent party candidate&rsquo;s national two-party popular vote share. This coefficient is statistically significant (p = 0.007), showing a positive relationship between GDP growth and popular vote share.</li>
+<li><strong>Weighted National October Polling Averages</strong>: For every percent increase in the October polling average, there is a 0.47% point increase in the incumbent party candidate&rsquo;s national two-party popular vote share. This coefficient is statistically significant (p &lt; 0.001), which indicates that October polling averages are also a strong predictor of national popular vote share.</li>
+<li><strong>National Two-Party Percentage</strong>: For every percent increase in the national two-party percent, there is a 0.12% point increase in the incumbent party candidate&rsquo;s national two-party popular vote share. This coefficient is not statistically significant (p = 0.093) at this confidence interval.</li>
+<li><strong>Incumbent Status</strong>: Holding other factors constant, being an incumbent president is associated with a 1.13% point increase in the incumbent party candidate&rsquo;s national two-party popular vote share. This coefficient is not statistically significant (p = 0.327) at this confidence interval.</li>
 </ol>
-<p>Although both two-party percentage and incumbent status are not
-statistically significant predictors in this model, they are often
-theoretically important to election outcomes as previously discussed.
-Including these variables helps avoid omitted variable bias and enhances
-the model&rsquo;s R-squared value, reflecting a more comprehensive
-understanding of factors that influence electoral results.</p>
+<p>Although both two-party percentage and incumbent status are not statistically significant predictors in this model, they are often theoretically important to election outcomes as previously discussed. Including these variables helps reduce omitted variable bias and enhances the model&rsquo;s R-squared value, reflecting a more comprehensive understanding of factors that potentially influence electoral results.</p>
 <h3 id="national-model-validation">National Model Validation</h3>
-<p>In terms of in-sample error, an R-squared value of 0.92 means that 92%
-of the variation in national two-party popular vote share is accounted
-for by the model&rsquo;s predictors. This suggests a strong correlation
-between the model&rsquo;s variables and presidential election outcomes.</p>
-<p>The adjusted R-squared of 0.88 corrects for the number of predictors in
-the model, ensuring that the fit is not overstated owing to unnecessary
-or insignificant variables. The small drop between R-squared and
-adjusted R-squared indicates that the model does not significantly
-suffer significantly from over-fitting, which means that the included
-variables are relevant and contribute to the model&rsquo;s predictive power.</p>
-<p>To evaluate out-of-sample fit, I conducted 1,000 iterations of
-cross-validation, each time randomly selecting half of the election
-years — or six elections — to serve as the test set. The model’s mean
-absolute out-of-sample residual across these runs is approximately 3.63,
-which indicates a strong predictive fit when considering that the
-national two-party vote share spans nearly 20 percentage points. In
-other words, the model can predict outcomes within a relatively close
-range of actual electoral results on average. The following histogram
-displays the distribution of out-of-sample errors for the national model
-with a red dashed line for the mean absolute out-of-sample error.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
-<p>The errors appear slightly right-skewed, indicating the model
-occasionally underestimates the incumbent party candidate&rsquo;s performance
-by a wider margin than it overestimates. This histogram shows a small
-number of outliers on the far right of the distribution, where the
-out-of-sample mean absolute errors exceed 5. These outliers indicate
-instances where the model made unusually large prediction errors,
-underestimating the incumbent party candidate&rsquo;s performance relative to
-other cases.</p>
-<p>However, the right skew in the error distribution is not necessarily a
-negative. Predictive models often reflect the unpredictable nature of
-elections, where certain factors may cause the incumbent party candidate
-to outperform expectations in specific years. Overall, the model
-performs relatively well, and these validity assessments demonstrate its
-robustness in forecasting electoral outcomes.</p>
+<p>In terms of in-sample error, an R-squared value of 0.92 means that 92% of the variation in national two-party popular vote share is accounted for by the model&rsquo;s predictors. This suggests a strong correlation between the model&rsquo;s variables and presidential election outcomes.</p>
+<p>The adjusted R-squared of 0.88 corrects for the number of predictors in the model, ensuring that the fit is not overstated owing to unnecessary or insignificant variables. The small drop between R-squared and adjusted R-squared indicates that the model does not significantly suffer significantly from over-fitting, which means that the included variables are relevant and contribute to the model&rsquo;s predictive power.</p>
+<p>To evaluate out-of-sample fit, I conducted 1,000 iterations of cross-validation, each time randomly selecting half of the election years — or six elections — to serve as the test set. The model’s mean absolute out-of-sample residual across these runs is approximately 3.63, which indicates a strong predictive fit when considering that the national two-party vote share spans nearly 20 percentage points. In other words, the model can predict outcomes within a relatively close range of actual electoral results on average. The following histogram displays the distribution of out-of-sample errors for the national model with a red dashed line for the mean absolute out-of-sample error.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/national model out-of-sample fit-1.png" width="960" />
+<p>The errors appear slightly right-skewed, indicating the model occasionally underestimates the incumbent party candidate&rsquo;s performance by a wider margin than it overestimates. This histogram shows a small number of outliers on the far right of the distribution, where the out-of-sample mean absolute errors exceed 5. These outliers indicate instances where the model made unusually large prediction errors, underestimating the incumbent party candidate&rsquo;s performance relative to other cases.</p>
+<p>However, the right skew in the error distribution is not necessarily a negative. Predictive models often reflect the unpredictable nature of elections, where certain factors may cause the incumbent party candidate to outperform expectations in specific years. Overall, the model performs relatively well, and these validity assessments demonstrate its robustness in forecasting electoral outcomes.</p>
 <h2 id="predictions-for-2024-national-two-party-popular-vote">Predictions for 2024 National Two-Party Popular Vote</h2>
-<p>Using the national model, I predict the national two-party popular vote
-share for the incumbent party candidate — Vice President Harris — in the
-2024 presidential election.</p>
+<p>Using the national model, I predict the national two-party popular vote share for the incumbent party candidate — Vice President Harris — in the 2024 presidential election.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
@@ -255,67 +135,31 @@ share for the incumbent party candidate — Vice President Harris — in the
 <tbody>
   <tr>
    <td style="text-align:right;"> 51.96 </td>
-   <td style="text-align:right;"> 47.46 </td>
+   <td style="text-align:right;"> 47.45 </td>
    <td style="text-align:right;"> 56.47 </td>
   </tr>
 </tbody>
 </table>
-<p>The national model predicts that Vice President Harris will win
-<strong>51.96%</strong> of the national two-party popular vote. This means that
-former President Donald Trump is expected to capture <strong>48.04%</strong> of the
-national two-party popular vote.</p>
-<p>The prediction intervals are calculated at the 95% confidence interval.
-At the lower bound, I predict that former President Trump will win
-52.54% of the national two-party popular vote with Vice President Harris
-winning 47.46%. At the upper bound, I predict that Vice President Harris
-will win 56.47% of the national two-party popular vote with former
-President Trump winning 43.53%.</p>
-<p>Finally, I summarize my prediction for the national two-party popular
-vote in the following visualization. The dashed black line indicates 50%
-of the national two-party popular vote.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/national prediction viz-1.png" width="960" />
+<p>The national model predicts that Vice President Harris will win <strong>51.96%</strong> of the national two-party popular vote. This means that former President Donald Trump is expected to capture <strong>48.04%</strong> of the national two-party popular vote.</p>
+<p>The prediction intervals are calculated at the 95% confidence interval. At the lower bound, I predict that former President Trump will win 52.54% of the national two-party popular vote with Vice President Harris winning 47.46%. At the upper bound, I predict that Vice President Harris will win 56.47% of the national two-party popular vote with former President Trump winning 43.53%.</p>
+<p>Finally, I summarize my prediction for the national two-party popular vote in the following visualization. The dashed black line indicates 50% of the national two-party popular vote.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/national prediction viz-1.png" width="960" />
 <h2 id="the-state-level-popular-vote--electoral-college-model">The State-Level Popular Vote &amp; Electoral College Model</h2>
-<p>Using a similar methodology to the national model, I also created a
-multivariate OLS regression model to predict the races of 13 selected
-states — informing a prediction for the Electoral College.</p>
+<p>Using a similar methodology to the national model, I also created a multivariate OLS regression model to predict the races of 13 selected states — informing a prediction for the Electoral College.</p>
 <p>Here is the equation for the state model. <img src="state_model.png" alt=""></p>
-<p>In this model, the dependent variable is the Democratic party
-candidate&rsquo;s share of the state-level popular vote (%).</p>
+<p>In this model, the dependent variable is the Democratic party candidate&rsquo;s share of the state-level popular vote (%).</p>
 <p>The independent variables consist of the following:</p>
 <ol>
-<li><strong>Democratic Candidate Lag Two-Party Vote Share</strong>: the state-level
-two-party vote share for the Democratic candidate from the previous
-presidential election</li>
-<li><strong>Weighted State-Level October Polling Averages</strong>: the average of
-state-level October horse-race polls, sourced from
-<a href="https://projects.fivethirtyeight.com/polls/">538</a> and weighted by
-weeks left before the election</li>
-<li><strong>Incumbent Party Status</strong>: whether the Democratic candidate is also
-the incumbent party candidate (1) or not (0)</li>
+<li><strong>Democratic Candidate Lag Two-Party Vote Share</strong>: the state-level two-party vote share for the Democratic candidate from the previous presidential election</li>
+<li><strong>Weighted State-Level October Polling Averages</strong>: the average of state-level October horse-race polls, sourced from <a href="https://projects.fivethirtyeight.com/polls/">FiveThirtyEight</a> and weighted by weeks left before the election</li>
+<li><strong>Incumbent Party Status</strong>: whether the Democratic candidate is also the incumbent party candidate (1) or not (0)</li>
 </ol>
 <h3 id="state-model-justification">State Model Justification</h3>
-<p>I previously explained the inclusion of polling averages and incumbent
-status in my predictive models under the justification of the national
-model. Of note, however, is that the incumbency advantage is expressed
-here as incumbent party, rather than incumbent president. I wanted to
-explore a different measure of incumbency in my state-level model;
-incumbent politicians often perform well in elections, though this
-advantage does not necessarily extend to their parties. Only 4 incumbent
-presidents have lost re-election in the post-war era, while the
-incumbent party candidate has only prevailed in 9 out of the 19 last
-presidential elections.</p>
-<p>Secondly, I add a coefficient to represent the Democratic candidate&rsquo;s
-lag popular vote: with increasing political
-<a href="https://www.cookpolitical.com/analysis/national/national-politics/calcified-politics-gives-us-another-close-election">calcification</a>,
-it is more likely that partisan support among voters will remain
-consistent from year to year as individuals vote in line with their
-party identities. Therefore, lagged popular vote from the prior election
-could potentially be a good predictor of election outcomes.</p>
+<p>I previously explained the inclusion of polling averages and incumbent status in my predictive models under the justification of the national model. Of note, however, is that the incumbency advantage is expressed here as incumbent party, rather than incumbent president. I wanted to explore a different measure of incumbency in my state-level model; incumbent politicians often perform well in elections, though this advantage does not necessarily extend to their parties. Only 4 incumbent presidents have lost re-election in the post-war era, while the incumbent party candidate has only prevailed in 9 out of the 19 last presidential elections.</p>
+<p>Secondly, I add a coefficient to represent the Democratic candidate&rsquo;s lag popular vote: with increasing <a href="https://www.cookpolitical.com/analysis/national/national-politics/calcified-politics-gives-us-another-close-election">political calcification</a>, it is more likely that partisan support among voters will remain consistent from year to year as individuals vote in line with their party identities. Therefore, lagged popular vote from the prior election could potentially be a good predictor of election outcomes.</p>
 <h3 id="state-model-regression-table">State Model Regression Table</h3>
-<p>I train my model on data from 2000 to 2020 to better reflect modern
-voter demographics, polling methodologies, and partisan alignments.</p>
-<p>The regression table for my final state-level popular vote predictive
-model follows.</p>
+<p>I train my model on data from 2000 to 2020 to better reflect modern voter demographics, polling methodologies, and partisan alignments.</p>
+<p>The regression table for my final state-level popular vote predictive model follows.</p>
 <table style="border-collapse:collapse; border:none;">
 <caption style="font-weight: bold; text-align:left;">Regression Table for State Model (2000-2020)</caption>
 <tr>
@@ -367,81 +211,21 @@ model follows.</p>
 </tr>
 </table>
 <h3 id="interpretation-of-coefficients-1">Interpretation of Coefficients</h3>
-<p>All coefficients except incumbent party status are statistically
-significant at the 99% confidence level.</p>
+<p>All coefficients except incumbent party status are statistically significant at the 99% confidence level.</p>
 <ol>
-<li><strong>Democratic Candidate Lag Two-Party Vote Share</strong>: For every percent
-increase in the lagged two-party popular vote, there is a 0.45%
-point increase in the Democratic candidate&rsquo;s state-level two-party
-popular vote share. This coefficient is statistically significant (p
-&lt; 0.001), which indicates that lagged two-party popular vote is a
-strong predictor of state-level popular vote share.</li>
-<li><strong>Weighted State-Level October Polling Averages</strong>: For every percent
-increase in the state-level October polling average, there is a
-0.67% point increase in the Democratic candidate&rsquo;s state-level
-two-party popular vote share. This coefficient is statistically
-significant (p &lt; 0.001), which indicates that October polling
-averages are also a strong predictor of state-level popular vote
-share.</li>
-<li><strong>Incumbent Party Status</strong>: For every percent increase in incumbent
-party status, there is a 0.74% point decrease in the Democratic
-candidate&rsquo;s state-level two-party popular vote share. This
-coefficient is not statistically significant (p = 0.092) at this
-confidence interval.</li>
+<li><strong>Democratic Candidate Lag Two-Party Vote Share</strong>: For every percent increase in the lagged two-party popular vote, there is a 0.45% point increase in the Democratic candidate&rsquo;s state-level two-party popular vote share. This coefficient is statistically significant (p &lt; 0.001), which indicates that lagged two-party popular vote is a strong predictor of state-level popular vote share.</li>
+<li><strong>Weighted State-Level October Polling Averages</strong>: For every percent increase in the state-level October polling average, there is a 0.67% point increase in the Democratic candidate&rsquo;s state-level two-party popular vote share. This coefficient is statistically significant (p &lt; 0.001), which indicates that October polling averages are also a strong predictor of state-level popular vote share.</li>
+<li><strong>Incumbent Party Status</strong>: Holding other factors constant, being a member of the incumbent party is associated with a 0.74% decrease in the Democratic candidate&rsquo;s state-level two-party popular vote share. This coefficient is not statistically significant (p = 0.092) at this confidence interval.</li>
 </ol>
 <h3 id="state-model-validation">State Model Validation</h3>
-<p>In terms of in-sample error, an R-squared value of 0.93 means that 93%
-of the variation in state-level two-party popular vote share is
-accounted for by the model&rsquo;s predictors. This suggests a strong
-correlation between the model&rsquo;s variables and presidential election
-outcomes.</p>
-<p>The adjusted R-squared value of 0.93 accounts for the number of
-predictors in the model. The minimal drop from the R-squared of 0.928 to
-the adjusted R-squared of 0.927 suggests the absence of significant
-over-fitting, further indicating that the selected predictors contribute
-meaningfully to explaining the variation in state-level two-party vote
-share for the Democratic candidate.</p>
-<p>Likewise, I performed 1,000 iterations of cross-validation to evaluate
-the out-of-sample fit, randomly selecting half of the election years —
-or 3 elections — for the test set in each iteration. The model’s average
-absolute out-of-sample residual across these iterations is approximately
-2.8, suggesting a strong predictive capability, especially considering
-that the state-level two-party vote share varies by more than 20
-percentage points. This means that on average, the model is able to
-predict outcomes within a narrow range of actual electoral results. The
-following histogram displays the distribution of out-of-sample errors
-for the state model with a red dashed line for the mean absolute
-out-of-sample error.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state model out-of-sample fit-1.png" width="960" />
-<p>The histogram of out-of-sample errors shows a distribution centered
-around a mean absolute error of approximately 2.8. The distribution is
-somewhat symmetric, with most errors falling between roughly 2 and 4.
-However, it is not perfectly bell-shaped; there is a noticeable
-concentration of errors around the center and a tapering off toward the
-edges. This pattern suggests that the model generally performs well,
-with relatively low variation in prediction errors, indicating a degree
-of reliability in forecasting election outcomes within a predictable
-range.</p>
+<p>In terms of in-sample error, an R-squared value of approximately 0.93 means that 93% of the variation in state-level two-party popular vote share is accounted for by the model&rsquo;s predictors. This suggests a strong correlation between the model&rsquo;s variables and presidential election outcomes.</p>
+<p>The adjusted R-squared value of 0.93 accounts for the number of predictors in the model. The minimal drop from the R-squared of 0.928 to the adjusted R-squared of 0.927 suggests the absence of significant over-fitting, further indicating that the selected predictors contribute meaningfully to explaining the variation in state-level two-party vote share for the Democratic candidate.</p>
+<p>Likewise, I performed 1,000 iterations of cross-validation to evaluate the out-of-sample fit, randomly selecting half of the election years — or 3 elections — for the test set in each iteration. The model’s average absolute out-of-sample residual across these iterations is approximately 2.8, suggesting a strong predictive capability, especially considering that the state-level two-party vote share varies by more than 20 percentage points. This means that on average, the model is able to predict outcomes within a narrow range of actual electoral results. The following histogram displays the distribution of out-of-sample errors for the state model with a red dashed line for the mean absolute out-of-sample error.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state model out-of-sample fit-1.png" width="960" />
+<p>The histogram of out-of-sample errors shows a distribution centered around a mean absolute error of approximately 2.8. The distribution is somewhat symmetric, with most errors falling between roughly 2 and 4. However, it is not perfectly bell-shaped; there is a noticeable concentration of errors around the center and a tapering off toward the edges. This pattern suggests that the model generally performs well, with relatively low variation in prediction errors, indicating a degree of reliability in forecasting election outcomes within a predictable range.</p>
 <h3 id="predictions-for-selected-state-races">Predictions for Selected State Races</h3>
-<p>Using the state model, I predict the state-level two-party popular vote
-share for the Democratic party candidate — Vice President Harris — in
-the 2024 presidential election. Notably, I predict 13 state races:
-Arizona, Florida, Georgia, Michigan, Minnesota, Nevada, New Hampshire,
-New Mexico, North Carolina, Pennsylvania, Texas, Virginia, and
-Wisconsin. As mentioned in previous blogs, these states have all been
-designated as either “Lean/Likely Democrat,” “Lean/Likely Republican,”
-or “Toss Up” in the 2024 state-level predictions from <a href="https://www.cookpolitical.com/ratings/presidential-race-ratings">Cook Political
-Report</a>
-and <a href="https://centerforpolitics.org/crystalball/2024-president/">Sabato’s Crystal
-Ball</a>. I
-exclude NE-02 and ME-02 as data on the congressional district level was
-difficult to obtain. Assuming that states designated as “Safe/Solid
-Democrat” or “Safe/Solid Republican” by these expert models are
-confident calls for their respective parties, I look at these 13 states
-to try to predict their electoral votes.</p>
-<p>The “Winner” column notes the winner of the state — more than 50% —
-based on the predicted two-party popular vote share for Vice President
-Harris.</p>
+<p>Using the state model, I predict the state-level two-party popular vote share for the Democratic party candidate — Vice President Harris — in the 2024 presidential election. Notably, I predict 13 state races: Arizona, Florida, Georgia, Michigan, Minnesota, Nevada, New Hampshire, New Mexico, North Carolina, Pennsylvania, Texas, Virginia, and Wisconsin. As mentioned in previous blogs, these states have all been designated as either “Lean/Likely Democrat,” “Lean/Likely Republican,” or “Toss Up” in the 2024 state-level predictions from <a href="https://www.cookpolitical.com/ratings/presidential-race-ratings">Cook Political Report</a> and <a href="https://centerforpolitics.org/crystalball/2024-president/">Sabato’s Crystal Ball</a>. I exclude NE-02 and ME-02 as data on the congressional district level was difficult to obtain. Assuming that states designated as “Safe/Solid Democrat” or “Safe/Solid Republican” by these expert models are confident calls for their respective parties, I look at these 13 states to try to predict their electoral votes.</p>
+<p>The “Winner” column notes the winner of the state — more than 50% — based on the predicted two-party popular vote share for Vice President Harris.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
@@ -462,15 +246,15 @@ Harris.</p>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Florida </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.41 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 44.08 </td>
-   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 54.73 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 49.39 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 44.07 </td>
+   <td style="text-align:right;background-color: rgba(255, 209, 209, 255) !important;"> 54.72 </td>
    <td style="text-align:left;background-color: rgba(255, 209, 209, 255) !important;"> Trump </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Georgia </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 51.44 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.12 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 51.43 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.11 </td>
    <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 56.76 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
@@ -497,16 +281,16 @@ Harris.</p>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> New Hampshire </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.64 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.31 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 60.97 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.63 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.30 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 60.95 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> New Mexico </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.84 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 55.83 </td>
    <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 50.50 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 61.17 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 61.16 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
   <tr>
@@ -518,8 +302,8 @@ Harris.</p>
   </tr>
   <tr>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Pennsylvania </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.17 </td>
-   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.85 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 52.16 </td>
+   <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 46.84 </td>
    <td style="text-align:right;background-color: rgba(211, 229, 255, 255) !important;"> 57.49 </td>
    <td style="text-align:left;background-color: rgba(211, 229, 255, 255) !important;"> Harris </td>
   </tr>
@@ -546,44 +330,21 @@ Harris.</p>
   </tr>
 </tbody>
 </table>
-<p>The state model predicts that Vice President Harris will win Arizona,
-Georgia, Michigan, Minnesota, Nevada, New Hampshire, New Mexico, North
-Carolina, Pennsylvania, Virginia, and Wisconsin. Former President Trump
-is predicted to win Florida and Texas.</p>
-<p>I also create a visualization to present the confidence intervals for
-these state-level predictions of the Democrat&rsquo;s popular vote share. The
-black dot is the predicted Democrat popular vote share, with the blue
-dot (favoring Democrats) representing the upper bound and the red dot
-(favoring Republicans) representing the lower bound. The darker red
-dashed line marks 50% of the state-level popular vote.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state prediction intervals-1.png" width="960" />
-<p>As evident by this plot, many of these state races are contested and the
-lower bounds of the prediction intervals cross 50%. This demonstrates
-the close nature of the upcoming election, particularly in the 7 key
-<a href="https://www.nytimes.com/interactive/2024/us/elections/presidential-election-swing-states.html">battleground
-states</a>.</p>
+<p>The state model predicts that Vice President Harris will win Arizona, Georgia, Michigan, Minnesota, Nevada, New Hampshire, New Mexico, North Carolina, Pennsylvania, Virginia, and Wisconsin. Former President Trump is predicted to win Florida and Texas.</p>
+<p>I created a visualization to present the confidence intervals for these state-level predictions of the Democrat&rsquo;s popular vote share, sorted from greatest to smallest predicted vote share. The black dot is the predicted Democrat popular vote share in each state, with the blue dot (favoring Democrats) representing the upper bound and the red dot (favoring Republicans) representing the lower bound. The darker red dashed line marks 50% of the state-level popular vote.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state prediction intervals-1.png" width="960" />
+<p>As evident by this plot, many of these state races are contested and the lower bounds of the prediction intervals cross 50%. This demonstrates the close nature of the upcoming election, particularly in the 7 key <a href="https://www.nytimes.com/interactive/2024/us/elections/presidential-election-swing-states.html">battleground states</a>.</p>
+<p>I also create a plot to illustrate the Democratic candidate&rsquo;s predicted win margin in each state with their confidence intervals, sorted by greatest to smallest predicted margin. Since I’m calculating the predicted win margin for the Democratic candidate, a negative win margin favors the Republican candidate. Again, the black dot is the predicted win margin, with the blue dot (favoring Democrats) representing the upper bound and the red dot (favoring Republicans) representing the lower bound of the win margin. The darker red dashed line marks 0%, which would suggest a tie in that state.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state win margins prediction-1.png" width="960" />
+<p>This visualization further illustrates the tight nature of the election, with most states showing narrow, single-digit margins in the predicted outcomes.</p>
 <h3 id="predicted-electoral-college-results-for-2024-presidential-election">Predicted Electoral College Results for 2024 Presidential Election</h3>
-<p>Lastly, I designate the winners of the 37 remaining states according to
-the expert models previously cited. My result is the following predicted
-Electoral College map for the 2024 presidential election.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/final prediction map-1.png" width="960" />
-<p>The state model predicts that Vice President Harris will win <strong>319</strong>
-electoral votes. This means that former President Donald Trump is
-expected to win <strong>219</strong> electoral votes.</p>
-<p>I summarize my prediction for the Electoral College in the following
-visualization. The dashed black line indicates 270 electoral votes,
-which is the number of votes required to win the Electoral College.</p>
-<img src="/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state model prediction viz-1.png" width="960" />
+<p>Lastly, I designate the winners of the 37 remaining states according to the expert models previously cited. My result is the following predicted Electoral College map for the 2024 presidential election.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/final prediction map-1.png" width="960" />
+<p>The state model predicts that Vice President Harris will win <strong>319</strong> electoral votes. This means that former President Donald Trump is expected to win <strong>219</strong> electoral votes.</p>
+<p>I summarize my prediction for the Electoral College in the following visualization. The dashed black line indicates 270 electoral votes, which is the number of votes required to win the Electoral College.</p>
+<img src="https://kaitvu.github.io/election-blog/post/2024/11/03/final-prediction/index_files/figure-html/state model prediction viz-1.png" width="960" />
 <h2 id="conclusion">Conclusion</h2>
-<p>After 8 weeks, this final model is a culmination of everything that I
-have learned so far in GOV 1347: Election Analytics. I&rsquo;m grateful for
-our wonderful teaching team and guest speakers, as well as my incredible
-classmates for informing and inspiring much of this work. Overall, I&rsquo;m
-very happy with my predictive models for the upcoming election! I
-accomplished a lot more than I originally thought I was capable of. I
-look forward to seeing how my predictions compare to the actual
-electoral results on Tuesday, November 5, as well as reflecting on my
-work after Election Day.</p>
+<p>After 8 weeks, this final model is a culmination of everything that I have learned so far in GOV 1347: Election Analytics. I&rsquo;m grateful for our wonderful teaching team and guest speakers, as well as my incredible classmates for informing and inspiring much of this work. Overall, I&rsquo;m very happy with my predictive models for the upcoming election! I accomplished a lot more than I originally thought I was capable of. I look forward to seeing how my predictions compare to the actual electoral results on Tuesday, November 5, as well as reflecting on my work after Election Day.</p>
 
 </main>
 
