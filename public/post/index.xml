@@ -6,15 +6,8 @@
     <description>Recent content in Posts on Kaitlyn Vu</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Oct 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://kaitvu.github.io/election-blog/post/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Final Prediction for 2024 Presidential Election</title>
-      <link>https://kaitvu.github.io/election-blog/post/2024/10/30/final-prediction/</link>
-      <pubDate>Wed, 30 Oct 2024 00:00:00 +0000</pubDate>
-      <guid>https://kaitvu.github.io/election-blog/post/2024/10/30/final-prediction/</guid>
-      <description>Introduction This week, I present my final prediction models for the national two-party popular vote and the Electoral College for the 2024 presidential election. My final prediction models are multivariate ordinary least squares (OLS) regression models using national and state-level data from 1968-2020 to then predict for 2024. I predict that Vice President Kamala Harris will win the 2024 presidential election, earning 51.96% of the national popular vote and carrying the Electoral College with 319 electoral votes.</description>
-    </item>
     <item>
       <title>Blog 8: Shocks</title>
       <link>https://kaitvu.github.io/election-blog/post/2024/10/27/blog-8/</link>
@@ -70,6 +63,13 @@
       <pubDate>Sun, 08 Sep 2024 00:00:00 +0000</pubDate>
       <guid>https://kaitvu.github.io/election-blog/post/2024/09/08/blog-1/</guid>
       <description>Introduction In this first blog post, I visualize and analyze historical popular vote data from 1948-2020 to examine the competitiveness of U.S. presidential elections and help inform predictions for the 2024 election. This blog also includes state-level analysis of past two-party popular vote share and looks at changes in battleground states over time.&#xA;Overall Two-Party Vote Share To begin, I will examine how two-party vote share in U.S. presidential elections have changed over time.</description>
+    </item>
+    <item>
+      <title>Final Prediction for 2024 Presidential Election</title>
+      <link>https://kaitvu.github.io/election-blog/post/1/01/01/final-prediction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kaitvu.github.io/election-blog/post/1/01/01/final-prediction/</guid>
+      <description>Introduction This week, I present my final prediction models for the national two-party popular vote and the Electoral College for the 2024 presidential election. My final prediction models are multivariate ordinary least squares (OLS) regression models using national and state-level data from 1968-2020 to then predict for 2024. I predict that Vice President Kamala Harris will win the 2024 presidential election, earning 51.96% of the national popular vote and carrying the Electoral College with 319 electoral votes.</description>
     </item>
   </channel>
 </rss>
