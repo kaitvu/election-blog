@@ -6,13 +6,20 @@
     <description>Recent content in Election Blog 2024 on Kaitlyn Vu</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 13 Nov 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://kaitvu.github.io/election-blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Campaign Narrative Reflection</title>
+      <link>https://kaitvu.github.io/election-blog/post/2024/11/22/campaign-narrative-reflection/</link>
+      <pubDate>Fri, 22 Nov 2024 00:00:00 +0000</pubDate>
+      <guid>https://kaitvu.github.io/election-blog/post/2024/11/22/campaign-narrative-reflection/</guid>
+      <description>Introduction For my campaign reflection, I decided to focus on Nevada. President-elect Donald Trump won Nevada in the 2024 Presidential Election with 51.58% of the state&amp;rsquo;s two-party popular vote to Vice President Kamala Harris&amp;rsquo; 48.42%. Trump&amp;rsquo;s victory in Nevada was declared early on Saturday November 9, beating Harris by approximately 46,000 votes.&#xA;Nevada: A Brief Overview Since 1980, the Silver State&amp;rsquo;s dramatic population growth — including 35% growth between 2000 and 2010 — has increased its number of electoral votes from three to six.</description>
+    </item>
+    <item>
       <title>Post 2024 Election Reflection</title>
-      <link>https://kaitvu.github.io/election-blog/post/2024/11/13/post-2024-election-reflection/</link>
-      <pubDate>Wed, 13 Nov 2024 00:00:00 +0000</pubDate>
-      <guid>https://kaitvu.github.io/election-blog/post/2024/11/13/post-2024-election-reflection/</guid>
+      <link>https://kaitvu.github.io/election-blog/post/2024/11/17/post-2024-election-reflection/</link>
+      <pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate>
+      <guid>https://kaitvu.github.io/election-blog/post/2024/11/17/post-2024-election-reflection/</guid>
       <description>Introduction This week, I reflect on my predictive models for the 2024 presidential elections based on the actual electoral results from November 5, 2024. I assess the accuracy of my predictions with a focus on their shortcomings and also describe some potential improvements that I would implement to my models in hindsight. Please note that the reported electoral outcomes are current as of the date of this reflection&amp;rsquo;s writing (November 13, 2024).</description>
     </item>
     <item>

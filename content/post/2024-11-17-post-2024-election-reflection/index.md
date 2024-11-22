@@ -1,7 +1,7 @@
 ---
 title: "Post 2024 Election Reflection"
 author: "Kaitlyn Vu"
-date: '2024-11-13'
+date: '2024-11-17'
 slug: post-2024-election-reflection
 categories: []
 tags: []
