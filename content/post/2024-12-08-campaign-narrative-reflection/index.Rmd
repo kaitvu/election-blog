@@ -1,7 +1,7 @@
 ---
 title: "Campaign Narrative Reflection"
 author: "Kaitlyn Vu"
-date: '2024-11-22'
+date: '2024-12-08'
 slug: campaign-narrative-reflection
 categories: []
 tags: []
@@ -13,7 +13,7 @@ For my campaign reflection, I decided to focus on **Nevada**. President-elect Do
 
 ## Nevada: A Brief Overview
 
-Since 1980, the Silver State's dramatic population growth — including 35% growth between 2000 and 2010 — [has increased](https://www.270towin.com/states/Nevada) its number of electoral votes from three to six. The influx of voters has solidly established Nevada as a swing state: however, Democratic presidential candidates have prevailed in the state over the past twenty years. Former President Obama captured Nevada in both of his presidential campaigns and Secretary Clinton [defeated](https://www.nvsos.gov/silverstate2016gen/) Trump with 51.29% of the state's two-party popular vote in 2016. Four years ago, President Biden [won](https://www.nvsos.gov/silverstate2020gen/USPresidential/) the state with 51.22% of the popular vote share to Trump's 48.78%. In Nevada, Democrats have often [turned](https://www.nytimes.com/2023/01/24/us/politics/reid-machine.html) to the "Reid Machine" — the voter coalition of the late former majority leader Sen. Harry Reid.
+Since 1980, the Silver State's dramatic population growth — including 35% growth between 2000 and 2010 — [has increased](https://www.270towin.com/states/Nevada) its number of electoral votes from three to six. The influx of voters has solidly established Nevada as a swing state: however, Democratic presidential candidates have prevailed in the state over the past twenty years. Former President Obama captured Nevada in both of his presidential campaigns and Secretary Clinton [defeated](https://www.nvsos.gov/silverstate2016gen/) Trump with 51.29% of the state's two-party popular vote in 2016. Four years ago, President Biden [won](https://www.nvsos.gov/silverstate2020gen/USPresidential/) the state with 51.22% of the popular vote share to Trump's 48.78%. In Nevada, Democrats have often [turned](https://www.nytimes.com/2023/01/24/us/politics/reid-machine.html) to the "Reid Machine" — the voter coalition of the late former majority leader Sen. Harry Reid — for their political success.
 
 Nevada's population [reached](https://tax.nv.gov/wp-content/uploads/2024/10/Nevada-County-Population-Projections-2024-to-2043.pdf) 3.24 million in 2023 with projected growth to 3.94 million by 2043. Clark County (Las Vegas) and Washoe County (Reno) — both which tend to vote blue — dominate most of the population growth, while rural counties such as Nye, Douglas, and Esmeralda show slower or more moderate population increases. The average household income is \$97,955, which is 7% lower than the national average; unemployment in the state increased from 5.1% to 5.5% in 2024.
 
